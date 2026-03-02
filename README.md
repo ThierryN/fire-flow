@@ -13,8 +13,8 @@ When you start a new project, Claude normally has no memory between sessions, no
 - **Structured workflow** — A numbered pipeline (Plan → Execute → Verify → Handoff) so nothing gets skipped
 - **Session memory** — Claude picks up exactly where it left off, every time
 - **Parallel execution** — Multiple tasks run at the same time, safely, so work gets done faster
-- **Built-in quality gates** — A 70-point checklist verifies every phase before moving on
-- **Skills library** — 190+ proven code patterns Claude can reuse instead of reinventing every time
+- **Built-in quality gates** — A comprehensive checklist verifies every phase before moving on
+- **Skills library** — A growing collection of proven code patterns Claude can reuse instead of reinventing every time
 
 ---
 
@@ -30,6 +30,8 @@ This plugin is for anyone using Claude Code who wants:
 ---
 
 ## Quick Install
+
+**Prerequisite:** You need [Claude Code](https://claude.ai/download) installed first. If you don't have it yet, download and install it, then come back here.
 
 1. Open your terminal
 2. Run this command:
@@ -76,9 +78,9 @@ Claude will plan, build, and verify every phase without you having to type each 
 | Feature | What It Does |
 |---------|-------------|
 | 39 slash commands | Every task has a dedicated command — no guessing |
-| 190+ skills library | Proven patterns for auth, payments, APIs, and more |
+| Skills library | Proven patterns for auth, payments, APIs, and more |
 | Breath-based parallelism | Independent tasks run at the same time |
-| 70-point verification | Every phase gets scored before moving on |
+| Multi-point verification | Every phase gets scored before moving on |
 | Session handoffs | Claude remembers everything between sessions |
 | Circuit breaker | Stops loops that are stuck or going in circles |
 | Auto skill extraction | Useful patterns discovered during work get saved automatically |
@@ -104,6 +106,25 @@ See [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) for the complete list with de
 
 ---
 
+## Finding More Skills
+
+The skills library is what makes Dominion Flow powerful. Skills are reusable patterns that Claude draws on during your project — for auth, payments, APIs, database design, testing, and much more.
+
+**Where to find skills:**
+
+- [aitmpl.com/skills](https://www.aitmpl.com/skills) — Curated skill collections, ready to install
+- [skillsmp.com](https://skillsmp.com/) — Community skill marketplace
+- GitHub — Search for `claude-code-skills` or `dominion-flow-skills` to find repos shared by the community
+
+**Installing skills from GitHub:**
+```bash
+claude plugin install <github-username>/<repo-name>
+```
+
+You can also create your own skills as you work. When Claude discovers a useful pattern, `/fire-add-new-skill` saves it to your library automatically.
+
+---
+
 ## Documentation
 
 | File | What It Covers |
@@ -114,6 +135,27 @@ See [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) for the complete list with de
 | [DOMINION-FLOW-OVERVIEW.md](./DOMINION-FLOW-OVERVIEW.md) | Full system diagrams and architecture |
 | [ARCHITECTURE-DIAGRAM.md](./ARCHITECTURE-DIAGRAM.md) | Visual overview of how everything connects |
 | [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) | Common problems and how to fix them |
+
+---
+
+## Community
+
+Have questions, want to share what you built, or just want to connect with others learning Claude Code?
+
+**Join the Facebook group:** [Claude Code Community](https://www.facebook.com/groups/1671431084311638)
+
+This is where students and followers ask questions, share projects, and stay up to date.
+
+---
+
+## Support This Project
+
+If you're following along and finding Dominion Flow useful, the best way to help is simple:
+
+- **Star this repo** — it helps others discover it
+- **Share it** — pass it along to anyone learning Claude Code or building AI-assisted projects
+
+This is a living project. Your support keeps it growing.
 
 ---
 
