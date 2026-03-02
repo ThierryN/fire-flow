@@ -1,0 +1,8 @@
+nul
+*.local.md
+
+# Temp/scan scripts
+pii_scan.py
+pii_report.txt
+apply_fixes.py
+fix_paths*.py

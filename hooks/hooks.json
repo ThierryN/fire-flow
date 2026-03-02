@@ -1,0 +1,16 @@
+{
+  "hooks": [
+    {
+      "event": "SessionStart",
+      "triggers": ["startup", "resume", "clear", "compact"],
+      "type": "command",
+      "command": ["cmd", "/c", "${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.cmd"]
+    },
+    {
+      "event": "SessionEnd",
+      "triggers": ["logout", "prompt_input_exit", "other"],
+      "type": "command",
+      "command": ["cmd", "/c", "${CLAUDE_PLUGIN_ROOT}/hooks/run-session-end.cmd"]
+    }
+  ]
+}
