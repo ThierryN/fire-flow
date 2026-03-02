@@ -49,6 +49,51 @@ That's it. You're ready to go.
 
 The core workflow works out of the box. These extras unlock **persistent memory**, **codebase search**, and **vector-powered context** — features that make Claude dramatically more capable on larger projects.
 
+### Docker Desktop (Required for Qdrant)
+
+Docker Desktop is free software that lets you run Qdrant (the memory database) on your computer without any complex setup. You need to install it before running the Qdrant commands below.
+
+**Windows (PC):**
+
+1. Go to [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/)
+2. Click **"Download for Windows"**
+3. Run the installer (`Docker Desktop Installer.exe`)
+4. Follow the prompts — it will ask you to restart your computer
+5. After restart, open Docker Desktop from your Start menu and wait for it to finish starting up (the whale icon in your taskbar should stop animating)
+6. Open a terminal and verify it worked:
+   ```bash
+   docker --version
+   ```
+   You should see something like `Docker version 27.x.x`
+
+> **Windows note:** Docker requires WSL 2 (Windows Subsystem for Linux). If you don't have it or are unsure, open PowerShell as Administrator and run these two commands first — then restart before installing Docker:
+> ```powershell
+> wsl --update
+> wsl --set-default-version 2
+> ```
+> After restarting, run the Docker installer and choose **"Use WSL 2 instead of Hyper-V"** when prompted.
+
+---
+
+**Mac:**
+
+1. Go to [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/)
+2. Click **"Download for Mac"** — choose **"Mac with Apple Chip"** if you have an M1/M2/M3/M4 Mac, or **"Mac with Intel Chip"** if you have an older Mac
+   - Not sure which chip you have? Click the Apple menu () → **About This Mac** — it will say either "Apple M..." or "Intel"
+3. Open the downloaded `.dmg` file and drag Docker to your Applications folder
+4. Open Docker from your Applications folder
+5. Follow the prompts to allow Docker to run
+6. Wait for Docker Desktop to fully start (the whale icon in your menu bar should stop animating)
+7. Open Terminal and verify it worked:
+   ```bash
+   docker --version
+   ```
+   You should see something like `Docker version 27.x.x`
+
+---
+
+> **Both platforms:** Docker Desktop must be **running** (open in the background) whenever you use Qdrant. You don't need to do anything with it — just make sure it's open.
+
 ### Qdrant (Persistent Vector Memory)
 
 Qdrant is a local vector database. It gives Claude persistent memory across sessions — Claude can search your codebase, remember decisions, and recall patterns from past work.
@@ -201,4 +246,5 @@ This is a living project. Your support keeps it growing.
 MIT License — Copyright (c) 2026 ThierryN
 
 This software is free to use, copy, modify, and distribute. See [LICENSE](./LICENSE) for the full text.
+
 
