@@ -123,6 +123,96 @@ Once Qdrant and Ollama are running, add the codebase-context MCP to Claude Code.
 
 Ask Claude Code to help you set up the `fire-flow-memory` MCP server, or configure it manually in your `~/.claude/mcp.json`.
 
+
+### Connecting Claude to Docker via MCP
+
+Once Docker Desktop is running, you can connect Claude Code directly to Docker so Claude can pull images, run containers, manage volumes, and more — all by just asking it in plain English.
+
+There are two options. Pick the one that fits your needs.
+
+---
+
+#### Option A — Docker MCP Gateway (Official — Docker Hub + 300+ Tools)
+
+This is Docker's official integration. It connects Claude to Docker's catalog of 300+ tools including Docker Hub search, image browsing, and compose file generation.
+
+**Step 1 — Enable it in Docker Desktop**
+
+1. Open Docker Desktop
+2. Click **"MCP Toolkit"** in the left sidebar
+3. Go to the **Catalog** tab
+4. Find **"Docker Hub"** and enable it
+5. If prompted, enter your Docker Hub username and a Personal Access Token (create one free at [hub.docker.com](https://hub.docker.com) → Account Settings → Security)
+
+**Step 2 — Connect to Claude Code**
+
+Open your terminal and run:
+
+```bash
+claude mcp add MCP_DOCKER -s user -- docker mcp gateway run
+```
+
+> **Windows note:** Run this from **CMD or PowerShell** — NOT from a WSL terminal. There is a known bug where the Docker MCP Gateway cannot detect Docker Desktop from inside WSL2.
+
+**Step 3 — Verify**
+
+Open Claude Code and type `/mcp`. You should see `MCP_DOCKER` listed as connected.
+
+**What Claude can now do:**
+- Search Docker Hub for images by name, OS, or architecture
+- Browse image tags and metadata
+- Generate `docker-compose.yaml` files from a description
+- Access Docker Hardened Images (if you have a subscription)
+
+---
+
+#### Option B — Direct Docker Control (Community — Pull, Run, Manage)
+
+This gives Claude direct control over your local Docker engine — pulling images, starting/stopping containers, managing networks and volumes. This is what you want if you want Claude to actually run `docker pull`, `docker run`, etc. on your behalf.
+
+**Prerequisites:** Python 3.12+ and `uv` must be installed.
+
+Install `uv` if you don't have it:
+
+```bash
+# Windows (PowerShell)
+winget install astral-sh.uv
+
+# Mac
+brew install uv
+```
+
+**Connect to Claude Code:**
+
+```bash
+# Mac or WSL
+claude mcp add --transport stdio docker-local -- uvx mcp-server-docker
+
+# Windows (CMD or PowerShell) — the "cmd /c" wrapper is required on Windows
+claude mcp add --transport stdio docker-local -- cmd /c uvx mcp-server-docker
+```
+
+**Verify:**
+
+Open Claude Code and type `/mcp`. You should see `docker-local` listed.
+
+**What Claude can now do:**
+- Pull and push images (`docker pull`, `docker push`)
+- Build images from a Dockerfile
+- Create, start, stop, and remove containers
+- Fetch container logs
+- Create and manage networks and volumes
+- List all running and stopped containers
+
+**Example — just ask Claude:**
+> *"Pull the latest nginx image and run it on port 8080"*
+> *"Show me all running containers"*
+> *"Stop the container named my-app"*
+
+---
+
+> **Important for both options:** Docker Desktop must be **open and running** before you start Claude Code. If Docker Desktop is closed, the MCP connection will fail.
+
 > **Note:** These are optional. Dominion Flow works without them — they just make Claude smarter on complex, long-running projects.
 
 ---
@@ -246,5 +336,6 @@ This is a living project. Your support keeps it growing.
 MIT License — Copyright (c) 2026 ThierryN
 
 This software is free to use, copy, modify, and distribute. See [LICENSE](./LICENSE) for the full text.
+
 
 
