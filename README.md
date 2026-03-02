@@ -2,7 +2,7 @@
 
 **A comprehensive orchestration platform that empowers your Claude agent.**
 
-Dominion Flow gives Claude a complete, structured way to take your project from idea to finished code — with built-in quality checks, session memory, parallel execution, and a library of proven patterns. Think of it as a project management system that lives inside Claude Code.
+Dominion Flow gives Claude a complete, structured way to take your project from idea to finished code â€” with built-in quality checks, session memory, parallel execution, and a library of proven patterns. Think of it as a project management system that lives inside Claude Code.
 
 ---
 
@@ -10,11 +10,11 @@ Dominion Flow gives Claude a complete, structured way to take your project from 
 
 When you start a new project, Claude normally has no memory between sessions, no standard process, and no way to verify its own work. Dominion Flow fixes all of that:
 
-- **Structured workflow** — A numbered pipeline (Plan → Execute → Verify → Handoff) so nothing gets skipped
-- **Session memory** — Claude picks up exactly where it left off, every time
-- **Parallel execution** — Multiple tasks run at the same time, safely, so work gets done faster
-- **Built-in quality gates** — A comprehensive checklist verifies every phase before moving on
-- **Skills library** — A growing collection of proven code patterns Claude can reuse instead of reinventing every time
+- **Structured workflow** â€” A numbered pipeline (Plan â†’ Execute â†’ Verify â†’ Handoff) so nothing gets skipped
+- **Session memory** â€” Claude picks up exactly where it left off, every time
+- **Parallel execution** â€” Multiple tasks run at the same time, safely, so work gets done faster
+- **Built-in quality gates** â€” A comprehensive checklist verifies every phase before moving on
+- **Skills library** â€” A growing collection of proven code patterns Claude can reuse instead of reinventing every time
 
 ---
 
@@ -36,7 +36,7 @@ This plugin is for anyone using Claude Code who wants:
 1. Open your terminal
 2. Run this command:
    ```bash
-   claude plugin install ThierryN/dominion-flow
+   claude plugin install ThierryN/fire-flow
    ```
 3. Restart Claude Code
 4. Type `/fire-0-orient` to check that everything is working
@@ -47,11 +47,11 @@ That's it. You're ready to go.
 
 ## Optional but Recommended: Power Features
 
-The core workflow works out of the box. These extras unlock **persistent memory**, **codebase search**, and **vector-powered context** — features that make Claude dramatically more capable on larger projects.
+The core workflow works out of the box. These extras unlock **persistent memory**, **codebase search**, and **vector-powered context** â€” features that make Claude dramatically more capable on larger projects.
 
 ### Qdrant (Persistent Vector Memory)
 
-Qdrant is a local vector database. It gives Claude persistent memory across sessions — Claude can search your codebase, remember decisions, and recall patterns from past work.
+Qdrant is a local vector database. It gives Claude persistent memory across sessions â€” Claude can search your codebase, remember decisions, and recall patterns from past work.
 
 **Install Qdrant (Docker):**
 ```bash
@@ -78,7 +78,7 @@ Once Qdrant and Ollama are running, add the codebase-context MCP to Claude Code.
 
 Ask Claude Code to help you set up the `dominion-flow-memory` MCP server, or configure it manually in your `~/.claude/mcp.json`.
 
-> **Note:** These are optional. Dominion Flow works without them — they just make Claude smarter on complex, long-running projects.
+> **Note:** These are optional. Dominion Flow works without them â€” they just make Claude smarter on complex, long-running projects.
 
 ---
 
@@ -93,12 +93,12 @@ Start a new project with one command:
 Claude will ask you a few simple questions about your project, then set everything up automatically. After that, the numbered commands walk you through each step:
 
 ```
-/fire-1-new      → Start your project (asks you questions, creates the plan)
-/fire-2-plan 1   → Plan the first phase of work
-/fire-3-execute 1 → Build it (Claude does the coding)
-/fire-4-verify 1  → Check that everything actually works
-/fire-5-handoff   → Save your progress before closing
-/fire-6-resume    → Pick up where you left off next session
+/fire-1-new      â†’ Start your project (asks you questions, creates the plan)
+/fire-2-plan 1   â†’ Plan the first phase of work
+/fire-3-execute 1 â†’ Build it (Claude does the coding)
+/fire-4-verify 1  â†’ Check that everything actually works
+/fire-5-handoff   â†’ Save your progress before closing
+/fire-6-resume    â†’ Pick up where you left off next session
 ```
 
 **Want Claude to handle everything automatically?**
@@ -114,7 +114,7 @@ Claude will plan, build, and verify every phase without you having to type each 
 
 | Feature | What It Does |
 |---------|-------------|
-| 39 slash commands | Every task has a dedicated command — no guessing |
+| 39 slash commands | Every task has a dedicated command â€” no guessing |
 | Skills library | Proven patterns for auth, payments, APIs, and more |
 | Breath-based parallelism | Independent tasks run at the same time |
 | Multi-point verification | Every phase gets scored before moving on |
@@ -131,13 +131,13 @@ Commands are grouped into 7 tiers. You only need Tier 1 for most projects.
 
 | Tier | Purpose | Key Commands |
 |------|---------|-------------|
-| 1 — Core Workflow | The main pipeline | `/fire-1-new` through `/fire-6-resume` |
-| 2 — Autonomous | Full autopilot | `/fire-autonomous`, `/fire-loop` |
-| 3 — Debug & Discover | Investigate problems | `/fire-debug`, `/fire-map-codebase` |
-| 4 — Verification | Quality gates | `/fire-7-review`, `/fire-verify-uat` |
-| 5 — Skills | Manage the pattern library | `/fire-search`, `/fire-add-new-skill` |
-| 6 — Analytics & PM | Track progress | `/fire-dashboard`, `/fire-todos` |
-| 7 — Milestones | Long-term projects | `/fire-new-milestone`, `/fire-complete-milestone` |
+| 1 â€” Core Workflow | The main pipeline | `/fire-1-new` through `/fire-6-resume` |
+| 2 â€” Autonomous | Full autopilot | `/fire-autonomous`, `/fire-loop` |
+| 3 â€” Debug & Discover | Investigate problems | `/fire-debug`, `/fire-map-codebase` |
+| 4 â€” Verification | Quality gates | `/fire-7-review`, `/fire-verify-uat` |
+| 5 â€” Skills | Manage the pattern library | `/fire-search`, `/fire-add-new-skill` |
+| 6 â€” Analytics & PM | Track progress | `/fire-dashboard`, `/fire-todos` |
+| 7 â€” Milestones | Long-term projects | `/fire-new-milestone`, `/fire-complete-milestone` |
 
 See [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) for the complete list with descriptions.
 
@@ -145,13 +145,13 @@ See [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) for the complete list with de
 
 ## Finding More Skills
 
-The skills library is what makes Dominion Flow powerful. Skills are reusable patterns that Claude draws on during your project — for auth, payments, APIs, database design, testing, and much more.
+The skills library is what makes Dominion Flow powerful. Skills are reusable patterns that Claude draws on during your project â€” for auth, payments, APIs, database design, testing, and much more.
 
 **Where to find skills:**
 
-- [aitmpl.com/skills](https://www.aitmpl.com/skills) — Curated skill collections, ready to install
-- [skillsmp.com](https://skillsmp.com/) — Community skill marketplace
-- GitHub — Search for `claude-code-skills` or `dominion-flow-skills` to find repos shared by the community
+- [aitmpl.com/skills](https://www.aitmpl.com/skills) â€” Curated skill collections, ready to install
+- [skillsmp.com](https://skillsmp.com/) â€” Community skill marketplace
+- GitHub â€” Search for `claude-code-skills` or `dominion-flow-skills` to find repos shared by the community
 
 **Installing skills from GitHub:**
 ```bash
@@ -168,7 +168,7 @@ You can also create your own skills as you work. When Claude discovers a useful 
 |------|---------------|
 | [QUICK-START.md](./QUICK-START.md) | Step-by-step walkthrough of your first project |
 | [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) | All 39 commands with descriptions |
-| [references/warrior-principles.md](./references/warrior-principles.md) | The WARRIOR operating principles — what they are and why they matter |
+| [references/warrior-principles.md](./references/warrior-principles.md) | The WARRIOR operating principles â€” what they are and why they matter |
 | [DOMINION-FLOW-OVERVIEW.md](./DOMINION-FLOW-OVERVIEW.md) | Full system diagrams and architecture |
 | [ARCHITECTURE-DIAGRAM.md](./ARCHITECTURE-DIAGRAM.md) | Visual overview of how everything connects |
 | [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) | Common problems and how to fix them |
@@ -189,8 +189,8 @@ This is where students and followers ask questions, share projects, and stay up 
 
 If you're following along and finding Dominion Flow useful, the best way to help is simple:
 
-- **Star this repo** — it helps others discover it
-- **Share it** — pass it along to anyone learning Claude Code or building AI-assisted projects
+- **Star this repo** â€” it helps others discover it
+- **Share it** â€” pass it along to anyone learning Claude Code or building AI-assisted projects
 
 This is a living project. Your support keeps it growing.
 
@@ -198,6 +198,7 @@ This is a living project. Your support keeps it growing.
 
 ## License
 
-MIT License — Copyright (c) 2026 ThierryN
+MIT License â€” Copyright (c) 2026 ThierryN
 
 This software is free to use, copy, modify, and distribute. See [LICENSE](./LICENSE) for the full text.
+
