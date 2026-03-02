@@ -94,17 +94,91 @@ Docker Desktop is free software that lets you run Qdrant (the memory database) o
 
 > **Both platforms:** Docker Desktop must be **running** (open in the background) whenever you use Qdrant. You don't need to do anything with it — just make sure it's open.
 
-### Qdrant (Persistent Vector Memory)
+### Qdrant — Vector Database (Persistent Memory)
 
-Qdrant is a local vector database. It gives Claude persistent memory across sessions — Claude can search your codebase, remember decisions, and recall patterns from past work.
+Qdrant is a local vector database that gives Claude persistent memory across sessions. Claude can search your codebase, remember past decisions, and recall patterns from previous work — without forgetting everything when the session ends.
 
-**Install Qdrant (Docker):**
+**Step 1 — Pull the Qdrant image:**
+
 ```bash
 docker pull qdrant/qdrant
-docker run -d -p 6335:6333 --name qdrant qdrant/qdrant
 ```
 
-Or download the standalone binary from [qdrant.tech/documentation/quick-start](https://qdrant.tech/documentation/quick-start/).
+**Step 2 — Run Qdrant with both ports exposed:**
+
+```bash
+docker run -d \
+  -p 6333:6333 \
+  -p 6334:6334 \
+  --name qdrant \
+  qdrant/qdrant
+```
+
+| Port | Protocol | What it is |
+|------|----------|------------|
+| **6333** | REST | The main API port — used by apps and Claude to read/write memory |
+| **6334** | gRPC | High-speed binary protocol — used for fast bulk operations |
+
+> **Both ports are required.** Port 6333 handles most operations. Port 6334 is needed for high-performance queries and some MCP tools.
+
+**Step 3 — Verify Qdrant is running:**
+
+Open your browser and go to: [http://localhost:6333/dashboard](http://localhost:6333/dashboard)
+
+You should see the Qdrant dashboard. If you do, it is working.
+
+**Step 4 — Make Qdrant start automatically with Docker Desktop:**
+
+In Docker Desktop, find the `qdrant` container in your containers list and click the three dots → **"Start automatically"** (or just start it manually each time from Docker Desktop before opening Claude Code).
+
+> **Tip:** You can also use a persistent volume so your memory data survives container restarts:
+> ```bash
+> docker run -d \
+>   -p 6333:6333 \
+>   -p 6334:6334 \
+>   -v qdrant_storage:/qdrant/storage \
+>   --name qdrant \
+>   qdrant/qdrant
+> ```
+
+### Docker Hub MCP Server (hub-mcp)
+
+The Docker Hub MCP server lets Claude search Docker Hub, browse images and tags, and pull images — all from a conversational prompt. It runs as a local server on your machine.
+
+**Step 1 — Pull the hub-mcp image:**
+
+```bash
+docker pull docker/hub-mcp
+```
+
+**Step 2 — Run hub-mcp on port 8080:**
+
+```bash
+docker run -d \
+  -p 8080:8080 \
+  --name hub-mcp \
+  docker/hub-mcp
+```
+
+**Step 3 — Connect Claude Code to hub-mcp:**
+
+```bash
+claude mcp add hub-docker -s user --transport sse http://localhost:8080/sse
+```
+
+The `-s user` flag makes this available in all your projects, not just the current one.
+
+**Step 4 — Verify:**
+
+Open Claude Code and type `/mcp`. You should see `hub-docker` listed as connected.
+
+**What Claude can now do:**
+- Search Docker Hub for any image by name, keyword, or category
+- Browse available tags and versions for any image
+- Check image metadata, size, and architecture support
+- Pull images directly: *"Pull the latest postgres image"*
+
+> **Port 8080** is the default for hub-mcp. If you have another service using 8080, change the left side of the port mapping to any free port (e.g., `-p 9090:8080`) and update the Claude Code connection command to match (e.g., `http://localhost:9090/sse`).
 
 ### Ollama (Local Embeddings)
 
@@ -336,6 +410,7 @@ This is a living project. Your support keeps it growing.
 MIT License — Copyright (c) 2026 ThierryN
 
 This software is free to use, copy, modify, and distribute. See [LICENSE](./LICENSE) for the full text.
+
 
 
 
