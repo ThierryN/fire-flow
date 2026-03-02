@@ -45,6 +45,43 @@ That's it. You're ready to go.
 
 ---
 
+## Optional but Recommended: Power Features
+
+The core workflow works out of the box. These extras unlock **persistent memory**, **codebase search**, and **vector-powered context** — features that make Claude dramatically more capable on larger projects.
+
+### Qdrant (Persistent Vector Memory)
+
+Qdrant is a local vector database. It gives Claude persistent memory across sessions — Claude can search your codebase, remember decisions, and recall patterns from past work.
+
+**Install Qdrant (Docker):**
+```bash
+docker pull qdrant/qdrant
+docker run -d -p 6335:6333 --name qdrant qdrant/qdrant
+```
+
+Or download the standalone binary from [qdrant.tech/documentation/quick-start](https://qdrant.tech/documentation/quick-start/).
+
+### Ollama (Local Embeddings)
+
+Ollama runs embedding models locally. Required for the codebase memory MCP server.
+
+**Install Ollama:** [ollama.com](https://ollama.com)
+
+```bash
+# After installing Ollama, pull an embedding model:
+ollama pull nomic-embed-text
+```
+
+### Codebase Context MCP Server
+
+Once Qdrant and Ollama are running, add the codebase-context MCP to Claude Code. This gives Claude the ability to index and semantically search your entire codebase.
+
+Ask Claude Code to help you set up the `dominion-flow-memory` MCP server, or configure it manually in your `~/.claude/mcp.json`.
+
+> **Note:** These are optional. Dominion Flow works without them — they just make Claude smarter on complex, long-running projects.
+
+---
+
 ## Your First Project (5 Minutes)
 
 Start a new project with one command:
