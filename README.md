@@ -47,111 +47,112 @@ That's it. You're ready to go.
 
 ## Optional but Recommended: Power Features
 
-The core workflow works out of the box. These extras unlock **persistent memory**, **codebase search**, and **vector-powered context** — features that make Claude dramatically more capable on larger projects.
+The core workflow works out of the box. These extras unlock **persistent memory**, **codebase search**, and **Docker Hub access** — features that make Claude dramatically more capable on larger projects.
 
-### Docker Desktop (Required for Qdrant)
+---
 
-Docker Desktop is free software that lets you run Qdrant (the memory database) on your computer without any complex setup. You need to install it before running the Qdrant commands below.
+### Step 1 — Install Docker Desktop
+
+Docker Desktop is required to run Qdrant. Install it before anything else.
 
 **Windows (PC):**
 
-1. Go to [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/)
-2. Click **"Download for Windows"**
-3. Run the installer (`Docker Desktop Installer.exe`)
-4. Follow the prompts — it will ask you to restart your computer
-5. After restart, open Docker Desktop from your Start menu and wait for it to finish starting up (the whale icon in your taskbar should stop animating)
-6. Open a terminal and verify it worked:
+1. Go to [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/) and click **Download for Windows**
+2. Before running the installer, open **PowerShell as Administrator** and run:
+   ```powershell
+   wsl --update
+   wsl --set-default-version 2
+   ```
+3. Restart your computer
+4. Run the Docker installer and choose **"Use WSL 2 instead of Hyper-V"** when prompted
+5. After install, open Docker Desktop from your Start menu and wait for it to fully start (the whale icon in your taskbar stops animating)
+6. Verify it worked:
    ```bash
    docker --version
    ```
-   You should see something like `Docker version 27.x.x`
-
-> **Windows note:** Docker requires WSL 2 (Windows Subsystem for Linux). If you don't have it or are unsure, open PowerShell as Administrator and run these two commands first — then restart before installing Docker:
-> ```powershell
-> wsl --update
-> wsl --set-default-version 2
-> ```
-> After restarting, run the Docker installer and choose **"Use WSL 2 instead of Hyper-V"** when prompted.
-
----
 
 **Mac:**
 
-1. Go to [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/)
-2. Click **"Download for Mac"** — choose **"Mac with Apple Chip"** if you have an M1/M2/M3/M4 Mac, or **"Mac with Intel Chip"** if you have an older Mac
-   - Not sure which chip you have? Click the Apple menu () → **About This Mac** — it will say either "Apple M..." or "Intel"
-3. Open the downloaded `.dmg` file and drag Docker to your Applications folder
-4. Open Docker from your Applications folder
-5. Follow the prompts to allow Docker to run
-6. Wait for Docker Desktop to fully start (the whale icon in your menu bar should stop animating)
-7. Open Terminal and verify it worked:
+1. Go to [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/) and click **Download for Mac**
+   - Choose **Apple Chip** if you have an M1/M2/M3/M4 Mac, or **Intel Chip** for older Macs
+   - Not sure which? Click Apple menu → **About This Mac**
+2. Open the `.dmg` file and drag Docker to your Applications folder
+3. Open Docker from Applications and follow the prompts
+4. Wait for it to fully start (whale icon in menu bar stops animating)
+5. Verify it worked:
    ```bash
    docker --version
    ```
-   You should see something like `Docker version 27.x.x`
+
+> Docker Desktop must be **open and running** whenever you use Qdrant or hub-mcp.
 
 ---
 
-> **Both platforms:** Docker Desktop must be **running** (open in the background) whenever you use Qdrant. You don't need to do anything with it — just make sure it's open.
+### Step 2 — Run Qdrant (Vector Database)
 
-### Qdrant — Vector Database (Persistent Memory)
-
-Qdrant is a local vector database that gives Claude persistent memory across sessions. Claude can search your codebase, remember past decisions, and recall patterns from previous work — without forgetting everything when the session ends.
-
-**Step 1 — Pull the Qdrant image:**
+Qdrant stores Claude's persistent memory across sessions — so Claude remembers your codebase, past decisions, and patterns from previous work.
 
 ```bash
 docker pull qdrant/qdrant
 ```
 
-**Step 2 — Run Qdrant with both ports exposed:**
-
 ```bash
 docker run -d \
   -p 6333:6333 \
   -p 6334:6334 \
+  -v qdrant_storage:/qdrant/storage \
   --name qdrant \
   qdrant/qdrant
 ```
 
-| Port | Protocol | What it is |
-|------|----------|------------|
-| **6333** | REST | The main API port — used by apps and Claude to read/write memory |
-| **6334** | gRPC | High-speed binary protocol — used for fast bulk operations |
+| Port | What it is |
+|------|-----------|
+| **6333** | REST API — main port used by Claude |
+| **6334** | gRPC — high-speed operations |
 
-> **Both ports are required.** Port 6333 handles most operations. Port 6334 is needed for high-performance queries and some MCP tools.
+**Verify:** Open [http://localhost:6333/dashboard](http://localhost:6333/dashboard) in your browser. If you see the Qdrant dashboard, it is running.
 
-**Step 3 — Verify Qdrant is running:**
+---
 
-Open your browser and go to: [http://localhost:6333/dashboard](http://localhost:6333/dashboard)
+### Step 3 — Connect Qdrant to Claude (MCP)
 
-You should see the Qdrant dashboard. If you do, it is working.
+This is what allows Claude to read and write to your `power_flow_memory` database.
 
-**Step 4 — Make Qdrant start automatically with Docker Desktop:**
+**Mac or WSL:**
+```bash
+claude mcp add qdrant -s user -- uvx mcp-server-qdrant \
+  --url http://localhost:6333 \
+  --collection-name power_flow_memory
+```
 
-In Docker Desktop, find the `qdrant` container in your containers list and click the three dots → **"Start automatically"** (or just start it manually each time from Docker Desktop before opening Claude Code).
+**Windows (CMD or PowerShell):**
+```bash
+claude mcp add qdrant -s user -- cmd /c uvx mcp-server-qdrant \
+  --url http://localhost:6333 \
+  --collection-name power_flow_memory
+```
 
-> **Tip:** You can also use a persistent volume so your memory data survives container restarts:
-> ```bash
-> docker run -d \
->   -p 6333:6333 \
->   -p 6334:6334 \
->   -v qdrant_storage:/qdrant/storage \
->   --name qdrant \
->   qdrant/qdrant
-> ```
+---
 
-### Docker Hub MCP Server (hub-mcp)
+### Step 4 — Install Ollama (Local Embeddings)
 
-The Docker Hub MCP server lets Claude search Docker Hub, browse images and tags, and pull images — all from a conversational prompt. It runs as a local server on your machine.
+Ollama runs locally and generates the vectors that get stored in Qdrant.
 
-**Step 1 — Pull the hub-mcp image:**
+1. Download and install from [ollama.com](https://ollama.com)
+2. Pull the embedding model:
+   ```bash
+   ollama pull nomic-embed-text
+   ```
+
+---
+
+### Step 5 — Run Docker Hub MCP Server (hub-mcp)
+
+hub-mcp lets Claude search Docker Hub, browse images and tags, and pull images by just asking.
 
 ```bash
 docker pull docker/hub-mcp
 ```
-
-**Step 2 — Run hub-mcp on port 8080:**
 
 ```bash
 docker run -d \
@@ -160,134 +161,30 @@ docker run -d \
   docker/hub-mcp
 ```
 
-**Step 3 — Connect Claude Code to hub-mcp:**
+Connect to Claude Code:
 
 ```bash
 claude mcp add hub-docker -s user --transport sse http://localhost:8080/sse
 ```
 
-The `-s user` flag makes this available in all your projects, not just the current one.
-
-**Step 4 — Verify:**
-
-Open Claude Code and type `/mcp`. You should see `hub-docker` listed as connected.
-
-**What Claude can now do:**
-- Search Docker Hub for any image by name, keyword, or category
-- Browse available tags and versions for any image
-- Check image metadata, size, and architecture support
-- Pull images directly: *"Pull the latest postgres image"*
-
-> **Port 8080** is the default for hub-mcp. If you have another service using 8080, change the left side of the port mapping to any free port (e.g., `-p 9090:8080`) and update the Claude Code connection command to match (e.g., `http://localhost:9090/sse`).
-
-### Ollama (Local Embeddings)
-
-Ollama runs embedding models locally. Required for the codebase memory MCP server.
-
-**Install Ollama:** [ollama.com](https://ollama.com)
-
-```bash
-# After installing Ollama, pull an embedding model:
-ollama pull nomic-embed-text
-```
-
-### Codebase Context MCP Server
-
-Once Qdrant and Ollama are running, add the codebase-context MCP to Claude Code. This gives Claude the ability to index and semantically search your entire codebase.
-
-Ask Claude Code to help you set up the `fire-flow-memory` MCP server, or configure it manually in your `~/.claude/mcp.json`.
-
-
-### Connecting Claude to Docker via MCP
-
-Once Docker Desktop is running, you can connect Claude Code directly to Docker so Claude can pull images, run containers, manage volumes, and more — all by just asking it in plain English.
-
-There are two options. Pick the one that fits your needs.
+> If port 8080 is already in use on your machine, change the left port number (e.g., `-p 9090:8080`) and update the URL to match (e.g., `http://localhost:9090/sse`).
 
 ---
 
-#### Option A — Docker MCP Gateway (Official — Docker Hub + 300+ Tools)
+### Verify Everything Is Connected
 
-This is Docker's official integration. It connects Claude to Docker's catalog of 300+ tools including Docker Hub search, image browsing, and compose file generation.
+Restart Claude Code, then type `/mcp`. You should see:
 
-**Step 1 — Enable it in Docker Desktop**
+| Server | What it does |
+|--------|-------------|
+| `qdrant` | Claude ↔ `power_flow_memory` database |
+| `hub-docker` | Claude ↔ Docker Hub image search |
 
-1. Open Docker Desktop
-2. Click **"MCP Toolkit"** in the left sidebar
-3. Go to the **Catalog** tab
-4. Find **"Docker Hub"** and enable it
-5. If prompted, enter your Docker Hub username and a Personal Access Token (create one free at [hub.docker.com](https://hub.docker.com) → Account Settings → Security)
+Then ask Claude to confirm the database connection:
 
-**Step 2 — Connect to Claude Code**
+> *"Check if my Qdrant power_flow_memory collection is reachable and tell me how many points are stored."*
 
-Open your terminal and run:
-
-```bash
-claude mcp add MCP_DOCKER -s user -- docker mcp gateway run
-```
-
-> **Windows note:** Run this from **CMD or PowerShell** — NOT from a WSL terminal. There is a known bug where the Docker MCP Gateway cannot detect Docker Desktop from inside WSL2.
-
-**Step 3 — Verify**
-
-Open Claude Code and type `/mcp`. You should see `MCP_DOCKER` listed as connected.
-
-**What Claude can now do:**
-- Search Docker Hub for images by name, OS, or architecture
-- Browse image tags and metadata
-- Generate `docker-compose.yaml` files from a description
-- Access Docker Hardened Images (if you have a subscription)
-
----
-
-#### Option B — Direct Docker Control (Community — Pull, Run, Manage)
-
-This gives Claude direct control over your local Docker engine — pulling images, starting/stopping containers, managing networks and volumes. This is what you want if you want Claude to actually run `docker pull`, `docker run`, etc. on your behalf.
-
-**Prerequisites:** Python 3.12+ and `uv` must be installed.
-
-Install `uv` if you don't have it:
-
-```bash
-# Windows (PowerShell)
-winget install astral-sh.uv
-
-# Mac
-brew install uv
-```
-
-**Connect to Claude Code:**
-
-```bash
-# Mac or WSL
-claude mcp add --transport stdio docker-local -- uvx mcp-server-docker
-
-# Windows (CMD or PowerShell) — the "cmd /c" wrapper is required on Windows
-claude mcp add --transport stdio docker-local -- cmd /c uvx mcp-server-docker
-```
-
-**Verify:**
-
-Open Claude Code and type `/mcp`. You should see `docker-local` listed.
-
-**What Claude can now do:**
-- Pull and push images (`docker pull`, `docker push`)
-- Build images from a Dockerfile
-- Create, start, stop, and remove containers
-- Fetch container logs
-- Create and manage networks and volumes
-- List all running and stopped containers
-
-**Example — just ask Claude:**
-> *"Pull the latest nginx image and run it on port 8080"*
-> *"Show me all running containers"*
-> *"Stop the container named my-app"*
-
----
-
-> **Important for both options:** Docker Desktop must be **open and running** before you start Claude Code. If Docker Desktop is closed, the MCP connection will fail.
-
-> **Note:** These are optional. Dominion Flow works without them — they just make Claude smarter on complex, long-running projects.
+Claude will query Qdrant directly and confirm it is live.
 
 ---
 
@@ -410,6 +307,7 @@ This is a living project. Your support keeps it growing.
 MIT License — Copyright (c) 2026 ThierryN
 
 This software is free to use, copy, modify, and distribute. See [LICENSE](./LICENSE) for the full text.
+
 
 
 
