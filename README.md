@@ -33,15 +33,49 @@ This plugin is for anyone using Claude Code who wants:
 
 **Prerequisite:** You need [Claude Code](https://claude.ai/download) installed first. If you don't have it yet, download and install it, then come back here.
 
-1. Open your terminal
-2. Run this command:
+Choose either Method A (recommended) or Method B:
+
+---
+
+### Method A — Git Clone (Recommended)
+
+1. Open your terminal and clone the repo:
    ```bash
-   claude plugin install ThierryN/fire-flow
+   git clone https://github.com/ThierryN/fire-flow.git
    ```
+
+2. Install the plugin from the cloned folder:
+   ```bash
+   claude install-plugin ./fire-flow
+   ```
+
 3. Restart Claude Code
+
 4. Type `/fire-0-orient` to check that everything is working
 
-That's it. You're ready to go.
+---
+
+### Method B — Download ZIP (No Git Required)
+
+1. Go to [github.com/ThierryN/fire-flow](https://github.com/ThierryN/fire-flow)
+2. Click the green **"Code"** button → **"Download ZIP"**
+3. Extract the ZIP file to a folder you will keep (e.g., `Documents/fire-flow`)
+4. Open your terminal and install the plugin from that folder:
+
+   **Mac / Linux:**
+   ```bash
+   claude install-plugin ~/Documents/fire-flow
+   ```
+
+   **Windows:**
+   ```bash
+   claude install-plugin C:\Users\YourName\Documents\fire-flow
+   ```
+   *(Replace `YourName` with your actual Windows username)*
+
+5. Restart Claude Code
+
+6. Type `/fire-0-orient` to check that everything is working
 
 ---
 
@@ -307,6 +341,7 @@ This is a living project. Your support keeps it growing.
 MIT License — Copyright (c) 2026 ThierryN
 
 This software is free to use, copy, modify, and distribute. See [LICENSE](./LICENSE) for the full text.
+
 
 
 
