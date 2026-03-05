@@ -1,3 +1,34 @@
+# Dominion Flow
+
+**A comprehensive orchestration platform that empowers your Claude agent.**
+
+Dominion Flow gives Claude a complete, structured way to take your project from idea to finished code — with built-in quality checks, session memory, parallel execution, and a library of proven patterns. Think of it as a project management system that lives inside Claude Code.
+
+---
+
+## What Does It Do?
+
+When you start a new project, Claude normally has no memory between sessions, no standard process, and no way to verify its own work. Dominion Flow fixes all of that:
+
+- **Structured workflow** — A numbered pipeline (Plan → Execute → Verify → Handoff) so nothing gets skipped
+- **Session memory** — Claude picks up exactly where it left off, every time
+- **Parallel execution** — Multiple tasks run at the same time, safely, so work gets done faster
+- **Built-in quality gates** — A comprehensive checklist verifies every phase before moving on
+- **Skills library** — A growing collection of proven code patterns Claude can reuse instead of reinventing every time
+
+---
+
+## Who Is This For?
+
+This plugin is for anyone using Claude Code who wants:
+- Consistent, repeatable results on complex projects
+- Claude to remember what it was doing between sessions
+- Code that gets reviewed and verified, not just written
+
+**No prior experience with orchestration or AI agents required.**
+
+
+
 Introducing Dominion Flow: Elevate Your Claude Code Workflow
 
 Are you using Claude Code to build projects but feeling limited by session-hopping, lack of structure, or the need to constantly re-explain your requirements? Dominion Flow is a project management and orchestration plugin built to transform Claude from a simple assistant into a structured, persistent, and highly capable autonomous development agent.
@@ -30,34 +61,6 @@ claude install-plugin ./fire-flow
 For advanced users, the repository also supports optional "Power Features" like Docker-integrated memory (Qdrant) and local embeddings (Ollama) to make the agent even more powerful.
 
 
-# Dominion Flow
-
-**A comprehensive orchestration platform that empowers your Claude agent.**
-
-Dominion Flow gives Claude a complete, structured way to take your project from idea to finished code — with built-in quality checks, session memory, parallel execution, and a library of proven patterns. Think of it as a project management system that lives inside Claude Code.
-
----
-
-## What Does It Do?
-
-When you start a new project, Claude normally has no memory between sessions, no standard process, and no way to verify its own work. Dominion Flow fixes all of that:
-
-- **Structured workflow** — A numbered pipeline (Plan → Execute → Verify → Handoff) so nothing gets skipped
-- **Session memory** — Claude picks up exactly where it left off, every time
-- **Parallel execution** — Multiple tasks run at the same time, safely, so work gets done faster
-- **Built-in quality gates** — A comprehensive checklist verifies every phase before moving on
-- **Skills library** — A growing collection of proven code patterns Claude can reuse instead of reinventing every time
-
----
-
-## Who Is This For?
-
-This plugin is for anyone using Claude Code who wants:
-- Consistent, repeatable results on complex projects
-- Claude to remember what it was doing between sessions
-- Code that gets reviewed and verified, not just written
-
-**No prior experience with orchestration or AI agents required.**
 
 ---
 
