@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dominion Flow — Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  /* ============ THEME — Catppuccin Mocha (dark-first) ============ */
+  :root {
+    --bg: #1e1e2e;
+    --surface: #24273a;
+    --surface2: #363a4f;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.15);
+    --text: #cdd6f4;
+    --text-dim: #a6adc8;
+    --primary: #cba6f7;
+    --primary-dim: rgba(203,166,247,0.13);
+    --secondary: #89b4fa;
+    --secondary-dim: rgba(137,180,250,0.13);
+    --tertiary: #a6e3a1;
+    --tertiary-dim: rgba(166,227,161,0.13);
+    --danger: #f38ba8;
+    --danger-dim: rgba(243,139,168,0.13);
+    --amber: #f9e2af;
+    --font-body: 'Space Grotesk', system-ui, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
+  }
+
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f0f0f7;
+      --surface: #ffffff;
+      --surface2: #e8e8f0;
+      --border: rgba(0,0,0,0.07);
+      --border-bright: rgba(0,0,0,0.15);
+      --text: #4c4f69;
+      --text-dim: #7287a0;
+      --primary: #7287fd;
+      --primary-dim: rgba(114,135,253,0.1);
+      --secondary: #1e66f5;
+      --secondary-dim: rgba(30,102,245,0.1);
+      --tertiary: #40a02b;
+      --tertiary-dim: rgba(64,160,43,0.1);
+      --danger: #d20f39;
+      --danger-dim: rgba(210,15,57,0.1);
+      --amber: #df8e1d;
+    }
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 15% 0%, var(--primary-dim) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 100%, var(--secondary-dim) 0%, transparent 55%);
+    color: var(--text);
+    font-family: var(--font-body);
+    padding: 52px 44px;
+    min-height: 100vh;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate { animation: fadeUp 0.45s ease-out both; animation-delay: calc(var(--i,0)*0.07s); }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0ms !important; }
+  }
+
+  .container { max-width: 1120px; margin: 0 auto; }
+
+  h1 {
+    font-size: 42px; font-weight: 700; letter-spacing: -1.5px;
+    background: linear-gradient(130deg, var(--primary) 0%, var(--secondary) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 5px;
+  }
+
+  .subtitle {
+    font-family: var(--font-mono);
+    font-size: 11px; color: var(--text-dim);
+    letter-spacing: 0.08em; text-transform: uppercase;
+    margin-bottom: 44px;
+  }
+
+  .section-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px; margin-top: 36px;
+  }
+  .section-num {
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--primary); background: var(--primary-dim);
+    border: 1px solid var(--primary); border-radius: 4px;
+    padding: 2px 7px; letter-spacing: 0.05em;
+  }
+  .section-title {
+    font-size: 13px; font-weight: 600; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
+  /* ============ MERMAID CONTAINER ============ */
+  .mermaid-wrap {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 40px 28px 32px;
+    overflow: auto;
+    margin-bottom: 16px;
+    min-height: 200px;
+  }
+
+  .mermaid-wrap .mermaid {
+    display: flex;
+    justify-content: center;
+    transition: transform 0.18s ease;
+    transform-origin: top center;
+  }
+
+  .zoom-controls {
+    position: absolute; top: 10px; right: 10px;
+    display: flex; gap: 2px; z-index: 10;
+    background: var(--surface2);
+    border: 1px solid var(--border-bright);
+    border-radius: 7px; padding: 2px;
+  }
+  .zoom-controls button {
+    width: 28px; height: 28px; border: none;
+    background: transparent; color: var(--text-dim);
+    font-family: var(--font-mono); font-size: 15px;
+    cursor: pointer; border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.12s, color 0.12s;
+  }
+  .zoom-controls button:hover { background: var(--border-bright); color: var(--text); }
+
+  .mermaid-wrap.is-zoomed { cursor: grab; }
+  .mermaid-wrap.is-panning { cursor: grabbing !important; user-select: none; }
+  .mermaid-wrap { scrollbar-width: thin; scrollbar-color: var(--border-bright) transparent; }
+  .mermaid-wrap::-webkit-scrollbar { width: 5px; height: 5px; }
+  .mermaid-wrap::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+
+  /* ============ MERMAID SVG OVERRIDES ============ */
+  .mermaid .nodeLabel {
+    font-family: var(--font-body) !important;
+    font-size: 13px !important;
+    line-height: 1.4 !important;
+  }
+  .mermaid .edgeLabel {
+    font-family: var(--font-mono) !important;
+    font-size: 11px !important;
+  }
+  .mermaid .cluster rect {
+    fill: rgba(255,255,255,0.03) !important;
+    stroke: rgba(255,255,255,0.12) !important;
+    stroke-dasharray: 4 3 !important;
+  }
+  .mermaid .cluster-label {
+    font-family: var(--font-mono) !important;
+    font-size: 11px !important;
+  }
+
+  /* ============ LEGEND ============ */
+  .legend {
+    display: flex; gap: 22px; flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    font-family: var(--font-mono); font-size: 11px; color: var(--text-dim);
+  }
+  .legend-dot {
+    width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0;
+  }
+
+  /* ============ CALLOUT ============ */
+  .callout {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--secondary);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    font-size: 12px; line-height: 1.7;
+    color: var(--text-dim); margin-top: 28px;
+  }
+  .callout strong { color: var(--text); }
+  .callout code {
+    font-family: var(--font-mono); font-size: 11px;
+    background: var(--secondary-dim); color: var(--secondary);
+    padding: 1px 5px; border-radius: 3px;
+  }
+
+  @media (max-width: 768px) {
+    body { padding: 20px 16px; }
+    h1 { font-size: 26px; }
+    .mermaid-wrap { padding: 32px 12px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1 class="animate" style="--i:0">Dominion Flow</h1>
+  <p class="subtitle animate" style="--i:1">architecture · command pipeline · breath execution · session continuity</p>
+
+  <!-- DIAGRAM 1: Full pipeline -->
+  <div class="section-header animate" style="--i:2">
+    <span class="section-num">01</span>
+    <span class="section-title">Full Command Pipeline</span>
+  </div>
+
+  <div class="mermaid-wrap animate" style="--i:3">
+    <div class="zoom-controls">
+      <button onclick="zoomDiagram(this, 1.25)" title="Zoom in">+</button>
+      <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">−</button>
+      <button onclick="resetZoom(this)" title="Reset">↺</button>
+    </div>
+    <pre class="mermaid">
+flowchart TD
+    classDef cmd     fill:#313244,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4
+    classDef agent   fill:#1e1e2e,stroke:#89b4fa,stroke-width:2px,color:#89dcfa
+    classDef file    fill:#1e1e2e,stroke:#a6e3a1,stroke-width:1.5px,color:#a6e3a1
+    classDef start   fill:#cba6f7,stroke:#cba6f7,color:#1e1e2e
+    classDef session fill:#313244,stroke:#f9e2af,stroke-width:1.5px,color:#f9e2af,stroke-dasharray:5 4
+
+    START(["▶  New Project"]):::start
+
+    C1["/fire-1-new<br/>Init Project"]:::cmd
+    C2["/fire-2-plan<br/>Plan Phase N"]:::cmd
+    C3["/fire-3-execute<br/>Breath Execution"]:::cmd
+    C4["/fire-4-verify<br/>70-point Gate"]:::cmd
+    C5["/fire-5-handoff<br/>Save Session"]:::cmd
+    C6["/fire-6-resume<br/>Restore Context"]:::session
+
+    PLANNER{{"fire-planner<br/>agent"}}:::agent
+    EXECUTOR{{"fire-executor<br/>agent"}}:::agent
+    VERIFIER{{"fire-verifier<br/>agent"}}:::agent
+
+    CON[(CONSCIENCE.md)]:::file
+    VIS[(VISION.md)]:::file
+    BLU[(BLUEPRINT.md)]:::file
+    HAN[(POWER-HANDOFF-*.md)]:::file
+
+    START --> C1
+    C1 -->|creates| CON
+    C1 -->|creates| VIS
+    CON --> C2
+    VIS --> C2
+    C2 -->|invokes| PLANNER
+    PLANNER -->|writes| BLU
+    BLU --> C3
+    C3 -->|invokes| EXECUTOR
+    EXECUTOR -->|updates| CON
+    EXECUTOR --> C4
+    C4 -->|invokes| VERIFIER
+    VERIFIER -->|PASS| C5
+    VERIFIER -->|FAIL — rework| C3
+    C5 -->|creates| HAN
+    HAN -.->|next session| C6
+    C6 -->|reads| HAN
+    C6 --> C2
+    </pre>
+  </div>
+
+  <div class="legend animate" style="--i:4">
+    <div class="legend-item"><div class="legend-dot" style="background:#cba6f7"></div>/fire-* commands</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#89b4fa"></div>Subagents</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#a6e3a1"></div>State files (.planning/)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f9e2af"></div>Cross-session boundary</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f38ba8"></div>Failure / rework path</div>
+  </div>
+
+  <!-- DIAGRAM 2: Breath execution -->
+  <div class="section-header animate" style="--i:5">
+    <span class="section-num">02</span>
+    <span class="section-title">Breath Execution Pattern (inside /fire-3-execute)</span>
+  </div>
+
+  <div class="mermaid-wrap animate" style="--i:6">
+    <div class="zoom-controls">
+      <button onclick="zoomDiagram(this, 1.25)" title="Zoom in">+</button>
+      <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">−</button>
+      <button onclick="resetZoom(this)" title="Reset">↺</button>
+    </div>
+    <pre class="mermaid">
+flowchart LR
+    classDef task fill:#313244,stroke:#89b4fa,stroke-width:1.5px,color:#cdd6f4
+    classDef gate fill:#cba6f7,stroke:#cba6f7,color:#1e1e2e
+    classDef check fill:#1e1e2e,stroke:#a6e3a1,stroke-width:1.5px,color:#a6e3a1
+
+    START2(["BLUEPRINT.md<br/>loaded"]):::check
+
+    subgraph B1["Breath 1  —  all tasks run simultaneously"]
+        direction TB
+        T1["Task A<br/>DB Schema"]:::task
+        T2["Task B<br/>API Route"]:::task
+        T3["Task C<br/>Auth Model"]:::task
+    end
+
+    subgraph B2["Breath 2  —  starts only when Breath 1 is complete"]
+        direction TB
+        T4["Task D<br/>Controller"]:::task
+        T5["Task E<br/>Tests"]:::task
+    end
+
+    subgraph B3["Breath 3  —  final"]
+        direction TB
+        T6["Task F<br/>Integration"]:::task
+    end
+
+    DONE(["Phase complete<br/>→ /fire-4-verify"]):::gate
+
+    START2 --> B1
+    B1 -->|"all done ✓"| B2
+    B2 -->|"all done ✓"| B3
+    B3 --> DONE
+    </pre>
+  </div>
+
+  <!-- DIAGRAM 3: Session continuity -->
+  <div class="section-header animate" style="--i:7">
+    <span class="section-num">03</span>
+    <span class="section-title">Session Continuity — How State Survives Between Sessions</span>
+  </div>
+
+  <div class="mermaid-wrap animate" style="--i:8">
+    <div class="zoom-controls">
+      <button onclick="zoomDiagram(this, 1.25)" title="Zoom in">+</button>
+      <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">−</button>
+      <button onclick="resetZoom(this)" title="Reset">↺</button>
+    </div>
+    <pre class="mermaid">
+flowchart LR
+    classDef session1 fill:#313244,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4
+    classDef session2 fill:#1a2035,stroke:#89b4fa,stroke-width:2px,color:#89b4fa
+    classDef file     fill:#1e1e2e,stroke:#a6e3a1,stroke-width:1.5px,color:#a6e3a1
+    classDef boundary fill:#2a1a10,stroke:#f9e2af,stroke-width:1.5px,color:#f9e2af
+
+    subgraph S1["Session 1"]
+        W1["Work on project"]:::session1
+        U1["Update CONSCIENCE.md"]:::session1
+        H1["/fire-5-handoff"]:::session1
+    end
+
+    HANDOFF[("POWER-HANDOFF-<br/>2026-03-05.md")]:::file
+    BORDER(["— session ends —"]):::boundary
+
+    subgraph S2["Session 2"]
+        R1["/fire-6-resume"]:::session2
+        R2["Restore context<br/>from handoff"]:::session2
+        R3["Display summary<br/>Continue work"]:::session2
+    end
+
+    W1 --> U1 --> H1
+    H1 -->|"writes snapshot"| HANDOFF
+    HANDOFF --> BORDER
+    BORDER -.->|"next day / next session"| R1
+    R1 -->|"reads"| HANDOFF
+    R1 --> R2 --> R3
+    </pre>
+  </div>
+
+  <div class="callout animate" style="--i:9">
+    <strong>Why files instead of memory?</strong> Claude has no memory between sessions —
+    each conversation starts blank. Dominion Flow externalizes all state into markdown files in
+    <code>.planning/</code>. The agent is stateless by design; the <em>files</em> carry the memory.
+    This is the same pattern databases use: the process is stateless, the storage persists.
+    <br><br>
+    <strong>Breath execution</strong> solves dependency ordering: tasks within a breath run in
+    <code>parallel</code> (multiple subagents at once), but the next breath only starts when
+    all tasks in the current breath are complete. Maximum parallelism, zero dependency violations.
+  </div>
+
+</div>
+
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  import elkLayouts from 'https://cdn.jsdelivr.net/npm/@mermaid-js/layout-elk/dist/mermaid-layout-elk.esm.min.mjs';
+
+  const isDark = !window.matchMedia('(prefers-color-scheme: light)').matches;
+
+  mermaid.registerLayoutLoaders(elkLayouts);
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    look: 'classic',
+    layout: 'elk',
+    themeVariables: {
+      primaryColor:        isDark ? '#313244' : '#e8e8f8',
+      primaryBorderColor:  isDark ? '#cba6f7' : '#7287fd',
+      primaryTextColor:    isDark ? '#cdd6f4' : '#4c4f69',
+      secondaryColor:      isDark ? '#1e1e2e' : '#eef4ff',
+      secondaryBorderColor:isDark ? '#89b4fa' : '#1e66f5',
+      secondaryTextColor:  isDark ? '#89dcfa' : '#1e66f5',
+      tertiaryColor:       isDark ? '#1a2a1e' : '#f0fff4',
+      tertiaryBorderColor: isDark ? '#a6e3a1' : '#40a02b',
+      tertiaryTextColor:   isDark ? '#a6e3a1' : '#40a02b',
+      lineColor:           isDark ? '#a6adc8' : '#7287a0',
+      edgeLabelBackground: isDark ? '#24273a' : '#f0f0f7',
+      fontSize: '13px',
+      fontFamily: "'Space Grotesk', system-ui, sans-serif",
+      clusterBkg:          isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
+      clusterBorder:       isDark ? 'rgba(255,255,255,0.1)'  : 'rgba(0,0,0,0.1)',
+    }
+  });
+</script>
+
+<script>
+  function updateZoomState(wrap) {
+    wrap.classList.toggle('is-zoomed', parseFloat(wrap.querySelector('.mermaid').dataset.zoom || '1') > 1);
+  }
+  function zoomDiagram(btn, factor) {
+    var wrap = btn.closest('.mermaid-wrap'), t = wrap.querySelector('.mermaid');
+    var next = Math.min(Math.max(parseFloat(t.dataset.zoom || '1') * factor, 0.25), 6);
+    t.dataset.zoom = next; t.style.transform = 'scale(' + next + ')';
+    updateZoomState(wrap);
+  }
+  function resetZoom(btn) {
+    var wrap = btn.closest('.mermaid-wrap'), t = wrap.querySelector('.mermaid');
+    t.dataset.zoom = '1'; t.style.transform = 'scale(1)';
+    updateZoomState(wrap);
+  }
+  document.querySelectorAll('.mermaid-wrap').forEach(function(wrap) {
+    wrap.addEventListener('wheel', function(e) {
+      if (!e.ctrlKey && !e.metaKey) return;
+      e.preventDefault();
+      var t = wrap.querySelector('.mermaid');
+      var next = Math.min(Math.max(parseFloat(t.dataset.zoom || '1') * (e.deltaY < 0 ? 1.1 : 0.9), 0.25), 6);
+      t.dataset.zoom = next; t.style.transform = 'scale(' + next + ')';
+      updateZoomState(wrap);
+    }, { passive: false });
+    var startX, startY, scrollL, scrollT;
+    wrap.addEventListener('mousedown', function(e) {
+      if (e.target.closest('.zoom-controls')) return;
+      if (parseFloat(wrap.querySelector('.mermaid').dataset.zoom || '1') <= 1) return;
+      wrap.classList.add('is-panning');
+      startX = e.clientX; startY = e.clientY;
+      scrollL = wrap.scrollLeft; scrollT = wrap.scrollTop;
+    });
+    window.addEventListener('mousemove', function(e) {
+      if (!wrap.classList.contains('is-panning')) return;
+      wrap.scrollLeft = scrollL - (e.clientX - startX);
+      wrap.scrollTop  = scrollT - (e.clientY - startY);
+    });
+    window.addEventListener('mouseup', function() { wrap.classList.remove('is-panning'); });
+  });
+</script>
+
+</body>
+</html>
