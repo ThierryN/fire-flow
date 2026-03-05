@@ -1,3 +1,35 @@
+Introducing Dominion Flow: Elevate Your Claude Code Workflow
+
+Are you using Claude Code to build projects but feeling limited by session-hopping, lack of structure, or the need to constantly re-explain your requirements? Dominion Flow is a project management and orchestration plugin built to transform Claude from a simple assistant into a structured, persistent, and highly capable autonomous development agent.
+What is Dominion Flow?
+
+Dominion Flow acts as a professional-grade "operating system" inside your terminal. It introduces a formal, repeatable pipeline—Plan → Execute → Verify → Handoff—that ensures your project moves from an idea to working, verified code without skipping critical steps.
+Why Use It?
+
+    Persistent Memory: Through integrated vector database support (Qdrant), Dominion Flow allows Claude to remember your codebase, past decisions, and coding patterns across different sessions.
+
+    Structured Pipeline: Stop guessing where to start. The platform uses a clear, 39-command framework to guide you through every phase of development.
+
+    Quality & Verification: Built-in quality gates and automated testing (including Playwright E2E testing) ensure that code isn't just written—it's verified.
+
+    Autonomous Capabilities: Need to go hands-off? Features like /fire-autonomous allow Claude to plan, code, and verify entire project phases on its own.
+
+    Reusable Skills Library: Stop reinventing the wheel. Dominion Flow includes a library of proven, reusable patterns for authentication, APIs, payments, and more, which Claude can automatically learn and store as you build.
+
+Who Is It For?
+
+Whether you are a developer looking for a consistent, professional workflow or someone who wants to maximize the potential of Claude Code, Dominion Flow provides the structure and "long-term memory" required for complex, real-world projects.
+How to Get Started
+
+Dominion Flow is designed to be easily installed as a Claude Code plugin. Simply clone the repository and run the installation command:
+Bash
+
+git clone https://github.com/ThierryN/fire-flow.git
+claude install-plugin ./fire-flow
+
+For advanced users, the repository also supports optional "Power Features" like Docker-integrated memory (Qdrant) and local embeddings (Ollama) to make the agent even more powerful.
+
+
 # Dominion Flow
 
 **A comprehensive orchestration platform that empowers your Claude agent.**
