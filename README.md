@@ -373,9 +373,9 @@ This is a living project. Your support keeps it growing.
 
 ## Architecture Diagram
 
-View the full interactive architecture diagram:
+![Dominion Flow Architecture](./docs/dominion-flow-architecture.png)
 
-**[Dominion Flow Architecture](./docs/dominion-flow-architecture.html)** — Download and open in your browser to explore the complete system architecture with interactive navigation.
+View the full interactive version: **[Dominion Flow Architecture (HTML)](./docs/dominion-flow-architecture.html)** — Download and open in your browser to explore with interactive navigation.
 
 ---
 
