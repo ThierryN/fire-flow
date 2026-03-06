@@ -285,18 +285,24 @@ Claude will plan, build, and verify every phase without you having to type each 
 
 ---
 
+## How Does It Compare?
+
+![Feature Comparison](./docs/feature-comparison.png)
+
 ## Key Features
 
 | Feature | What It Does |
 |---------|-------------|
-| 39 slash commands | Every task has a dedicated command — no guessing |
+| 42 slash commands | Every task has a dedicated command — no guessing |
 | Skills library | Proven patterns for auth, payments, APIs, and more |
 | Breath-based parallelism | Independent tasks run at the same time |
-| Multi-point verification | Every phase gets scored before moving on |
+| 70-point verification | Every phase gets scored before moving on |
 | Session handoffs | Claude remembers everything between sessions |
 | Circuit breaker | Stops loops that are stuck or going in circles |
 | Auto skill extraction | Useful patterns discovered during work get saved automatically |
 | Playwright E2E testing | Automated browser testing built in |
+| Learncoding mode | Walk through any codebase step-by-step to learn it |
+| Security scanning | Detect prompt injection, OWASP vulnerabilities, credential leaks |
 
 ---
 
