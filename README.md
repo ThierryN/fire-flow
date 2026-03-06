@@ -39,7 +39,7 @@ Why Use It?
 
     Persistent Memory: Through integrated vector database support (Qdrant), Dominion Flow allows Claude to remember your codebase, past decisions, and coding patterns across different sessions.
 
-    Structured Pipeline: Stop guessing where to start. The platform uses a clear, 39-command framework to guide you through every phase of development.
+    Structured Pipeline: Stop guessing where to start. The platform uses a clear, 42-command framework to guide you through every phase of development.
 
     Quality & Verification: Built-in quality gates and automated testing (including Playwright E2E testing) ensure that code isn't just written—it's verified.
 
@@ -306,9 +306,9 @@ Claude will plan, build, and verify every phase without you having to type each 
 
 ---
 
-## All 39 Commands
+## All 42 Commands
 
-Commands are grouped into 7 tiers. You only need Tier 1 for most projects.
+Commands are grouped into 8 tiers. You only need Tier 1 for most projects.
 
 | Tier | Purpose | Key Commands |
 |------|---------|-------------|
@@ -319,6 +319,7 @@ Commands are grouped into 7 tiers. You only need Tier 1 for most projects.
 | 5 — Skills | Manage the pattern library | `/fire-search`, `/fire-add-new-skill` |
 | 6 — Analytics & PM | Track progress | `/fire-dashboard`, `/fire-todos` |
 | 7 — Milestones | Long-term projects | `/fire-new-milestone`, `/fire-complete-milestone` |
+| 8 — Learning | Code walkthroughs | `/fire-learncoding` |
 
 See [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) for the complete list with descriptions.
 
@@ -348,7 +349,7 @@ You can also create your own skills as you work. When Claude discovers a useful 
 | File | What It Covers |
 |------|---------------|
 | [QUICK-START.md](./QUICK-START.md) | Step-by-step walkthrough of your first project |
-| [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) | All 39 commands with descriptions |
+| [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) | All 42 commands with descriptions |
 | [references/warrior-principles.md](./references/warrior-principles.md) | The WARRIOR operating principles — what they are and why they matter |
 | [DOMINION-FLOW-OVERVIEW.md](./DOMINION-FLOW-OVERVIEW.md) | Full system diagrams and architecture |
 | [ARCHITECTURE-DIAGRAM.md](./ARCHITECTURE-DIAGRAM.md) | Visual overview of how everything connects |
