@@ -6,19 +6,20 @@
 
 ## Summary
 
-**Total skills on disk: 470**
+**Total skills on disk: 472**
 
 ---
 
 ## Categories
 
-### _general (26 skills)
+### _general (27 skills)
 
 - `settings-gui-generator` — Settings GUI Generator (Config-to-Dialog Pattern)
 - `persistent-analysis-storage` — Persistent Analysis Storage
 - `qdrant-blue-green-aliases` — Qdrant Blue-Green Collection Aliases
 - `canvas-bubble-animation-grouping` — Canvas Bubble Animation & Grouping Patterns
 - `framer-motion-layoutid-grouping` — Framer Motion layoutId Bubble Grouping
+- `html-visual-reports` — HTML Visual Reports & Dashboards
 - `pyqt6-settings-dialog` — PyQt6 Settings Dialog (Replace Raw Config Editing)
 - `react-flow-animated-layout-switching` — React Flow Animated Layout Switching
 - `safari-csp-theme-color-debugging` — Safari CSP & Theme-Color Debugging
@@ -490,10 +491,11 @@
 - `react-i18next-setup` — React i18next Setup Skill
 - `thesys-c1-generative-ui-integration` — Thesys C1: Generative UI Integration for LLM-Powered Apps
 
-### Plugin Development (2 skills)
+### Plugin Development (3 skills)
 
 - `CLAUDE_CODE_COMMAND_REGISTRATION_SILENT_FAILURE` — Claude Code Command Registration Silent Failure - YAML Frontmatter Fields
 - `plugin-command-namespace-vs-global` — Plugin Command Namespace vs Global Registration
+- `plugin-doc-auto-generation` — Plugin Documentation Auto-Generation
 
 ### Quality Safety (4 skills)
 
