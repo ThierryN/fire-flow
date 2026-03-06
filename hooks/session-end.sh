@@ -30,7 +30,7 @@ echo "  DOMINION FLOW - Session End Consolidation"
 echo "=============================================="
 echo ""
 
-MEMORY_PROJECT="C:/path/to/repos/your-memory-repo"
+MEMORY_PROJECT="$HOME/repos/your-memory-repo"
 
 # =============================================
 # 1. Check if your-memory-repo project exists
