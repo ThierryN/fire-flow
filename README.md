@@ -52,11 +52,18 @@ Who Is It For?
 Whether you are a developer looking for a consistent, professional workflow or someone who wants to maximize the potential of Claude Code, Dominion Flow provides the structure and "long-term memory" required for complex, real-world projects.
 How to Get Started
 
-Dominion Flow is designed to be easily installed as a Claude Code plugin. Simply clone the repository and run the installation command:
-Bash
+Dominion Flow is designed to be easily installed as a Claude Code plugin. One command does it all:
 
+```bash
+npx @thierrynakoa/fire-flow
+```
+
+Or clone the repository manually:
+
+```bash
 git clone https://github.com/ThierryN/fire-flow.git
 claude install-plugin ./fire-flow
+```
 
 For advanced users, the repository also supports optional "Power Features" like Docker-integrated memory (Qdrant) and local embeddings (Ollama) to make the agent even more powerful.
 
@@ -68,11 +75,27 @@ For advanced users, the repository also supports optional "Power Features" like 
 
 **Prerequisite:** You need [Claude Code](https://claude.ai/download) installed first. If you don't have it yet, download and install it, then come back here.
 
-Choose either Method A (recommended) or Method B:
+### Method A — One Command (Recommended)
+
+```bash
+npx @thierrynakoa/fire-flow
+```
+
+That's it. The installer copies everything to `~/.claude/plugins/fire-flow/` automatically.
+
+To update later:
+```bash
+npx @thierrynakoa/fire-flow --update
+```
+
+To uninstall:
+```bash
+npx @thierrynakoa/fire-flow --uninstall
+```
 
 ---
 
-### Method A — Git Clone (Recommended)
+### Method B — Git Clone
 
 1. Open your terminal and clone the repo:
    ```bash
@@ -90,7 +113,7 @@ Choose either Method A (recommended) or Method B:
 
 ---
 
-### Method B — Download ZIP (No Git Required)
+### Method C — Download ZIP (No Git or npm Required)
 
 1. Go to [github.com/ThierryN/fire-flow](https://github.com/ThierryN/fire-flow)
 2. Click the green **"Code"** button → **"Download ZIP"**
