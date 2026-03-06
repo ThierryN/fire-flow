@@ -1,0 +1,52 @@
+{
+  "name": "fire-flow",
+  "version": "10.0.0",
+  "description": "Structured workflow orchestration for Claude Code — 42 commands, 13 agents, 90+ skills. Plan → Execute → Verify → Handoff with parallel execution, session memory, and circuit breaker safety.",
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "workflow",
+    "orchestration",
+    "ai-agent",
+    "parallel-execution",
+    "session-memory",
+    "debugging",
+    "skills-library"
+  ],
+  "author": "ThierryN",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ThierryN/fire-flow.git"
+  },
+  "homepage": "https://github.com/ThierryN/fire-flow#readme",
+  "bugs": {
+    "url": "https://github.com/ThierryN/fire-flow/issues"
+  },
+  "bin": {
+    "fire-flow": "./bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "agents/",
+    "commands/",
+    "hooks/",
+    "skills-library/",
+    "templates/",
+    "references/",
+    "workflows/",
+    "plugin.json",
+    ".claude-plugin/",
+    "README.md",
+    "QUICK-START.md",
+    "COMMAND-REFERENCE.md",
+    "DOMINION-FLOW-OVERVIEW.md",
+    "ARCHITECTURE-DIAGRAM.md",
+    "TROUBLESHOOTING.md",
+    "validation-config.yml",
+    "version.json"
+  ],
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

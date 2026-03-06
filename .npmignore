@@ -1,0 +1,10 @@
+# Don't ship these in the npm package
+.git/
+.gitignore
+.gitattributes
+docs/
+tests/
+scripts/
+*.local.md
+pii_scan.py
+pii_report.txt
