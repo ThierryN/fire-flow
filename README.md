@@ -408,6 +408,21 @@ View the full interactive version: **[Dominion Flow Architecture (HTML)](./docs/
 
 ---
 
+## Privacy Policy
+
+Dominion Flow runs entirely on your local machine. It does not:
+
+- Collect, transmit, or store any personal data
+- Send analytics or telemetry of any kind
+- Connect to external servers (unless you optionally configure Qdrant or Ollama locally)
+- Access any files outside your project directory and `~/.claude/plugins/`
+
+All session memory, handoff files, and skills remain on your computer. The optional Qdrant vector database runs locally on your machine via Docker — no cloud services involved.
+
+**In short: your code and data never leave your machine.**
+
+---
+
 ## License
 
 MIT License — Copyright (c) 2026 ThierryN
