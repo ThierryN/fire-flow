@@ -1,6 +1,6 @@
 {
   "name": "@thierrynakoa/fire-flow",
-  "version": "12.2.0",
+  "version": "12.2.1",
   "description": "Dominion Flow — the most comprehensive orchestration platform for Claude Code. 46 commands, 15 agents, 478+ skills. Plan → Execute → Verify → Handoff with parallel execution, session memory, circuit breaker safety, Phoenix Rebuild, and learning mode.",
   "keywords": [
     "claude-code",
