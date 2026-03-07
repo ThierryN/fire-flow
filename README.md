@@ -148,6 +148,73 @@ npx @thierrynakoa/fire-flow --uninstall
 
 ---
 
+## Slash Commands Not Appearing?
+
+If you've installed Dominion Flow but the `/fire-` commands don't show up when you type `/` in Claude Code, follow these steps:
+
+### Option A — Ask Claude to Fix It (Easiest)
+
+Open Claude Code and paste this message:
+
+> *"My Dominion Flow plugin is installed but the /fire- slash commands aren't appearing. Please check my ~/.claude/settings.json, register the plugin under enabledPlugins, and refresh my commands."*
+
+Claude will inspect your configuration, add the missing plugin entry, and reload the commands automatically.
+
+### Option B — Fix settings.json Manually
+
+1. Open your global Claude Code settings file:
+
+   **Mac / Linux:**
+   ```bash
+   code ~/.claude/settings.json
+   ```
+
+   **Windows:**
+   ```bash
+   code %USERPROFILE%\.claude\settings.json
+   ```
+
+   *(Replace `code` with `notepad`, `nano`, or any text editor you prefer)*
+
+2. Find the `"enabledPlugins"` section. If it doesn't exist, add it. Then add the Dominion Flow entry:
+
+   ```json
+   {
+     "enabledPlugins": {
+       "dominion-flow@local": true
+     }
+   }
+   ```
+
+   If you already have other plugins listed, just add the `"dominion-flow@local": true` line inside the existing block (don't forget the comma on the line above it).
+
+3. Save the file and **restart Claude Code completely** (close and reopen — not just a new conversation).
+
+4. Type `/fire-0-orient` to confirm the commands are working.
+
+### Option C — Reinstall the Plugin
+
+If the above steps don't work, reinstall from scratch:
+
+```bash
+npx @thierrynakoa/fire-flow --update
+```
+
+Or if you cloned from GitHub:
+
+```bash
+claude plugin uninstall dominion-flow
+claude install-plugin ./fire-flow
+```
+
+Then restart Claude Code.
+
+### Still Not Working?
+
+See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for additional diagnostics, or open an issue at [github.com/ThierryN/fire-flow/issues](https://github.com/ThierryN/fire-flow/issues).
+
+---
+
 ## Optional but Recommended: Power Features
 
 The core workflow works out of the box. These extras unlock **persistent memory**, **codebase search**, and **Docker Hub access** — features that make Claude dramatically more capable on larger projects.

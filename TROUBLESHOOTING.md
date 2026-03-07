@@ -261,4 +261,107 @@ Common failure modes and their fixes.
 
 ---
 
+## 11. Slash commands not appearing after install
+
+**Symptoms:**
+- You installed Dominion Flow but typing `/` doesn't show any `/fire-` commands
+- Claude doesn't recognize `/fire-0-orient` or any other Dominion Flow command
+- The plugin files exist on disk but Claude Code doesn't see them
+
+**Likely Cause:**
+- The plugin is not registered in your global `~/.claude/settings.json` under `enabledPlugins`
+- Claude Code was not restarted after installation
+- The plugin directory path is incorrect or the files were extracted to the wrong location
+- Stale command cache from a previous installation
+
+**Fix Steps:**
+
+**Option A — Ask Claude to fix it:**
+
+Open Claude Code and paste this message:
+
+> "My Dominion Flow plugin is installed but the /fire- slash commands aren't appearing. Please check my ~/.claude/settings.json, register the plugin under enabledPlugins, and refresh my commands."
+
+Claude will inspect your configuration, add the missing entry, and reload everything.
+
+**Option B — Fix manually:**
+
+1. Open your settings file:
+   - **Mac/Linux:** `~/.claude/settings.json`
+   - **Windows:** `%USERPROFILE%\.claude\settings.json`
+
+2. Find or create the `"enabledPlugins"` section and add:
+   ```json
+   {
+     "enabledPlugins": {
+       "dominion-flow@local": true
+     }
+   }
+   ```
+
+3. Verify the plugin files exist at the expected location:
+   ```bash
+   ls ~/.claude/plugins/dominion-flow/plugin.json
+   ```
+   If the file doesn't exist, the plugin wasn't installed correctly — reinstall with `npx @thierrynakoa/fire-flow` or `claude install-plugin ./fire-flow`.
+
+4. **Restart Claude Code completely** — close the terminal and reopen. A new conversation in the same terminal is not enough.
+
+5. Verify: type `/fire-0-orient` — you should see the orientation output.
+
+**Option C — Reinstall:**
+
+```bash
+npx @thierrynakoa/fire-flow --update
+```
+
+Or for git-cloned installs:
+```bash
+claude plugin uninstall dominion-flow
+claude install-plugin ./fire-flow
+```
+
+**Prevention:**
+- Always restart Claude Code after installing or updating any plugin
+- After installation, immediately test with `/fire-0-orient` before starting work
+- If you update Claude Code itself, re-verify your plugins are still registered — major updates can sometimes reset plugin state
+- Keep your `settings.json` backed up so you can restore plugin registrations quickly
+
+---
+
+## 12. Hooks not running or outdated
+
+**Symptoms:**
+- Session hooks (auto-update check, memory injection, compact restoration) don't fire
+- Hook errors appear at session start
+- Hooks reference files that no longer exist after an update
+
+**Likely Cause:**
+- Hooks were registered with absolute paths that changed after a plugin update or reinstall
+- The `hooks.json` file in the plugin references scripts that weren't included in the update
+- Global `settings.json` hooks conflict with plugin hooks
+
+**Fix Steps:**
+
+1. Ask Claude to refresh your hooks:
+
+   > "Please check my Dominion Flow hooks configuration and update any stale paths or missing hook scripts."
+
+2. Or manually check your plugin's hooks file:
+   ```bash
+   cat ~/.claude/plugins/dominion-flow/hooks/hooks.json
+   ```
+   Verify every `"command"` path points to a file that actually exists.
+
+3. If hooks reference missing files, reinstall:
+   ```bash
+   npx @thierrynakoa/fire-flow --update
+   ```
+
+**Prevention:**
+- After every plugin update, restart Claude Code and verify hooks fire correctly
+- Don't manually edit hook paths unless you know the exact file structure
+
+---
+
 *If your issue isn't listed here, check the references directory for detailed protocol documentation, or run `/fire-debug` to systematically investigate.*
