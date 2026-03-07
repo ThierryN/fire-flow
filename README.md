@@ -33,6 +33,16 @@ AUTOPSY → INTENT → CLARIFY → VISION → REBUILD → COMPARISON
 /fire-phoenix --source ./app --dry-run
 ```
 
+### Got a Messy Project Sitting in a Folder?
+
+We all have them — that side project you built in a weekend, the freelance app that grew out of control, the "it works so don't touch it" codebase. Instead of rewriting from scratch manually or abandoning it, point Phoenix at it:
+
+```bash
+/fire-phoenix --source ./that-old-project
+```
+
+Phoenix will tell you exactly what's wrong, what's worth keeping, and what should be rebuilt. Your original code is never touched — the clean version goes to a new folder. **This is the fastest way to turn technical debt into production-quality code.**
+
 ---
 
 ## What Does It Do?
@@ -544,14 +554,21 @@ This is where students and followers ask questions, share projects, and stay up 
 
 ---
 
-## Support This Project
+## Star This Repo and Share It
 
-If you're following along and finding Dominion Flow useful, the best way to help is simple:
+If Dominion Flow has helped you build faster, catch bugs earlier, or clean up a messy project — **please star this repo.** It takes one click and makes a real difference:
 
-- **Star this repo** — it helps others discover it
-- **Share it** — pass it along to anyone learning Claude Code or building AI-assisted projects
+**[github.com/ThierryN/fire-flow](https://github.com/ThierryN/fire-flow)** — Click the star button at the top right.
 
-This is a living project. Your support keeps it growing.
+Stars help other developers discover this project. The more people using Dominion Flow, the better the skills library gets, the more patterns get shared, and the stronger the community becomes.
+
+**Know someone who could use this?**
+
+- A friend struggling with a messy codebase? Send them the Phoenix Rebuild section
+- A colleague learning Claude Code? This gives them structure from day one
+- A developer drowning in technical debt? `/fire-phoenix` was built for exactly that
+
+Share the link: `https://github.com/ThierryN/fire-flow`
 
 ---
 
