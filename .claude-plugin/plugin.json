@@ -1,5 +1,5 @@
 {
-  "name": "fire-flow",
+  "name": "dominion-flow",
   "version": "12.2.0",
   "description": "Fire Flow is a comprehensive orchestration platform that empowers your Claude agent. It gives Claude a complete, structured workflow for taking projects from idea to production — with parallel execution, 478+ reusable skills, session memory across handoffs, 70-point quality verification, autonomous mode, Phoenix Rebuild (messy-to-clean), E2E testing, and a circuit breaker to prevent stuck loops. Includes 46 slash commands organized into 8 tiers covering planning, execution, verification, debugging, skills management, milestone tracking, and learning mode.",
   "author": {
