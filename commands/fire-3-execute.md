@@ -555,10 +555,12 @@ MEDIUM (50-80%): Proceed with extra validation
   → Run Self-Judge before AND after
   → Log uncertainty reason in RECORD.md
 
-LOW (<50%): Pause and escalate
+LOW (<50%): Research first, then proceed
   → Search Context7 for current library docs
+  → Search skills library: /fire-search "{gap}"
   → Check if this is outside trained domain
-  → Ask user for guidance before proceeding
+  → IF < 30%: Spawn fire-researcher with the specific gap — get alternatives
+  → Only escalate to user if research returns no actionable path
   → Create checkpoint before attempting
 
 **Log confidence in RECORD.md:**
@@ -736,6 +738,57 @@ key_decisions:
 - Create `.continue-here.md` with context
 - Pause execution
 - Display error and recovery instructions
+
+### Step 7.1: Error Classification Health Check (v10.1)
+
+> **Research basis (v10.1):** Microsoft "AutoGen StateFlow" (ICML 2024) — formal error
+> classification at execution boundaries reduces repeat failures by 28%. This integrates
+> the existing `references/error-classification.md` into breath-level execution flow.
+> Previously, error classification existed as a reference but was not wired into
+> the execution pipeline.
+
+**After each breath completes (success OR failure), classify execution health:**
+
+```
+INPUTS for classification:
+  - files_changed:   count of files in breath RECORD.md key_files
+  - error_hash:      normalized hash of any error message from breath
+  - previous_errors: error hashes from previous breaths in this phase
+  - output_volume:   total lines of code produced vs. baseline
+  - error_type:      classification of error (if any)
+
+CLASSIFY using references/error-classification.md algorithm:
+
+  1. BLOCKED?  → External dependency, permission, or service error
+     Action: Stop execution. Create BLOCKERS.md entry. Save state.
+     Display: EXECUTION BLOCKED banner (see error-classification.md)
+
+  2. SPINNING? → Same error hash seen in 3+ breaths
+     Action: Force approach rotation. Inject anti-patterns list.
+     Display: "Same error for {N} breaths. You MUST try a different approach."
+
+  3. DEGRADED? → Output volume declined 50%+ from first breath
+     Action: Trigger /fire-cost context check. If ORANGE+, compact.
+     Display: "Output quality declining. Consider /fire-5-handoff."
+
+  4. STALLED?  → No file changes AND no new errors
+     Action: Inject urgency. Search skills for alternative approach.
+     Display: "No progress detected. Pick ONE concrete change."
+
+  5. PROGRESS  → Files changed, errors are new/different
+     Action: Continue to next breath normally.
+
+RECORD health state in CONSCIENCE.md:
+  | Breath | Health | Trigger | Action |
+  | {W} | {state} | {trigger} | {action_taken} |
+```
+
+**Circuit breaker integration:**
+- If health is SPINNING for 2 consecutive breaths → trigger circuit breaker
+- If health is DEGRADED → check `/fire-cost` context tier. If RED+, force handoff.
+- If health is BLOCKED → do NOT retry. Save state and surface blocker to user.
+
+**Skip condition:** If breath completed successfully with no errors, mark PROGRESS and continue.
 
 ### Step 7.4: Post-Feature Config Sync (v10.0)
 

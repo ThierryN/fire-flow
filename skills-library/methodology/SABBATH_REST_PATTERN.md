@@ -107,7 +107,7 @@ Long-term memory for project history. Contains:
 - **Key Decisions:**
   - RS256 signing (security requirement)
   - Refresh token rotation enabled
-- **Session Files:** .claude/dominion-flow.local.md
+- **Session Files:** .claude/fire-flow.local.md
 - **Last Agent:** Claude Opus 4.5, 2025-01-23
 ```
 

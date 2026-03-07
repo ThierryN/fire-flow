@@ -617,7 +617,7 @@ IF git_diff_stat(HEAD) shows changes:
   git commit -m "loop-checkpoint: iteration {i} — {task summary (50 chars max)}"
   checkpoint = git rev-parse HEAD
 
-  # Record in dominion-flow.local.md
+  # Record in fire-flow.local.md
   Append:
     checkpoint_hash: {checkpoint:7}
     iteration: {i}
@@ -647,7 +647,7 @@ context_efficiency = 5 - min(4, floor(tokens_used / 20000))  # 5=<20k, 1=>80k to
 # Weighted turn reward
 turn_reward = (0.5 * task_completion) + (0.3 * approach_quality) + (0.2 * context_efficiency)
 
-# Store in dominion-flow.local.md
+# Store in fire-flow.local.md
 Append to iteration_rewards:
   - iteration: {i}
     reward: {turn_reward, 1 decimal}

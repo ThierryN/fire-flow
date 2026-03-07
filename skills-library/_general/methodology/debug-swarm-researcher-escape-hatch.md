@@ -235,6 +235,6 @@ if results.every(r => r.status === "BLOCKED"):
 
 ## References
 
-- Implemented in: `dominion-flow-v2/commands/fire-debug.md` (--swarm mode section)
+- Implemented in: `fire-flow/commands/fire-debug.md` (--swarm mode section)
 - Inspired by: RLHF researcher escalation patterns + bmalph/Ralph BLOCKED exit
 - Contributed from: dominion-flow-v2 build session 2026-03-04

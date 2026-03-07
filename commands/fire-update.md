@@ -56,7 +56,7 @@ The plugin must have a GitHub repository configured in `plugin.json`:
 
 ```json
 {
-  "repository": "https://github.com/username/dominion-flow"
+  "repository": "https://github.com/username/fire-flow"
 }
 ```
 
@@ -66,7 +66,7 @@ If repository is not configured:
 
 To enable updates, add repository URL to plugin.json:
 {
-  "repository": "https://github.com/username/dominion-flow"
+  "repository": "https://github.com/username/fire-flow"
 }
 ```
 
@@ -77,7 +77,7 @@ To enable updates, add repository URL to plugin.json:
 ### Step 1: Validate Environment
 
 ```bash
-PLUGIN_DIR="$HOME/.claude/plugins/dominion-flow"
+PLUGIN_DIR="$HOME/.claude/plugins/fire-flow"
 VERSION_FILE="$PLUGIN_DIR/version.json"
 PLUGIN_JSON="$PLUGIN_DIR/.claude-plugin/plugin.json"
 ```
@@ -300,8 +300,8 @@ git reset --hard "$TARGET_COMMIT"
 ```bash
 # Generate token at: https://github.com/settings/tokens
 # Set token in git remote
-cd ~/.claude/plugins/dominion-flow
-git remote set-url origin https://YOUR_TOKEN@github.com/username/dominion-flow.git
+cd ~/.claude/plugins/fire-flow
+git remote set-url origin https://YOUR_TOKEN@github.com/username/fire-flow.git
 ```
 
 ---

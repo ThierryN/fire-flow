@@ -49,12 +49,16 @@ allowed_references:
 ### Step 1: Read Inputs
 
 Required:
-- `.planning/research/SYNTHESIS.md` — Merged research findings
+- `.planning/VISION.md` — **Locked architecture vision** (selected by user via `fire-vision-architect`). Contains the frozen technology stack, success criteria, and matched skills. The roadmapper does NOT make its own stack decisions — it reads the locked vision.
+- `.planning/research/SYNTHESIS.md` — Merged research findings (for context, risks, and skill mappings)
 - `.planning/REQUIREMENTS.md` or `PROJECT.md` — User requirements and project scope
 
 Optional:
 - Existing `ROADMAP.md` (if milestone, not greenfield)
 - Existing `CONSCIENCE.md` (if updating, not creating)
+- `.planning/research/ALTERNATIVES.md` — Rejected architecture branches (for awareness of trade-offs)
+
+> **Important:** The technology stack in VISION.md is LOCKED. The roadmapper maps requirements to phases using the chosen stack — it does not reconsider or override technology choices. If VISION.md does not exist (legacy projects initialized before v11.2), fall back to generating stack decisions from SYNTHESIS.md as before.
 
 ### Step 2: Map Requirements to Phases
 
@@ -113,7 +117,15 @@ Rule 5: Phase size — Each phase should be 3-8 tasks (not 1, not 20)
 ...
 ```
 
-### Step 5: Write VISION.md
+### Step 5: Update VISION.md (if needed)
+
+> **Note (v11.2+):** VISION.md is normally created and locked by `fire-vision-architect` BEFORE the roadmapper runs. The roadmapper should READ the existing VISION.md, not overwrite it. Only create VISION.md if it doesn't exist (legacy projects or `--minimal` flag).
+
+**If VISION.md already exists (normal flow):**
+- Read it and use the locked technology stack for phase planning
+- Do NOT modify the Technology Stack section
+
+**If VISION.md does NOT exist (legacy fallback):**
 
 ```markdown
 # Project Vision
@@ -197,7 +209,7 @@ Files: .planning/ROADMAP.md, .planning/VISION.md, .planning/CONSCIENCE.md
 
 ## References
 
-- **Spawned by:** `/fire-1-new`, `/fire-new-milestone`
-- **Consumes output from:** `fire-research-synthesizer`
+- **Spawned by:** `/fire-1a-new`, `/fire-new-milestone`
+- **Consumes output from:** `fire-vision-architect` (locked VISION.md) and `fire-research-synthesizer` (SYNTHESIS.md)
 - **Output consumed by:** `/fire-2-plan` (reads ROADMAP.md to create phase plans)
-- **Related agent:** `fire-planner` (plans individual phases from roadmap)
+- **Related agents:** `fire-vision-architect` (upstream, locks stack), `fire-planner` (downstream, plans individual phases)

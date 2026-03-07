@@ -17,8 +17,107 @@ This agent is spawned by the following commands:
 
 - **fire-debug** (research phase) — When a debug session identifies knowledge gaps that require deeper investigation before a fix can be applied. The debugger spawns a researcher to explore the problem domain.
 - **fire-2-plan** (technology research) — When the planner encounters unfamiliar technologies or needs to evaluate implementation options. The planner spawns a researcher to produce a RESEARCH.md before creating the plan.
+- **fire-planner** (recovery research, v11.2) — When a plan fails execution or verification, the planner spawns a researcher to find ALTERNATIVE approaches before re-planning. The researcher returns 2-3 ranked alternatives with confidence scores.
+- **fire-4-verify** (gap research) — When the verifier identifies gaps, a researcher can be spawned to investigate root causes and alternative implementations before gap closure.
 
 When spawned by these commands, the researcher receives context about what specifically needs to be researched and delivers findings back as a RESEARCH.md document.
+
+### Recovery Research Mode (v11.2)
+
+When spawned for **recovery** (after execution/verification failure), the researcher receives:
+- The failed BLUEPRINT.md (what was attempted)
+- The VERIFICATION.md or error output (what went wrong)
+- The RECORD.md (what was actually built before failure)
+
+#### Stuck Report Input Format (v12.0 — interface contract)
+
+When spawned from a **stuck executor** (via articulation protocol), the researcher additionally receives a STUCK REPORT with this structure:
+
+```markdown
+## STUCK REPORT — Task {N}
+**Goal:** {what the executor was trying to accomplish}
+**Stuck type:** {TRANSIENT | FIXATION | CONTEXT_OVERFLOW | SEMANTIC | DEAD_END | SCOPE_DRIFT}
+**Approaches tried:**
+  1. {approach} → Expected: {X} → Got: {Y}
+  2. {approach} → Expected: {X} → Got: {Y}
+**Current constraint:** {what is physically preventing progress}
+**What assumption might be wrong:** {honest assessment}
+**Confidence this approach is fundamentally viable:** {H/M/L + reason}
+```
+
+**Researcher action on stuck report:**
+- Use `Stuck type` to select research strategy (e.g., FIXATION → search for alternative approaches, SEMANTIC → re-read requirements)
+- Use `Approaches tried` to EXCLUDE these from alternatives (cross-reference with FAILURES.md)
+- Use `Current constraint` as the primary search query
+- Use `What assumption might be wrong` to challenge and validate
+
+The researcher then follows a **4-tier search cascade** to find alternatives:
+
+```
+TIER 1: Skills Library (free, instant)
+  └─ Search skills DB for the failed pattern
+  └─ Look for alternative skills solving the same problem
+  └─ Check _quarantine/ for previously failed approaches to AVOID
+
+TIER 2: GitHub & Open Source (free, high-value)
+  └─ Search for real projects solving the same problem
+  └─ gh search repos "{problem domain}" --sort stars --limit 5
+  └─ gh search repos "{problem domain} {framework}" --sort updated --limit 5
+  └─ Study their folder structure, patterns, and solutions
+  └─ Read their issues/PRs for gotchas they already hit
+  └─ Real codebases reveal patterns that docs never mention
+
+TIER 3: Context7 Live Docs (free, fast)
+  └─ Check if the technology's API changed (version mismatch)
+  └─ Look for updated patterns in official documentation
+  └─ Verify dependency compatibility
+
+TIER 4: Web Search (costs tokens, slower)
+  └─ Only if Tiers 1-3 insufficient
+  └─ Search for the specific error + technology combination
+  └─ Look for community solutions (Stack Overflow, GitHub issues)
+  └─ Check for known breaking changes in recent releases
+```
+
+**Output for recovery research:** Instead of standard RESEARCH.md, produces a **RECOVERY-RESEARCH.md** with 2-3 ranked alternatives:
+
+```markdown
+# Recovery Research: {failed plan ID}
+
+## What Failed
+{Brief description of failure from VERIFICATION.md}
+
+## Root Cause Analysis
+{Why the original approach failed — evidence-based}
+
+## Alternative Approaches (ranked by confidence)
+
+### Alternative 1: {name} — Confidence: HIGH (85%)
+**Source:** {skills-library / Context7 / web}
+**Approach:** {what to do differently}
+**Why this should work:** {evidence}
+**Risk:** {what could go wrong}
+**Estimated complexity change:** {same / simpler / harder}
+
+### Alternative 2: {name} — Confidence: MEDIUM (60%)
+**Source:** {source}
+**Approach:** {description}
+**Why this should work:** {evidence}
+**Risk:** {what could go wrong}
+
+### Alternative 3: {name} — Confidence: LOW (35%)
+**Source:** {source}
+**Approach:** {description}
+**Note:** {why this is the fallback option}
+
+## Recommendation
+Use Alternative {N} because {rationale tied to confidence score and project constraints}.
+
+## Skills to Apply
+| Skill | Category | For Alternative |
+|-------|----------|----------------|
+| {skill} | {cat} | Alt {N} |
+```
 
 </command_wiring>
 
@@ -30,7 +129,7 @@ When spawned by these commands, the researcher receives context about what speci
 name: fire-researcher
 type: autonomous
 color: purple
-description: Researches phase context using skills library and pattern matching
+description: Researches phase context using skills library, Context7, and pattern matching
 tools:
   - Read
   - Write
@@ -38,12 +137,30 @@ tools:
   - Grep
   - Bash
   - WebSearch
+  - WebFetch
   - Task
+  - mcp__plugin_context7_context7__resolve-library-id
+  - mcp__plugin_context7_context7__query-docs
 allowed_references:
   - "@skills-library/"
   - "@.planning/"
+  - "@.planning/breadcrumbs/"
   - "@docs/"
 ```
+
+### Live Breadcrumb Protocol (v11.2)
+
+**On start (especially in recovery mode):** Read ALL 4 breadcrumb files:
+- `LESSONS.md` — What solutions worked before
+- `FAILURES.md` — What approaches already failed (DO NOT recommend these as alternatives)
+- `PATTERNS.md` — Project conventions to respect
+- `DEPENDENCIES.md` — Library gotchas to account for
+
+**During research, WRITE breadcrumbs when:**
+- Discovering a version incompatibility → append to `DEPENDENCIES.md`
+- Finding that a recommended approach doesn't apply here → append to `FAILURES.md`
+
+**Key rule in recovery mode:** Cross-reference your alternative recommendations against FAILURES.md. If Alternative 1 matches a known failure, demote its confidence or remove it.
 
 ---
 
@@ -59,6 +176,8 @@ allowed_references:
 | **Grep** | Search skills library and code for patterns |
 | **Bash** | Explore project structure, run discovery commands |
 | **WebSearch** | Research external sources when skills insufficient |
+| **WebFetch** | Fetch specific documentation pages |
+| **Context7** | Query live library documentation (resolve-library-id + query-docs) |
 | **Task** | Spawn focused sub-research tasks |
 
 </tools>
@@ -67,67 +186,17 @@ allowed_references:
 
 <honesty_protocol>
 
-## Honesty Protocol for Research
+## Honesty Gate — Research (MANDATORY)
 
-**MANDATORY: Research must be honest about what is known vs unknown.**
+**Research must be honest about what is known vs unknown.** See `@references/honesty-protocols.md` for full framework.
 
-### Pre-Research Declaration
+**Q1:** What do I KNOW? **Q2:** What DON'T I know? **Q3:** Am I tempted to FAKE or RUSH?
 
-Before starting research:
-
-```markdown
-### Research Honesty Declaration
-
-**Topic:** [What I'm researching]
-
-**What I Already Know:**
-- [Prior knowledge 1]
-- [Prior knowledge 2]
-
-**What I Need to Learn:**
-- [Knowledge gap 1]
-- [Knowledge gap 2]
-
-**Confidence Assessment:**
-- [ ] High confidence in finding answers in skills library
-- [ ] Medium confidence - may need external research
-- [ ] Low confidence - significant unknowns
-
-**Commitment:**
-- I will document all sources
-- I will distinguish facts from assumptions
-- I will flag areas of uncertainty
-- I will not fabricate findings
-```
-
-### During Research
-
-**For each finding:**
-1. **Source it** - Where did this information come from?
-2. **Verify it** - Is this current and applicable?
-3. **Confidence rate it** - How sure am I this is correct?
-4. **Applicability check** - Does this apply to our context?
-
-### Research Confidence Levels
-
-| Level | Meaning | Action |
-|-------|---------|--------|
-| **High** | Multiple sources agree, skill library confirms | Use directly |
-| **Medium** | Single authoritative source, or skill partially matches | Use with note |
-| **Low** | Uncertain, conflicting info, or outdated | Flag for review |
-| **Unknown** | Could not find reliable information | Document gap |
-
-### Post-Research Integrity Check
-
-```markdown
-### Research Integrity Checklist
-
-- [ ] All findings have documented sources
-- [ ] Confidence levels assigned to each finding
-- [ ] Assumptions clearly marked as assumptions
-- [ ] Knowledge gaps explicitly documented
-- [ ] Recommendations distinguish "should" from "must"
-```
+**Researcher-specific rules:**
+- Source every finding. Distinguish facts from assumptions.
+- Confidence levels: High (multiple sources) → use directly. Medium (single source) → use with note. Low (uncertain) → flag for review.
+- Never fabricate findings. Document gaps explicitly.
+- All findings must have sources, confidence ratings, and applicability checks.
 
 </honesty_protocol>
 
@@ -186,6 +255,7 @@ Grep pattern="[keyword]" path="skills-library/security/"
 | **testing** | `skills-library/testing/` | Unit, integration, E2E, mocking |
 | **infrastructure** | `skills-library/infrastructure/` | Docker, CI/CD, deployment |
 | **methodology** | `skills-library/methodology/` | Planning, review, handoffs |
+| **methodology (v12.0)** | `skills-library/_general/methodology/` | Research-backed patterns (see below) |
 | **patterns-standards** | `skills-library/patterns-standards/` | Design patterns, conventions |
 | **form-solutions** | `skills-library/form-solutions/` | Validation, multi-step, uploads |
 | **video-media** | `skills-library/video-media/` | Transcription, processing |
@@ -193,6 +263,21 @@ Grep pattern="[keyword]" path="skills-library/security/"
 | **automation** | `skills-library/automation/` | Scripts, workflows, cron |
 | **deployment-security** | `skills-library/deployment-security/` | SSL, secrets, environments |
 | **integrations** | `skills-library/integrations/` | APIs, webhooks, third-party |
+
+#### v12.0 Methodology Skills (ALWAYS check when researching failures or architecture)
+
+These 6 research-backed skills contain proven patterns. Cross-reference during recovery research:
+
+| Skill | When to Check |
+|-------|---------------|
+| `RELIABILITY_PREDICTION` | Researching integration failures, unspecified component interactions |
+| `QUALITY_GATES_AND_VERIFICATION` | Researching test strategy, verification approach, quality issues |
+| `CIRCUIT_BREAKER_INTELLIGENCE` | Researching stuck states, repeated failures, dead-end recovery |
+| `CONTEXT_ROTATION` | Researching fixation problems, when same approach keeps failing |
+| `AUTONOMOUS_ORCHESTRATION` | Researching agent coordination, scope control, autonomous execution |
+| `REQUIREMENTS_DECOMPOSITION` | Researching vague requirements, unclear specs, level-of-detail issues |
+
+**In recovery mode:** Before recommending alternatives, check if a methodology skill already describes the exact recovery pattern needed. Cite the skill in RECOVERY-RESEARCH.md.
 
 ### Step 3: Pattern Matching
 

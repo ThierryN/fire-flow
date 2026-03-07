@@ -30,7 +30,7 @@ Synchronize skills between the project skills library and the global skills libr
 
 | Library | Path | Purpose |
 |---------|------|---------|
-| **Project** | `~/.claude/plugins/dominion-flow/skills-library/` | Plugin-bundled skills |
+| **Project** | `~/.claude/plugins/fire-flow/skills-library/` | Plugin-bundled skills |
 | **Global** | `~/.claude/fire-skills-global/` | User's personal skills across all projects |
 
 ## Arguments
@@ -136,7 +136,7 @@ For each skill in global library:
                     SKILLS SYNC REPORT
 =============================================================
 
-Project Library: ~/.claude/plugins/dominion-flow/skills-library/
+Project Library: ~/.claude/plugins/fire-flow/skills-library/
 Global Library:  ~/.claude/fire-skills-global/
 
 -------------------------------------------------------------
@@ -307,7 +307,7 @@ Based on direction:
 **Push (project -> global):**
 ```bash
 # For each new/updated skill
-cp ~/.claude/plugins/dominion-flow/skills-library/{category}/{skill}.md \
+cp ~/.claude/plugins/fire-flow/skills-library/{category}/{skill}.md \
    ~/.claude/fire-skills-global/{category}/{skill}.md
 
 # Update global index
@@ -323,13 +323,13 @@ git commit -m "sync: Push {N} skills from {project-name}"
 ```bash
 # For each new/updated skill
 cp ~/.claude/fire-skills-global/{category}/{skill}.md \
-   ~/.claude/plugins/dominion-flow/skills-library/{category}/{skill}.md
+   ~/.claude/plugins/fire-flow/skills-library/{category}/{skill}.md
 
 # Update project index
 # Merge entries into SKILLS-INDEX.md
 
 # Git commit if skills-library is versioned
-cd ~/.claude/plugins/dominion-flow/skills-library
+cd ~/.claude/plugins/fire-flow/skills-library
 git add .
 git commit -m "sync: Pull {N} skills from global library"
 ```

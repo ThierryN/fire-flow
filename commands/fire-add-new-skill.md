@@ -407,7 +407,7 @@ Unlike the security scan (Step 4.5) which allows "save anyway" for suspicious co
 ### Save and Update Index
 
 1. Save skill file:
-   - Path: `~/.claude/plugins/dominion-flow/skills-library/{category}/{skill-name}.md`
+   - Path: `~/.claude/plugins/fire-flow/skills-library/{category}/{skill-name}.md`
 
 2. Update SKILLS-INDEX.md:
    - Add entry to category section
@@ -416,7 +416,7 @@ Unlike the security scan (Step 4.5) which allows "save anyway" for suspicious co
 
 3. Git commit (if skills library is versioned):
    ```bash
-   cd ~/.claude/plugins/dominion-flow/skills-library
+   cd ~/.claude/plugins/fire-flow/skills-library
    git add {category}/{skill-name}.md SKILLS-INDEX.md
    git commit -m "feat(skills): add {category}/{skill-name}"
    ```

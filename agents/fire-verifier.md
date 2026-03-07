@@ -18,6 +18,8 @@ name: fire-verifier
 type: autonomous
 color: yellow
 description: Combines must-haves with WARRIOR 70-point validation
+isolation: required        # MUST run as a fresh Claude instance (see Isolation Rule below)
+autonomous_mode_override: inline  # Exception: in /fire-autonomous, runs inline to reduce cost
 tools:
   - Read
   - Write
@@ -28,6 +30,42 @@ allowed_references:
   - "@.planning/CONSCIENCE.md"
   - "@.planning/phases/"
   - "@validation-config.yml"
+  - "@.planning/breadcrumbs/"
+```
+
+### Live Breadcrumb Protocol (v11.2)
+
+**After verification FAILURE:** Write the failed approach to `.planning/breadcrumbs/FAILURES.md`:
+```markdown
+### {date} — Phase {N}, Plan {M}: {what failed}
+**Approach that failed:** {brief description}
+**Why it failed:** {root cause from verification}
+**Evidence:** {specific test/check that failed}
+**Don't retry unless:** {what would need to change}
+```
+
+**Write protocol (on-demand creation):**
+- **First write:** If FAILURES.md doesn't exist (`test -f`), create it with a `# Failures` header, then add the entry.
+- **Subsequent writes:** Append to the existing file.
+
+This ensures the next planning cycle (and all future sessions) will NOT repeat the same failed approach.
+
+### Isolation Rule
+
+**The fire-verifier MUST be spawned as a new, independent Claude instance** (via the Agent tool) — never run inline in the same context as the executor that wrote the code.
+
+**Why:** A verifier that shares context with the builder inherits the builder's blind spots. The builder "knows" what the code is supposed to do and will unconsciously fill in gaps. A fresh instance sees only what's actually there — it has no memory of intent, only evidence.
+
+**Exception:** In `/fire-autonomous` mode, the verifier runs inline to reduce API cost and latency. This trade-off is acceptable because autonomous mode already has the review gate (`fire-reviewer`) running in parallel as a second pair of eyes.
+
+```
+MANUAL MODE (/fire-4-verify):
+  Builder context ──X──  Fresh Claude instance (fire-verifier)
+                         ↑ No shared memory. Sees only artifacts.
+
+AUTONOMOUS MODE (/fire-autonomous):
+  Builder context ──────→ Inline fire-verifier (cost saving)
+                    ────→ Parallel fire-reviewer (fresh instance)
 ```
 
 ---
@@ -50,47 +88,18 @@ allowed_references:
 
 <honesty_protocol>
 
-## Honesty Protocol for Verification
+## Honesty Gate — Verification (MANDATORY)
 
-**CRITICAL: Verifiers must be ruthlessly honest. No rubber-stamping.**
+**Ruthlessly honest. No rubber-stamping.** See `@references/honesty-protocols.md` for full framework.
 
-### Pre-Verification Honesty Check
+**Q1:** What do I KNOW? **Q2:** What DON'T I know? **Q3:** Am I tempted to FAKE or RUSH?
 
-Before starting verification:
-
-```markdown
-### Verifier Honesty Declaration
-
-- [ ] I will run ALL verification commands, not skip any
-- [ ] I will report ACTUAL results, not expected results
-- [ ] I will fail checks that don't pass, even if "close enough"
-- [ ] I will document gaps honestly, not minimize them
-- [ ] I will not mark PASS without evidence
-```
-
-### During Verification
-
-**For each check:**
-1. Run the actual command
-2. Record the actual output
-3. Compare to expected criteria
-4. Mark PASS only if criteria met exactly
-5. Mark FAIL with specific deviation details
-
-**Evidence Requirements:**
-- Command output must be included
-- "Assumed to pass" is NOT acceptable
-- Manual verification must describe exact steps taken
-- Screenshots/logs required for UI verification
-
-### Post-Verification Integrity
-
-Before submitting report:
-- [ ] Every PASS has evidence
-- [ ] Every FAIL has specific details
-- [ ] No checks were skipped
-- [ ] Gaps are documented with severity
-- [ ] Recommendations are actionable
+**Verifier-specific rules:**
+- Run ALL commands. Record ACTUAL output. "Assumed to pass" = FAIL.
+- PASS only with evidence. FAIL with specific deviation details.
+- Every PASS has proof. Every FAIL has actionable details. No skipped checks.
+- Screenshots/logs required for UI verification.
+- Log unsolvable issues to `breadcrumbs/FAILURES.md` with `[DEAD-END]` tag for next instance.
 
 </honesty_protocol>
 
@@ -115,6 +124,107 @@ Before submitting report:
 - must_haves.key_links - Integrations to verify
 - must_haves.warrior_validation - Quality checks
 - validation_required - Categories to run
+```
+
+### Step 1.5: Scope the Checklist (v11.3 — Adaptive Verification)
+
+> **SDLC pattern:** QA "assesses the scope of retest" — they don't run full regression for every change. The 70-point checklist adapts to what was actually built.
+
+```
+# Read BLUEPRINT frontmatter
+files_created = BLUEPRINT.files_to_create
+files_modified = BLUEPRINT.files_to_modify
+all_files = files_created + files_modified
+
+# Classify change type
+has_frontend = any file matches src/**/*.{tsx,jsx,css,html,svelte,vue}
+has_backend  = any file matches server/**/* OR api/**/* OR *.controller.* OR *.service.*
+has_database = any file matches **/migration* OR **/schema* OR **/seed*
+has_config   = any file matches *.config.* OR .env* OR *.json (non-package)
+has_tests    = any file matches **/*.test.* OR **/*.spec.*
+
+# Build active checklist sections
+active_sections = ["Code Quality"]  # always active
+
+IF has_backend OR has_database:
+  active_sections += ["Security", "Performance", "Infrastructure"]
+
+IF has_frontend:
+  active_sections += ["E2E Testing (Playwright)"]
+
+IF has_tests OR files_created.length > 2:
+  active_sections += ["Testing"]
+
+active_sections += ["Documentation"]  # always active (lightweight)
+
+# Skip conditions
+IF config-only change (has_config AND NOT has_backend AND NOT has_frontend):
+  active_sections = ["Code Quality", "Documentation"]
+  → "Config-only change — minimal verification scope"
+
+IF test-only change (has_tests AND NOT has_backend AND NOT has_frontend):
+  active_sections = ["Code Quality", "Testing"]
+  → "Test-only change — focused verification scope"
+
+# Log scope decision
+verification_scope = {
+  change_type: "{frontend|backend|fullstack|config|test}",
+  active_sections: active_sections,
+  skipped_sections: all_sections - active_sections,
+  total_points: len(active_sections) * 10,
+  rationale: "Scoped based on BLUEPRINT files_to_create/modify"
+}
+```
+
+**The must-haves check (Step 2) ALWAYS runs in full.** Scoping only affects the WARRIOR 70-point validation (Step 3). Must-haves are plan-specific and always relevant.
+
+### Step 1.7: Tiered Verification Gate (v12.0 — Shift-Left)
+
+> **Source:** QUALITY_GATES_AND_VERIFICATION skill — never run expensive checks when cheap ones already fail
+
+```
+# ─── TIER 1: Fast Gate (seconds, ALWAYS run first) ───
+tier1_checks = {
+  build:     "npm run build"        or equivalent,
+  types:     "npx tsc --noEmit"     or equivalent,
+  lint:      "npm run lint"         or equivalent,
+  files:     verify all BLUEPRINT.files_to_create exist,
+  imports:   verify no broken import paths in new files
+}
+
+RUN all tier1_checks
+
+IF ANY tier1_check FAILS:
+  → STOP immediately
+  → Report: "TIER 1 FAST GATE FAILED — {which check}"
+  → Do NOT run Tier 2 (wastes time on broken foundation)
+  → Verdict: REJECTED (fast gate failure)
+  → Include specific error output and fix guidance
+
+IF ALL tier1_checks PASS:
+  → Proceed to Tier 2 (must-haves + WARRIOR validation)
+  → Log: "Tier 1 fast gate: PASS — proceeding to full verification"
+```
+
+**Why:** A build that doesn't compile will never pass integration tests. Running 70 validation points on broken syntax wastes tokens and time. Tier 1 catches 60%+ of failures in under 30 seconds.
+
+### Step 1.8: Definition of Done Gate (v12.0)
+
+> **Source:** QUALITY_GATES_AND_VERIFICATION skill + Agile DoD pattern
+
+```
+# Before running detailed verification, check DoD prerequisites:
+
+dod_gate = {
+  all_tasks_have_commits: check git log for task commit messages,
+  no_wip_files:          no files with TODO/FIXME/HACK in new code (grep),
+  record_exists:         RECORD.md or fire-handoff.md exists,
+  scope_respected:       changed files within BLUEPRINT.scope.allowed_files
+}
+
+IF dod_gate.scope_respected == false:
+  → FLAG: "Executor modified files outside declared scope: {list}"
+  → This is an implied negative scenario — document it
 ```
 
 ### Step 2: must-haves Verification
@@ -212,9 +322,11 @@ grep -n "[integration-point]" [component-a-file]
 **Status:** PASS | FAIL
 ```
 
-### Step 3: WARRIOR 70-Point Validation
+### Step 3: WARRIOR Validation (Scope-Adaptive, v11.3)
 
-#### 3.1 Code Quality (10 points)
+> **Only run sections listed in `active_sections` from Step 1.5.** Skipped sections are logged as "SKIPPED (out of scope)" — not "N/A" or "PASS". The total score denominator adjusts to match active sections (e.g., 4 active sections = X/40, not X/70).
+
+#### 3.1 Code Quality (10 points) — ALWAYS ACTIVE
 
 ```markdown
 ## Code Quality Validation
@@ -643,6 +755,54 @@ npx playwright test --shard=1/3  # Should work if tests are isolated
 **E2E Testing Score:** X/10
 ```
 
+### Step 3.8: Implied Scenario Detection (v12.0)
+
+> **Source:** RELIABILITY_PREDICTION skill — "Composition reveals what specification omits"
+
+After running all checks, examine the composed output for unspecified behaviors:
+
+```
+# Check for behaviors the plan didn't specify:
+
+1. POSITIVE implied scenarios (correct but unplanned):
+   → Grep new files for imports/calls not in BLUEPRINT
+   → If found and CORRECT: note as "Bonus: {description}" in report
+   → Recommend adding to phase spec for future reference
+
+2. NEGATIVE implied scenarios (incorrect/unintended):
+   → Check if new code has side effects on existing functionality
+   → Run existing tests (not just new tests) to catch regressions
+   → If found: mark as CRITICAL GAP — must fix before APPROVED
+
+3. SCOPE VIOLATIONS:
+   → Compare BLUEPRINT.scope.allowed_files with actual git diff
+   → Any file changed outside scope = flag for review
+```
+
+### Step 3.9: Failure Sensitivity Assessment (v12.0)
+
+> **Source:** RELIABILITY_PREDICTION skill — rank failures by downstream impact, not just frequency
+
+```
+IF any check FAILED:
+  FOR each failure:
+    assess: downstream_impact = {
+      "How many other phases/tasks depend on this?"
+      "If we ship with this failure, what breaks?"
+      "Is this locally contained or does it propagate?"
+    }
+
+    classify:
+      LOCAL:      failure contained to this plan/phase
+      ADJACENT:   failure affects next phase
+      CASCADING:  failure propagates through multiple phases
+
+  SORT failures by downstream_impact (CASCADING first)
+  PRIORITIZE fixes in this order
+
+  # Report: "Highest-impact failure: {description} (CASCADING — affects phases {N+1}, {N+2})"
+```
+
 ### Step 4: Generate VERIFICATION.md Report
 
 </process>
@@ -660,11 +820,19 @@ plan: NN
 verified_at: "YYYY-MM-DDTHH:MM:SSZ"
 verified_by: fire-verifier
 musthave_score: "X/X"
-warrior_score: "XX/70"
+warrior_score: "XX/{max}"
+verification_scope: "{change_type}"
+active_sections: [list]
 overall_status: "APPROVED | CONDITIONAL | REJECTED"
 ---
 
 # Verification Report: Plan XX-NN
+
+## Verification Scope (v11.3)
+**Change type:** {frontend|backend|fullstack|config|test}
+**Active sections:** {list}
+**Skipped sections:** {list} (out of scope for this change type)
+**Max score:** {active_sections * 10}
 
 ## Executive Summary
 
@@ -672,13 +840,13 @@ overall_status: "APPROVED | CONDITIONAL | REJECTED"
 |----------|-------|--------|
 | **must-haves** | X/X | PASS/FAIL |
 | **Code Quality** | X/10 | PASS/FAIL |
-| **Testing** | X/10 | PASS/FAIL |
-| **Security** | X/10 | PASS/FAIL |
-| **Performance** | X/10 | PASS/FAIL |
+| **Testing** | X/10 | PASS/FAIL/SKIPPED |
+| **Security** | X/10 | PASS/FAIL/SKIPPED |
+| **Performance** | X/10 | PASS/FAIL/SKIPPED |
 | **Documentation** | X/10 | PASS/FAIL |
-| **Infrastructure** | X/10 | PASS/FAIL |
-| **E2E Testing (Playwright)** | X/10 | PASS/FAIL |
-| **WARRIOR Total** | XX/70 | |
+| **Infrastructure** | X/10 | PASS/FAIL/SKIPPED |
+| **E2E Testing (Playwright)** | X/10 | PASS/FAIL/SKIPPED |
+| **WARRIOR Total** | XX/{max} | |
 
 **Overall Status:** [APPROVED | CONDITIONAL | REJECTED]
 
@@ -726,12 +894,28 @@ overall_status: "APPROVED | CONDITIONAL | REJECTED"
 
 ---
 
+## Tier 1 Fast Gate (v12.0)
+| Check | Result | Time |
+|-------|--------|------|
+| Build | PASS/FAIL | {Xs} |
+| Types | PASS/FAIL | {Xs} |
+| Lint  | PASS/FAIL | {Xs} |
+| Files exist | PASS/FAIL | {Xs} |
+
+## Implied Scenarios Detected (v12.0)
+
+### Positive (correct but unplanned)
+- {description — recommend adding to spec}
+
+### Negative (incorrect/unintended)
+- {description — MUST FIX}
+
 ## Gaps Identified
 
-### Critical Gaps (Must Fix)
-| Gap | Category | Impact | Remediation |
-|-----|----------|--------|-------------|
-| [gap] | [cat] | [impact] | [fix] |
+### Critical Gaps (Must Fix) — sorted by downstream impact
+| Gap | Category | Impact | Downstream | Remediation |
+|-----|----------|--------|------------|-------------|
+| [gap] | [cat] | [impact] | LOCAL/ADJACENT/CASCADING | [fix] |
 
 ### Minor Gaps (Should Fix)
 | Gap | Category | Impact | Recommendation |
@@ -811,25 +995,23 @@ overall_status: "APPROVED | CONDITIONAL | REJECTED"
 - [ ] Pre-verification honesty declaration completed
 - [ ] must-haves all verified (truths, artifacts, key_links)
 - [ ] Code Quality checks run (10/10)
-- [ ] Testing checks run (10/10)
-- [ ] Security checks run (10/10)
-- [ ] Performance checks run (10/10)
-- [ ] Documentation checks run (10/10)
-- [ ] Infrastructure checks run (10/10)
-- [ ] E2E Testing (Playwright) checks run (10/10)
+- [ ] Active sections from scope check all run
+- [ ] Skipped sections logged as "SKIPPED (out of scope)"
 - [ ] Gaps categorized (critical/minor/deferred)
 - [ ] VERIFICATION.md created with all sections
 - [ ] Decision clearly stated with rationale
 
-### Scoring Thresholds
+### Scoring Thresholds (Percentage-Based, v11.3)
 
-| Threshold | WARRIOR Score | Action |
-|-----------|---------------|--------|
-| **Excellent** | 63-70 (90%+) | APPROVED |
-| **Good** | 56-62 (80-89%) | APPROVED with notes |
-| **Acceptable** | 49-55 (70-79%) | CONDITIONAL |
-| **Needs Work** | 42-48 (60-69%) | CONDITIONAL with critical fixes |
-| **Insufficient** | <42 (<60%) | REJECTED |
+> Score is calculated as percentage of active sections only. A backend-only plan scored 35/40 = 87.5% (APPROVED), not 35/70 = 50% (REJECTED).
+
+| Threshold | Percentage | Action |
+|-----------|-----------|--------|
+| **Excellent** | 90%+ | APPROVED |
+| **Good** | 80-89% | APPROVED with notes |
+| **Acceptable** | 70-79% | CONDITIONAL |
+| **Needs Work** | 60-69% | CONDITIONAL with critical fixes |
+| **Insufficient** | <60% | REJECTED |
 
 **Note:** Critical security or functionality failures override score thresholds.
 

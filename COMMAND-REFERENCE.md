@@ -1,12 +1,12 @@
 # Dominion Flow Command Reference
 
-Complete reference for all 39 Dominion Flow commands.
+Complete reference for all 42 Dominion Flow commands.
 
 ---
 
 ## Command Tiers
 
-Commands are organized into 7 tiers by function. Every command is a `/fire-*` slash command.
+Commands are organized into 8 tiers by function. Every command is a `/fire-*` slash command.
 
 ---
 
@@ -16,7 +16,7 @@ The numbered pipeline that takes a project from idea to done.
 
 | Command | Description |
 |---------|-------------|
-| `/fire-1-new` | Initialize a new project with Dominion Flow structure |
+| `/fire-1a-new` | Initialize a new project with Dominion Flow structure |
 | `/fire-1a-discuss` | Gather implementation context through adaptive questioning before planning |
 | `/fire-2-plan` | Plan a phase with skills library access and WARRIOR validation |
 | `/fire-3-execute` | Execute a phase with breath-based parallelism and honesty protocols |
@@ -65,6 +65,7 @@ Quality assurance, testing, and security scanning.
 | `/fire-test` | Run Dominion Flow plugin integration tests to verify all commands and integrations work correctly |
 | `/fire-security-scan` | Inspect skills, plugins, MCP tools, and code for prompt injection, PII harvesting, credential theft, and supply chain attacks |
 | `/fire-vuln-scan` | AI-powered application vulnerability scanner using OWASP Top 10 -- find what regex-based tools miss |
+| `/fire-security-audit-repo` | Security audit a GitHub repo before installing as a skill or plugin |
 | `/fire-double-check` | Deep validation before claiming work is complete |
 
 ---
@@ -95,6 +96,7 @@ Dashboards, tracking, reflection, and phase transitions.
 | `/fire-todos` | Capture, list, and manage todos during work sessions |
 | `/fire-reflect` | Capture, search, and review failure reflections for cross-session learning |
 | `/fire-assumptions` | List and validate assumptions for a phase before planning or execution |
+| `/fire-session-summary` | Auto-generate compact session summary with aggregate status, readiness, outlook, and next steps |
 | `/fire-transition` | Complete phase transition with metrics collection, bottleneck detection, auto-skill extraction, and trend analysis |
 
 ---
@@ -112,17 +114,35 @@ Milestone lifecycle management and advanced operations.
 
 ---
 
+### Tier 8 -- Learning Mode
+
+Code walkthrough and learning tools.
+
+| Command | Description |
+|---------|-------------|
+| `/fire-learncoding` | Linear code walkthrough learning mode -- transforms any repo into a step-by-step learning experience based on Simon Willison's Agentic Engineering Patterns |
+
+---
+
 ## Agent Reference
 
 Agents are specialized sub-agents spawned by commands to perform focused work.
 
-| Agent | Description | Spawned By |
-|-------|-------------|------------|
-| `fire-executor` | Executes plans with honesty protocols and creates unified handoff documents | `/fire-3-execute`, `/fire-execute-plan`, `/fire-autonomous` |
-| `fire-planner` | Creates phase plans with skills library integration and WARRIOR validation | `/fire-2-plan`, `/fire-autonomous` |
-| `fire-researcher` | Researches phase context using skills library and pattern matching | `/fire-research`, `/fire-1-new`, `/fire-2-plan` |
-| `fire-verifier` | Combines must-haves verification with WARRIOR 70-point validation | `/fire-4-verify`, `/fire-3-execute` |
-| `fire-reviewer` | Independent code reviewer -- architecture, patterns, performance, maintainability | `/fire-7-review`, `/fire-3-execute` (parallel with verifier) |
+| Agent | Description | Tools | Spawned By |
+|-------|-------------|-------|------------|
+| `fire-executor` | Executes plans with honesty protocols and creates unified handoff documents | Read, Write, Edit, Glob, Grep, Bash, WebSearch, Task, TodoWrite | `/fire-3-execute`, `/fire-execute-plan`, `/fire-autonomous` |
+| `fire-planner` | Creates phase plans with skills library integration and WARRIOR validation | Read, Write, Edit, Glob, Grep, Bash, WebSearch, Task, TodoWrite | `/fire-2-plan`, `/fire-autonomous` |
+| `fire-researcher` | Researches phase context using skills library and pattern matching | Read, Write, Glob, Grep, Bash, WebSearch, Task | `/fire-research`, `/fire-1a-new`, `/fire-2-plan` |
+| `fire-verifier` | Combines must-haves verification with WARRIOR 70-point validation | Read, Write, Bash, Glob, Grep | `/fire-4-verify`, `/fire-3-execute` |
+| `fire-reviewer` | Independent code reviewer -- architecture, patterns, performance, maintainability | Read, Glob, Grep, Bash (read-only) | `/fire-7-review`, `/fire-3-execute` (parallel with verifier) |
+| `fire-codebase-mapper` | Maps architecture, dependencies, patterns, and concerns across a codebase | Read, Glob, Grep, Bash, Write | `/fire-map-codebase` |
+| `fire-debugger` | Systematic hypothesis-driven debugging with evidence tracking | Read, Glob, Grep, Bash, Write, Edit | `/fire-debug`, `/fire-verify-uat` |
+| `fire-fact-checker` | Adversarial verification agent that attempts to disprove research findings | Read, Glob, Grep, Bash, WebSearch, WebFetch, Write | `/fire-new-milestone` |
+| `fire-project-researcher` | Researches a specific domain focus area for new project/milestone initialization | Read, Write, Glob, Grep, Bash, WebSearch, WebFetch | `/fire-new-milestone` |
+| `fire-research-synthesizer` | Merges parallel research findings into a unified synthesis document | Read, Write, Glob, Grep | `/fire-new-milestone` |
+| `fire-roadmapper` | Creates project roadmap with phase breakdown from research synthesis | Read, Write, Glob, Grep, Bash | `/fire-new-milestone` |
+| `fire-learncoding-walker` | Maps dependency graph from entry point and produces ordered linear step list | Shell tools (grep, cat, sed) | `/fire-learncoding` |
+| `fire-learncoding-explainer` | Per-step explainer that extracts real code snippets and explains WHAT/WHY/PATTERN | Shell tools (grep, cat, sed) | `/fire-learncoding` |
 
 ---
 
@@ -130,8 +150,8 @@ Agents are specialized sub-agents spawned by commands to perform focused work.
 
 | Template | Purpose | Created By |
 |----------|---------|------------|
-| `state.md` | Living project memory tracking | `/fire-1-new` |
-| `roadmap.md` | Phase overview and milestones | `/fire-1-new` |
+| `state.md` | Living project memory tracking | `/fire-1a-new` |
+| `roadmap.md` | Phase overview and milestones | `/fire-1a-new` |
 | `plan.md` | Detailed phase execution plan | `/fire-2-plan` |
 | `fire-handoff.md` | Session continuity handoff | `/fire-5-handoff` |
 | `verification.md` | Verification report format | `/fire-4-verify` |
@@ -169,4 +189,4 @@ Agents are specialized sub-agents spawned by commands to perform focused work.
 
 ---
 
-*Dominion Flow v9.0 -- 39 commands, 5 agents, 190+ skills.*
+*Dominion Flow v10.0.0 -- 42 commands, 13 agents, 190+ skills.*

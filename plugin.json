@@ -1,7 +1,7 @@
 {
-  "name": "dominion-flow",
-  "version": "10.0.0",
-  "description": "Dominion Flow is a comprehensive orchestration platform that empowers your Claude agent. It gives Claude a complete, structured workflow for taking projects from idea to production — with parallel execution, 190+ reusable skills, session memory across handoffs, 70-point quality verification, autonomous mode, E2E testing, and a circuit breaker to prevent stuck loops. Includes 39 slash commands organized into 7 tiers covering planning, execution, verification, debugging, skills management, and milestone tracking.",
+  "name": "fire-flow",
+  "version": "12.2.0",
+  "description": "Dominion Flow is a comprehensive orchestration platform that empowers your Claude agent. It gives Claude a complete, structured workflow for taking projects from idea to production — with parallel execution, session memory across handoffs, 70-point quality verification, autonomous mode, Phoenix Rebuild (messy-to-clean), E2E testing, and a circuit breaker to prevent stuck loops. Includes 46 slash commands organized into 8 tiers covering planning, execution, verification, debugging, skills management, milestone tracking, and learning mode.",
   "commands": "commands/",
   "agents": "agents/"
 }

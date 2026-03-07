@@ -2,7 +2,7 @@
 
 > **Origin:** NEW for Dominion Flow v2.0 - Centralized blocker tracking.
 
-Template for `.planning/BLOCKERS.md` — created by `/fire-1-new`.
+Template for `.planning/BLOCKERS.md` — created by `/fire-1a-new`.
 
 ---
 

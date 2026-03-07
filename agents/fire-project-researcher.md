@@ -73,7 +73,7 @@ Read the research context provided by the spawning command:
 
 ```bash
 # Search for relevant existing patterns
-grep -rl "{focus_keywords}" ~/.claude/plugins/dominion-flow/skills-library/ | head -20
+grep -rl "{focus_keywords}" ~/.claude/plugins/fire-flow/skills-library/ | head -20
 ```
 
 For each matching skill, extract:
@@ -150,6 +150,6 @@ File: .planning/research/{NN}-{focus}.md
 
 ## References
 
-- **Spawned by:** `/fire-1-new`, `/fire-new-milestone`
+- **Spawned by:** `/fire-1a-new`, `/fire-new-milestone`
 - **Output consumed by:** `fire-research-synthesizer`
 - **Related agent:** `fire-researcher` (phase-level research, not project-level)

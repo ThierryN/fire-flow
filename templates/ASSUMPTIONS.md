@@ -6,7 +6,7 @@
 > accumulate across phases without systematic tracking, leading to contradictions.
 > See: references/research-improvements.md (GAP-1, GAP-2, BLIND-SPOT-B)
 
-Template for `.planning/ASSUMPTIONS.md` — created by `/fire-1-new`.
+Template for `.planning/ASSUMPTIONS.md` — created by `/fire-1a-new`.
 
 ---
 

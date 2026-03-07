@@ -487,6 +487,67 @@ IF reviewer was spawned (--quick NOT set):
       → "Code is clean but doesn't work."
 ```
 
+### Step 5.6: FaR Confidence Calibration (v10.1)
+
+> **Research basis (v10.1):** Xiong et al. "Can LLMs Express Their Uncertainty?" (ACL 2024) —
+> Fact-and-Reflection (FaR) prompting reduces Expected Calibration Error by 23.5%.
+> Agents that first enumerate known facts, then reflect on uncertainty, produce
+> dramatically more accurate confidence scores than agents that just guess a number.
+> Applied: Added mandatory FaR step before final verification verdict.
+
+Before assigning the final verdict, the verifier MUST perform a two-phase confidence assessment:
+
+```
+═══════════════════════════════════════════════════════
+  FaR CONFIDENCE CALIBRATION
+═══════════════════════════════════════════════════════
+
+PHASE 1: FACT ELICITATION
+List every concrete, observable fact about this phase's correctness:
+
+  Facts FOR correctness (evidence it works):
+    1. {fact} — source: {test output / manual check / code review}
+    2. {fact} — source: {specific evidence}
+    3. ...
+
+  Facts AGAINST correctness (evidence of problems):
+    1. {fact} — source: {test failure / gap / uncertainty}
+    2. {fact} — source: {specific evidence}
+    3. ...
+
+  Unknown / Untestable:
+    1. {thing we cannot verify} — why: {reason}
+    2. ...
+
+PHASE 2: REFLECTION
+Given the facts above, reflect on overall confidence:
+
+  - How many critical paths have direct evidence? {N}/{total}
+  - Are the "against" facts blockers or minor gaps?
+  - What is the worst plausible failure mode?
+  - If this shipped to production right now, what breaks?
+
+CALIBRATED CONFIDENCE: {0-100}%
+
+  Interpretation:
+    90-100% — High confidence. Ship it.
+    70-89%  — Moderate confidence. Acceptable with noted gaps.
+    50-69%  — Low confidence. Significant unknowns remain.
+    <50%    — Very low. Do not approve without more evidence.
+
+═══════════════════════════════════════════════════════
+```
+
+**Integration with verdict:**
+- FaR confidence is INFORMATIONAL — it does not override the 70-point checklist
+- BUT if FaR confidence < 50% AND checklist score ≥ 70%, flag a WARNING:
+  "Checklist passes but verifier confidence is low. Review the 'Unknown/Untestable'
+  list before approving."
+- Include FaR confidence in the verification report under a "Confidence Assessment" section
+- Track FaR confidence across phases to detect calibration drift
+
+**Skip condition:** If `--quick` flag is set, skip FaR and use raw checklist score only.
+
 ### Step 5.75: Dual-Verification — Read from Authoritative Source (v11.0)
 
 > **Research basis (v11.0):** Failure pattern mining (8 instances of silent persistence

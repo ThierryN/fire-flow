@@ -361,7 +361,7 @@ This ensures:
 ```bash
 /fire-brainstorm "project architecture for {idea}"
 # Then
-/fire-1-new
+/fire-1a-new
 ```
 
 ### Before Planning Phase

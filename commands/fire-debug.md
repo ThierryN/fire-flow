@@ -531,7 +531,7 @@ IF status == "resolved":
 After resolution or checkpoint, update persistent state:
 
 ```markdown
-## .claude/dominion-flow.local.md
+## .claude/fire-flow.local.md
 
 ### Last Debug Session
 - Issue: {slug}

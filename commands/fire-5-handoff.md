@@ -176,7 +176,7 @@ next_action: "{what to do next}"
 ### Important Paths:
 - **Project Root:** {path}
 - **Planning Docs:** {path}/.planning/
-- **Skills Library:** ~/.claude/plugins/dominion-flow/skills-library/
+- **Skills Library:** ~/.claude/plugins/fire-flow/skills-library/
 
 ---
 
@@ -470,7 +470,7 @@ This command does NOT spawn agents. It compiles information from existing docume
 â•‘                                                                              â•‘
 â•‘  No .planning/CONSCIENCE.md found.                                                â•‘
 â•‘                                                                              â•‘
-â•‘  Action: Run `/fire-1-new` to initialize project first.                     â•‘
+â•‘  Action: Run `/fire-1a-new` to initialize project first.                     â•‘
 â•‘                                                                              â•‘
 â•šâ•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
 ```

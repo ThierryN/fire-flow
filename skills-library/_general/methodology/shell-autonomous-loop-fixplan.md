@@ -208,7 +208,7 @@ exit 1
 - Simple 1-3 iteration tasks (conversation loop is fine)
 - No `claude` CLI available in PATH
 - Task requires continuous human judgment at each step (use manual `/fire-3-execute`)
-- Project has no `.planning/` structure yet (run `/fire-1-new` first)
+- Project has no `.planning/` structure yet (run `/fire-1a-new` first)
 
 ## Common Mistakes
 
@@ -234,5 +234,5 @@ exit 1
 
 - Inspired by: [bmalph](https://github.com/LarsCowe/bmalph) — Ralph autonomous loop pattern
 - Ralph loop architecture: `ralph_loop.sh` in bmalph v2.7.0
-- Gap analysis session: 2026-03-04 dominion-flow-v2 implementation
+- Gap analysis session: 2026-03-04 fire-flow-v2 implementation
 - Contributed from: dominion-flow-v2 build session

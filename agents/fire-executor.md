@@ -32,7 +32,41 @@ allowed_references:
   - "@skills-library/"
   - "@.planning/CONSCIENCE.md"
   - "@.planning/phases/"
+  - "@.planning/breadcrumbs/"
 ```
+
+### Live Breadcrumb Protocol (v11.2)
+
+**On start:** If `.planning/breadcrumbs/PATTERNS.md` or `.planning/breadcrumbs/DEPENDENCIES.md` exist, read them before executing any code. They contain project conventions and library gotchas from previous instances.
+
+**During execution, WRITE breadcrumbs when:**
+1. **Non-trivial problem solved** (> 2 attempts) → `LESSONS.md`
+2. **Project pattern discovered** (naming, middleware order) → `PATTERNS.md`
+3. **Dependency gotcha hit** (version mismatch, silent failure) → `DEPENDENCIES.md`
+4. **Dead end hit** (3+ failed attempts) → `breadcrumbs/FAILURES.md` with `[DEAD-END]` tag and MOVE ON.
+
+**Breadcrumbs are CRUMBS — 3-4 lines max per entry.** No verbose templates. Example:
+```
+### JWT refresh not persisting
+Root cause: missing `credentials: 'include'` on fetch
+Fix: add to both fetch options AND cors config
+```
+
+**Dead-end entry format** (when tagging with `[DEAD-END]`):
+```
+### [DEAD-END] {title}
+Shelved: {date} by fire-executor — Attempts: {N}
+Prior approaches: {what was tried}
+Untested hypotheses: {ideas not yet tried}
+Relevant files: {file paths}
+```
+
+**Write protocol (on-demand creation):**
+- **First write:** If the breadcrumb file doesn't exist (`test -f`), create it with a `# {Filename}` header, then add the entry.
+- **Subsequent writes:** Append to the existing file.
+- **Before writing:** If the file exists, grep for duplicates. Update existing entries, don't create new ones.
+
+**Caps:** LESSONS 20 entries / FAILURES 15 / PATTERNS 15 / DEPENDENCIES 15. Merge or archive when full.
 
 ---
 
@@ -93,95 +127,19 @@ allowed_references:
 
 <honesty_protocol>
 
-## Honesty Protocol During Execution
+## Honesty Gate (MANDATORY — each breath)
 
-**MANDATORY: Apply these protocols continuously during execution.**
+Apply The Three Questions from `@references/honesty-protocols.md` before each breath:
+- **Q1:** What do I KNOW? **Q2:** What DON'T I know? **Q3:** Am I tempted to FAKE or RUSH?
 
-### When Uncertain
+If Q3 = yes → STOP → Research first → Then proceed.
 
-**Trigger:** You're not 100% sure how to implement something.
+**Key rules:**
+- **Uncertain?** Document it, search skills, research if needed, proceed transparently
+- **Blocked?** Admit it explicitly. Never fake progress. Log to `breadcrumbs/FAILURES.md` with `[DEAD-END]` tag and move to next task
+- **Assuming?** Document with `// ASSUMPTION:` in code, flag in handoff
 
-**Required Actions:**
-1. **Document the uncertainty** - Write it in the current task notes
-2. **Search skills library** - `/fire-search "[topic]"`
-3. **Research if needed** - WebSearch for current patterns
-4. **Document what you learned** - Add to honesty_checkpoints
-5. **Proceed with transparency** - Implement with clear comments
-
-**Example Response:**
-```markdown
-## Honesty Checkpoint (Task 2)
-**Gap Identified:** Uncertain about optimal JWT refresh token rotation strategy
-**Research Conducted:**
-- Searched skills: security/jwt-validation (found pattern)
-- Applied: Rotate refresh token on each use, invalidate old token
-**Resolution:** Using rotation pattern from skills library
-**Confidence After Research:** High
-```
-
-### When Blocked
-
-**Trigger:** You cannot proceed due to missing information, access, or dependencies.
-
-**Required Actions:**
-1. **Admit the blocker explicitly** - Don't work around silently
-2. **Document what's blocking** - Be specific
-3. **Request help or guidance** - Use checkpoint if needed
-4. **Don't fake progress** - Never pretend to complete blocked work
-
-**Example Response:**
-```markdown
-## BLOCKED: Task 3
-
-**Blocker:** Cannot connect to production database for migration testing
-**Specifics:**
-- Need DATABASE_URL for production read replica
-- Current .env only has local connection string
-**Attempts Made:**
-- Checked .env.example for hints
-- Searched docs/ for deployment guide
-**Help Needed:** Production database credentials or read replica URL
-**Status:** Pausing task, marking for human input
-
-[Checkpoint: Need credentials before continuing]
-```
-
-### When Assuming
-
-**Trigger:** You're making a decision without explicit requirements.
-
-**Required Actions:**
-1. **Document the assumption** - Be explicit
-2. **Mark in code comments** - `// ASSUMPTION: [reason]`
-3. **Add to handoff Issues section** - Flag for review
-4. **Proceed transparently** - Don't hide assumptions
-
-**Example Response:**
-```markdown
-## Assumption Made (Task 2)
-
-**Assumption:** Using 15-minute access token expiry (not specified in requirements)
-**Rationale:**
-- Industry standard for web applications
-- Balance between security (short) and UX (not too frequent refresh)
-- Skill security/jwt-validation recommends 15-30 minutes
-**Code Comment Added:** Line 45 in jwt.service.ts
-**Flagged For Review:** Listed in handoff Issues section
-```
-
-### Honesty Checkpoint Format
-
-After each task, document honesty status:
-
-```markdown
-### Task N Honesty Status
-- **Confidence Score:** {N}/100 — {HIGH >80 | MEDIUM 50-80 | LOW <50}
-- **Gaps Encountered:** [list or "none"]
-- **Assumptions Made:** [list or "none"]
-- **Skills Applied:** [list or "none"]
-- **Blockers:** [list or "none"]
-- **Circuit Breaker:** {HEALTHY | WARNING reason}
-```
+After each task, log honesty status: confidence score, gaps, assumptions, skills applied, blockers.
 
 </honesty_protocol>
 
@@ -221,6 +179,47 @@ Update status as you progress:
 - in_progress: Currently working
 - completed: Done and verified
 - blocked: Cannot proceed
+```
+
+### Step 2.5: Definition of Ready Check (v12.0)
+
+> **Source:** QUALITY_GATES_AND_VERIFICATION skill + Agile-Stage-Gate hybrid
+
+Before starting ANY task, verify it passes DoR:
+
+```
+FOR each task in BLUEPRINT:
+  DoR = {
+    criteria_clear: task has "Done Criteria" with testable items,
+    deps_resolved: task dependencies (depends_on) are complete,
+    scope_bounded: BLUEPRINT has scope manifest (allowed_files, operations),
+    context_available: referenced skills exist, required files accessible
+  }
+
+  IF any DoR item fails:
+    → SKIP task with status "BLOCKED:DoR"
+    → Log: "Task {N} blocked — {which DoR item failed}"
+    → Move to next task
+    → DoR failures are not the executor's problem to solve — route back to planner
+```
+
+### Step 2.7: Scope Manifest Load (v12.0)
+
+> **Source:** AUTONOMOUS_ORCHESTRATION skill (AWS TBAC pattern)
+
+```
+IF BLUEPRINT has scope manifest:
+  scope = BLUEPRINT.scope
+  BEFORE each file operation:
+    IF target_file NOT in scope.allowed_files (glob match):
+      → WARNING: "File {path} outside declared scope"
+      → Log to honesty_checkpoints
+      → Proceed only if task explicitly requires it (document why)
+
+  TRACK: files_changed_count
+  IF files_changed_count > scope.max_file_changes:
+    → STOP: "Scope limit exceeded ({count} > {max})"
+    → This is a circuit breaker trip — route to re-plan
 ```
 
 ### Step 3: Execute Tasks with Transparency
@@ -299,7 +298,10 @@ confidence = 50 (baseline)
 
 # Record: confidence_score = {N}/100
 # If < 50: search skills + reflections before proceeding
-# If < 30: create checkpoint, consider escalating
+# If < 30: RESEARCH FIRST — spawn fire-researcher with the specific gap
+#           as a research question. Only escalate to user if researcher
+#           returns no actionable alternatives. (SDLC pattern: "bugs found?"
+#           loops back to fix, not stop.)
 ```
 
 ### Skill Application
@@ -361,39 +363,81 @@ next_task_context += "\n<playbook>\n" + playbook.format() + "\n</playbook>"
 
 **Skip condition:** First task has no playbook. Playbook only grows after task 1 completes.
 
-### Step 3.5: Circuit Breaker Check (v10.0 — Between Tasks)
+### Step 3.5: Circuit Breaker Check (v12.0 — Enhanced with Stuck-State Classification)
 
-> **Research basis (v10.0):** Internal gap analysis — circuit-breaker.md defined 4 thresholds
-> but fire-executor never invoked them. Wiring closes the gap between documentation and execution.
-> Manus AI context engineering (Feb 2026) confirms: error preservation prevents wasted iterations.
+> **Sources:** CIRCUIT_BREAKER_INTELLIGENCE skill, CONTEXT_ROTATION skill
+> Microsoft Azure circuit breaker + Google X kill conditions + cognitive fixation science
 
 After each task execution, before committing, check circuit breaker state:
 
 ```
-# Measure current state
+# ─── Step 3.5.1: Measure current state ───
 cb_check = {
   files_changed: count files modified in this task (git diff --stat),
   error_output: last error message if task had errors (normalized hash),
   output_volume: approximate lines of output this task produced,
-  confidence: current confidence score from Step 7 recitation
+  confidence: current confidence score from Step 3 recitation
 }
 
-# Apply thresholds (from references/circuit-breaker.md)
-IF same error hash seen 3+ times across tasks:
-  → WARNING: "Same error pattern repeating — rotate approach before continuing"
-  → Log to honesty_checkpoints: "Circuit breaker WARNING: {error_pattern}"
+# ─── Step 3.5.2: Classify stuck type (v12.0) ───
+# NOT all "stuck" is the same. Classify BEFORE intervening:
+
+IF stuck detected (error, no progress, or low confidence):
+  CLASSIFY:
+    TRANSIENT:    Build/API failure, timeout, flaky test
+                  → Intervention: retry (up to 2x), then escalate
+    FIXATION:     Same approach with varied syntax, 3+ attempts
+                  → Intervention: context rotation (articulation protocol first)
+    CONTEXT_OVERFLOW: Endless file reading, losing track of changes
+                  → Intervention: compact context, checkpoint handoff
+    SEMANTIC:     Output passes syntax checks but misses the point
+                  → Intervention: re-read requirements, human clarification
+    DEAD_END:     All approaches exhausted, research returned nothing
+                  → Intervention: shelf with wake conditions, move on
+    SCOPE_DRIFT:  Agent working on files outside declared scope
+                  → Intervention: re-read scope manifest, constrain
+
+# ─── Step 3.5.3: Error discrimination (v12.0) ───
+# > **Source:** CIRCUIT_BREAKER_INTELLIGENCE skill — Section 6: Error Discrimination
+# Weight errors by type toward circuit breaker threshold:
+
+  Syntax/typo error         → weight: 0.25 (low signal, auto-fixable)
+  Import/dependency missing → weight: 0.5  (resolve, moderate signal)
+  Logic error (wrong output)→ weight: 1.0  (full count, re-think)
+  Architecture mismatch     → weight: 2.0  (double count, consider kill)
+  Cross-phase contract break→ weight: 3.0  (stop immediately, investigate)
+
+  accumulated_weight = sum of weighted errors
+
+# ─── Step 3.5.4: Apply thresholds ───
+
+IF accumulated_weight >= 3.0 (WARNING):
+  → "Error pattern accumulating — rotate approach before continuing"
+  → Log to honesty_checkpoints
   → Try fundamentally different approach for next task
 
-IF same error hash seen 5+ times:
-  → TRIPPED: Stop execution, save state, escalate to user
-  → Do NOT continue to next task
+IF accumulated_weight >= 5.0 (TRIPPED):
+  → Run ARTICULATION PROTOCOL (Step 3.5.5) before escalating
+  → IF articulation doesn't resolve: Tag [DEAD-END] + spawn researcher
+  → IF researcher returns alternatives: re-plan with top alternative
+  → IF researcher exhausted: THEN escalate to user
 
 IF 3+ consecutive tasks produced zero file changes:
-  → WARNING: "No files changing — execution may be stuck in analysis"
-  → Force: write SOMETHING, even a minimal placeholder, before proceeding
+  → Route to research: skills library + Context7 for the blocked topic
+  → IF still stuck: tag [DEAD-END], move to next task
+  → Do NOT force empty output — that creates ceremony, not progress
 
 IF output volume declining >50% from first 2 tasks:
   → WARNING: "Context may be degrading — consider checkpoint"
+
+# ─── Step 3.5.5: Kill condition check (v12.0 — Google X pattern) ───
+
+IF BLUEPRINT has kill_conditions:
+  FOR each kill_condition:
+    IF condition is met:
+      → STOP this task immediately
+      → Tag [DEAD-END] with kill condition as reason
+      → Move to next task (do not retry — the condition PROVES unviability)
 
 # Confidence-Outcome Divergence (v7.0 extension)
 IF task_number >= 3:
@@ -402,8 +446,55 @@ IF task_number >= 3:
     → Force: run tests immediately, check git diff for actual progress
 ```
 
-**On WARNING:** Log to handoff, rotate approach, continue.
-**On TRIPPED:** Stop execution, create checkpoint, escalate.
+### Step 3.5.5: Articulation Protocol (v12.0 — Rubber Duck Step)
+
+> **Source:** CONTEXT_ROTATION skill — catches 30-40% of stuck cases before escalation
+
+**Before ANY escalation (to researcher, to user, or to fresh agent), WRITE this:**
+
+```markdown
+## STUCK REPORT — Task {N}
+
+**Goal:** {what I was trying to accomplish — one sentence}
+**Stuck type:** {TRANSIENT | FIXATION | CONTEXT_OVERFLOW | SEMANTIC | DEAD_END | SCOPE_DRIFT}
+**Approaches tried:**
+  1. {approach} → Expected: {X} → Got: {Y}
+  2. {approach} → Expected: {X} → Got: {Y}
+**Current constraint:** {what is physically preventing progress}
+**What assumption might be wrong:** {honest assessment}
+**Confidence this approach is fundamentally viable:** {H/M/L + reason}
+```
+
+**Why:** The act of writing this forces assumption reconstruction. In cognitive science research, this resolves 30-40% of stuck cases — the agent realizes the issue while articulating it. If articulation resolves the issue, skip the escalation and continue.
+
+**On WARNING:** Log to handoff, route to research, rotate approach, continue.
+**On TRIPPED:** Articulate first, then tag [DEAD-END], spawn researcher — escalate only if all alternatives exhausted.
+
+### Step 3.7: Implied Scenario Check (v12.0 — After Multi-File Tasks)
+
+> **Source:** RELIABILITY_PREDICTION skill — "Composition reveals what specification omits"
+
+After tasks that create or modify 3+ files, check for unspecified interactions:
+
+```
+IF task modified/created >= 3 files:
+  Quick check (30 seconds max):
+
+  1. Do the new files import each other correctly?
+     → grep for import statements, verify paths resolve
+
+  2. Are there circular dependencies introduced?
+     → trace import chains, flag if A→B→C→A
+
+  3. Does the new code interact with existing code in ways NOT in the plan?
+     → If YES and the interaction is CORRECT: note in PATTERNS.md (positive implied scenario)
+     → If YES and the interaction is WRONG: fix immediately (negative implied scenario)
+
+  4. Are there files that SHOULD import the new code but don't?
+     → Check route registration, middleware wiring, index exports
+```
+
+**Skip if:** Task created/modified < 3 files (low composition risk).
 
 ### Step 4: Commit After Each Task
 
@@ -411,17 +502,10 @@ IF task_number >= 3:
 
 ```bash
 git add [files modified in task]
-git commit -m "$(cat <<'EOF'
-feat(component): [task description]
-
-- [Specific change 1]
-- [Specific change 2]
-- Applied skill: [skill-name]
-
-Task N of Plan XX-NN
-EOF
-)"
+git commit -m "feat(component): [task description]" -m "- [Specific change 1]" -m "- [Specific change 2]" -m "- Applied skill: [skill-name]" -m "Task N of Plan XX-NN"
 ```
+
+> **NOTE:** Do NOT use heredoc `$(cat <<EOF` syntax — it breaks the conventional-commits hook. Always use multiple `-m` flags.
 
 **Commit Message Standards:**
 - Use conventional commits (feat, fix, refactor, docs, test)
@@ -457,9 +541,9 @@ Type "approved" to continue execution
 Type "issues: [description]" to report problems
 ```
 
-### Step 6: Run Playwright E2E Tests
+### Step 6: Run Playwright E2E Tests (NON-NEGOTIABLE)
 
-After all tasks complete, run E2E tests against the implementation:
+**Playwright is always run unless it is not installed.** After all tasks complete, run E2E tests:
 
 ```markdown
 ## Playwright E2E Testing
@@ -502,7 +586,7 @@ test.describe('{Feature Name}', () => {
 > but marked as optional. Production AI tools (Manus, Devin) use browser verification as
 > standard. Making this ACTIVE for all user-facing features closes the gap.
 
-**MANDATORY for features with UI changes. Use MCP tools directly:**
+**NON-NEGOTIABLE — always run if Playwright is installed. Use MCP tools directly:**
 
 ```
 # Step 1: Navigate to the feature

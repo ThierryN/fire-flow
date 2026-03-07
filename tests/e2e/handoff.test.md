@@ -9,7 +9,7 @@ Validates that `/fire-5-handoff` creates a comprehensive handoff document in the
 ---
 
 ## Prerequisites
-- Dominion Flow plugin installed
+- Fire Flow plugin installed
 - Project with active work state
 - `.planning/CONSCIENCE.md` contains current context
 
@@ -23,7 +23,7 @@ TEST_DIR=$(mktemp -d)
 cd "$TEST_DIR"
 
 # 2. Copy test project fixture
-cp -r ~/.claude/plugins/dominion-flow/tests/fixtures/test-project/.planning .
+cp -r ~/.claude/plugins/fire-flow/tests/fixtures/test-project/.planning .
 
 # 3. Create realistic project state
 cat > .planning/CONSCIENCE.md << 'EOF'

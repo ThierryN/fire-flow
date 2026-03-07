@@ -1,6 +1,6 @@
 # Dominion Flow Plugin Test Suite
 
-This directory contains the complete test suite for the Dominion Flow plugin, validating all commands, integrations, and workflows.
+This directory contains the complete test suite for the Fire Flow plugin, validating all commands, integrations, and workflows.
 
 ---
 
@@ -168,7 +168,7 @@ Each test file follows a consistent structure:
 
 ```bash
 # Copy fixture to temp directory
-cp -r ~/.claude/plugins/dominion-flow/tests/fixtures/test-project/.planning .
+cp -r ~/.claude/plugins/fire-flow/tests/fixtures/test-project/.planning .
 
 # Now you have a pre-configured project for testing
 ```
@@ -177,10 +177,10 @@ cp -r ~/.claude/plugins/dominion-flow/tests/fixtures/test-project/.planning .
 
 ```bash
 # Skills are at:
-~/.claude/plugins/dominion-flow/tests/fixtures/test-skills/
+~/.claude/plugins/fire-flow/tests/fixtures/test-skills/
 
 # Copy to skills library for testing
-cp -r fixtures/test-skills/* ~/.claude/plugins/dominion-flow/skills-library/
+cp -r fixtures/test-skills/* ~/.claude/plugins/fire-flow/skills-library/
 ```
 
 ### Using `expected-outputs/`
@@ -237,7 +237,7 @@ diff .planning/CONSCIENCE.md fixtures/expected-outputs/expected-conscience.md
 - **OS:** Windows 10/11 (tests use Windows paths)
 - **Shell:** PowerShell or Git Bash
 - **Claude Code:** Installed and configured
-- **Dominion Flow Plugin:** Installed at `~/.claude/plugins/dominion-flow/`
+- **Dominion Flow Plugin:** Installed at `~/.claude/plugins/fire-flow/`
 - **Permissions:** Write access to temp directories and plugin directory
 
 ---
@@ -289,5 +289,5 @@ When adding or modifying tests:
 
 ## Maintainer
 
-Dominion Flow Test Suite maintained as part of the Dominion Flow plugin.
-Location: `~/.claude/plugins/dominion-flow/tests/`
+Dominion Flow Test Suite maintained as part of the Fire Flow plugin.
+Location: `~/.claude/plugins/fire-flow/tests/`

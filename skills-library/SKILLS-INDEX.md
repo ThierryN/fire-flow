@@ -12,7 +12,7 @@
 - **Find by topic:** Use `Ctrl+F` / `Cmd+F` to search this document
 - **Browse by category:** Jump to any category section below
 - **File naming:** Uppercase files are guides/references, lowercase are implementation patterns
-- **Location:** `C:/Users/FirstName/.claude/plugins/dominion-flow/skills-library/`
+- **Location:** `~/.claude/plugins/fire-flow/skills-library/`
 
 ---
 
@@ -565,12 +565,12 @@ grep -i "deploy" SKILLS-INDEX.md
 ### Read a specific skill
 ```bash
 # Using Claude Code's Read tool
-Read: C:/Users/FirstName/.claude/plugins/dominion-flow/skills-library/integrations/STRIPE_TEST_CARDS.md
+Read: ~/.claude/plugins/fire-flow/skills-library/integrations/STRIPE_TEST_CARDS.md
 ```
 
 ### List all skills in a category
 ```bash
-ls -la C:/Users/FirstName/.claude/plugins/dominion-flow/skills-library/integrations/
+ls -la ~/.claude/plugins/fire-flow/skills-library/integrations/
 ```
 
 ---

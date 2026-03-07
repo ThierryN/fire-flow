@@ -33,7 +33,23 @@ allowed_references:
   - "@.planning/CONSCIENCE.md"
   - "@.planning/VISION.md"
   - "@.planning/phases/"
+  - "@.planning/breadcrumbs/"
 ```
+
+### Live Breadcrumb Protocol (v11.2)
+
+**On start:** If `.planning/breadcrumbs/LESSONS.md` or `.planning/breadcrumbs/FAILURES.md` exist, read them before planning.
+- LESSONS.md tells you what solutions worked in previous sessions
+- FAILURES.md tells you what approaches FAILED — **do not re-plan with these**
+
+**During planning, WRITE breadcrumbs when:**
+- Discovering a project convention not yet documented → write to `PATTERNS.md`
+
+**Write protocol (on-demand creation):**
+- **First write:** If the breadcrumb file doesn't exist (`test -f`), create it with a `# {Filename}` header, then add the entry.
+- **Subsequent writes:** Append to the existing file.
+
+**Key rule:** If your planned approach appears in FAILURES.md, you MUST use a different approach or explicitly document why this time is different.
 
 ---
 
@@ -59,60 +75,16 @@ allowed_references:
 
 <honesty_protocol>
 
-## Honesty Protocol (WARRIOR Foundation)
+## Honesty Gate (MANDATORY)
 
-**MANDATORY: Answer these 3 questions BEFORE creating any plan.**
+Apply The Three Questions from `@references/honesty-protocols.md` BEFORE creating any plan:
+- **Q1:** What do I KNOW about implementing this phase?
+- **Q2:** What DON'T I know? (list gaps honestly)
+- **Q3:** Am I tempted to FAKE or RUSH this?
 
-### Question 1: What do I know about implementing this phase?
+If Q3 = yes → STOP → Research first → Then plan honestly.
 
-Before planning, explicitly list:
-- Technologies I have experience with
-- Similar patterns I've implemented before
-- Skills in the library that match this work
-- Dependencies and integration points I understand
-
-### Question 2: What don't I know?
-
-Honestly identify:
-- Technologies or patterns unfamiliar to me
-- Integration points that need research
-- Edge cases I'm uncertain about
-- Performance implications unclear
-- Security considerations I need to verify
-
-### Question 3: Am I tempted to fake or rush?
-
-Check for false confidence:
-- Am I planning tasks I don't fully understand?
-- Am I skipping research because it takes time?
-- Am I making assumptions without evidence?
-- Am I overestimating my knowledge to appear competent?
-
-**If any answer to Q3 is "yes": STOP. Research first. Plan honestly.**
-
-### Honesty Documentation Format
-
-```markdown
-## Pre-Planning Honesty Check
-
-### What I Know
-- [Specific knowledge area 1]
-- [Specific knowledge area 2]
-- Relevant skills: [skill-1], [skill-2]
-
-### What I Don't Know
-- [Gap 1] - Will research via [method]
-- [Gap 2] - Will apply skill: [skill-name]
-- [Gap 3] - Flagged for human input
-
-### Temptation Check
-- [ ] Not tempted to fake - confidence is grounded
-- [x] Tempted to rush [area] - adding research task first
-
-### Research Required Before Planning
-1. [Topic] - Use /fire-search "[query]"
-2. [Topic] - WebSearch for current best practices
-```
+Document results in Pre-Planning Honesty Check format (see reference for templates).
 
 </honesty_protocol>
 
@@ -136,6 +108,52 @@ Check for false confidence:
 - Dependencies (what must exist first)
 - Must-haves from milestone definition
 ```
+
+### Step 1.5: Recovery Mode Check (v11.2)
+
+**Before planning, check if this is a RE-PLAN after failure.**
+
+```
+IF .planning/phases/{N}-{name}/VERIFICATION.md exists AND status = FAIL or CONDITIONAL:
+  → RECOVERY MODE — do NOT re-plan with the same knowledge that failed
+
+IF .planning/phases/{N}-{name}/RECOVERY-RESEARCH.md exists:
+  → Recovery research already done — read it and use the recommended alternative
+
+IF failed but NO recovery research exists:
+  → SPAWN fire-researcher in RECOVERY MODE with:
+    - Failed BLUEPRINT.md
+    - VERIFICATION.md (what went wrong)
+    - RECORD.md (what was built)
+  → WAIT for RECOVERY-RESEARCH.md with 2-3 ranked alternatives
+  → Use the highest-confidence alternative for re-planning
+```
+
+**The recovery loop:**
+
+```
+Execute → FAIL
+    ↓
+Planner detects failure (Step 1.5)
+    ↓
+Spawns fire-researcher (recovery mode)
+    ↓
+Researcher searches: Skills DB → Context7 → Web (3-tier cascade)
+    ↓
+Returns RECOVERY-RESEARCH.md with 2-3 alternatives (ranked by confidence)
+    ↓
+Planner selects highest-confidence alternative
+    ↓
+Creates NEW blueprint using alternative approach
+    ↓
+Execute → Verify
+    ↓
+IF FAIL AGAIN → next alternative from recovery research
+    ↓
+IF ALL ALTERNATIVES EXHAUSTED → escalate to user
+```
+
+**Key rule:** The planner NEVER re-plans with the same approach that failed. Each re-plan must use a different alternative from the recovery research. This prevents the "doing the same thing and expecting different results" anti-pattern.
 
 ### Step 2: Complete Honesty Protocol
 
@@ -202,6 +220,44 @@ skills_corrected: {list of fuzzy matches applied}
 **This check is NON-BLOCKING** — a missing skill doesn't stop planning, but it's
 logged prominently so the executor knows to search alternatives.
 
+### Step 3.7: Definition of Ready Gate (v12.0)
+
+> **Source:** QUALITY_GATES_AND_VERIFICATION skill + Robert Cooper's Agile-Stage-Gate Hybrid
+
+Before generating any BLUEPRINT, verify Definition of Ready:
+
+```
+DoR Checklist:
+  - [ ] Requirements decomposed to Level 4 (specific + testable)
+  - [ ] Dependencies from prior phase resolved or documented
+  - [ ] Scope bounded (files, tools, operations)
+  - [ ] Required context available (MEMORY.md, prior phase output)
+
+IF any DoR item fails:
+  → Do NOT generate the plan
+  → Document which DoR item failed and what's needed
+  → Route to: /fire-1a-discuss (for requirements) or /fire-research (for context)
+```
+
+### Step 3.8: Requirements Decomposition Check (v12.0)
+
+> **Source:** CMU SEI Utility Tree (REQUIREMENTS_DECOMPOSITION skill)
+
+For each stated requirement in the phase objectives, verify decomposition depth:
+
+```
+Level 1: "Good security"           → REJECT (too vague to plan)
+Level 2: "Data protection, Auth"    → REJECT (still vague)
+Level 3: "Encrypt data at rest"     → ACCEPTABLE (actionable)
+Level 4: "AES-256 encryption via    → IDEAL (specific + testable)
+          bcrypt for passwords"
+
+IF any requirement is Level 1 or 2:
+  → Decompose it using the Utility Tree pattern:
+    Quality Attribute → Sub-factors → Refined Sub-factors → Requirements
+  → Each Level 4 entry MUST have a test/verification criterion
+```
+
 ### Step 4: Create Plan Structure
 
 ```markdown
@@ -214,6 +270,31 @@ autonomous: true|false
 depends_on: [list of dependencies]
 files_to_create: [list]
 files_to_modify: [list]
+
+# Scope Manifest (v12.0 — TBAC pattern)
+scope:
+  allowed_files: [explicit list or glob patterns]
+  allowed_operations: [create_file, modify_file, run_tests, install_deps]
+  forbidden: [list of explicitly prohibited actions]
+  max_file_changes: N
+
+# Risk Register (v12.0 — CRISP-ML(Q) pattern)
+risk_register:
+  - risk: "{most likely failure mode}"
+    likelihood: "{H|M|L}"
+    impact: "{H|M|L}"
+    mitigation: "{specific action}"
+  - risk: "{second most likely}"
+    likelihood: "{H|M|L}"
+    impact: "{H|M|L}"
+    mitigation: "{specific action}"
+
+# Kill Conditions (v12.0 — Google X pattern)
+kill_conditions:
+  - "{measurable condition that proves approach unviable}"
+  - "{e.g., same error after 2 different strategies}"
+wake_conditions:
+  - "{what would make shelved approach worth revisiting}"
 
 # WARRIOR Skills Integration
 skills_to_apply:
@@ -263,6 +344,12 @@ must_haves:
 ## Skills Applied
 [List skills with brief rationale for each]
 
+## Tradeoffs Identified (v12.0 — ATAM pattern)
+[If competing quality attributes exist, document them explicitly:]
+| Attribute A | vs. | Attribute B | Decision | Consequence |
+|-------------|-----|-------------|----------|-------------|
+| [e.g., Security] | vs. | [Performance] | Prioritize A | [Specific impact on B] |
+
 ## Tasks
 [Detailed task breakdown]
 
@@ -282,18 +369,19 @@ For each task, include:
 **Action:** [What to do]
 **Skills:** [skill-category/skill-name]
 **Rationale:** [Why this approach]
+**Risk:** [H|M|L] — [one-line risk description if H or M]
 
 **Steps:**
 1. [Specific step with file:line references]
 2. [Specific step]
 3. [Specific step]
 
-**Verification:**
+**Verification (defined at plan time, not after — v12.0):**
 ```bash
 [Commands to verify task completion]
 ```
 
-**Done Criteria:**
+**Done Criteria (Definition of Done):**
 - [ ] [Specific, testable criterion]
 - [ ] [Specific, testable criterion]
 </task>
@@ -459,6 +547,10 @@ grep -r "password=" .  # No hardcoded credentials (should return empty)
 5. **Incomplete Must-Haves** - Missing truths, artifacts, or validation
 6. **Overconfident Planning** - Not documenting uncertainties
 7. **No Comment Instructions** - Creating code tasks without requiring maintenance comments (v3.2)
+8. **Missing Kill Conditions** - High-risk tasks without pre-defined trip conditions (v12.0)
+9. **Vague Requirements** - Planning from Level 1/2 requirements without decomposition (v12.0)
+10. **Silent Tradeoffs** - Resolving competing quality attributes without documenting the decision (v12.0)
+11. **No Scope Manifest** - Tasks without bounded file/tool/operation limits (v12.0)
 
 </success_criteria>
 

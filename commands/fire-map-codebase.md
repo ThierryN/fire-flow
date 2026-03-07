@@ -236,7 +236,7 @@ EOF
 Update persistent state:
 
 ```markdown
-## .claude/dominion-flow.local.md
+## .claude/fire-flow.local.md
 
 ### Codebase Map
 - Generated: {timestamp}
@@ -284,7 +284,7 @@ Update persistent state:
 | NEXT UP                                                                      |
 +------------------------------------------------------------------------------+
 |                                                                              |
-|  -> Run `/fire-1-new` to initialize project with this context               |
+|  -> Run `/fire-1a-new` to initialize project with this context               |
 |  -> Or run `/fire-0-orient` if joining an existing project                  |
 |  -> Or run `/fire-2-plan` to start planning with codebase knowledge         |
 |                                                                              |
@@ -309,5 +309,5 @@ Update persistent state:
 
 - **Agent:** Uses `fire-codebase-mapper` agent (parallel exploration)
 - **Related:** `/fire-0-orient` - Uses codebase map for orientation
-- **Related:** `/fire-1-new` - Uses codebase map for project initialization
+- **Related:** `/fire-1a-new` - Uses codebase map for project initialization
 - **Brand:** `@references/ui-brand.md`

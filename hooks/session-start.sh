@@ -1,5 +1,5 @@
 #!/bin/bash
-# MIT License - Copyright (c) 2026 ThierryN - https://github.com/ThierryN/dominion-flow
+# MIT License - Copyright (c) 2026 ThierryN - https://github.com/ThierryN/fire-flow
 #
 # Dominion Flow Plugin - Session Start Hook
 #

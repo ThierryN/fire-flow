@@ -1,7 +1,7 @@
 {
   "name": "@thierrynakoa/fire-flow",
-  "version": "10.0.0",
-  "description": "Structured workflow orchestration for Claude Code — 42 commands, 13 agents, 90+ skills. Plan → Execute → Verify → Handoff with parallel execution, session memory, and circuit breaker safety.",
+  "version": "12.2.0",
+  "description": "Structured workflow orchestration for Claude Code — 46 commands, 15 agents, 478+ skills. Plan → Execute → Verify → Handoff with parallel execution, session memory, circuit breaker safety, Phoenix Rebuild, and learning mode.",
   "keywords": [
     "claude-code",
     "plugin",

@@ -5,7 +5,7 @@
 > cross-phase contradictions occur when rationale is buried in old handoffs.
 > See: references/research-improvements.md (GAP-1, GAP-3, BLIND-SPOT-A)
 
-Template for `.planning/DECISION_LOG.md` — created by `/fire-1-new`.
+Template for `.planning/DECISION_LOG.md` — created by `/fire-1a-new`.
 
 ---
 

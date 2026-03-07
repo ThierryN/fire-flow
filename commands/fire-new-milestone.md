@@ -10,7 +10,7 @@ description: Start a new milestone cycle with questioning, research, requirement
 
 ## Purpose
 
-Start a new milestone for an existing project. This is the brownfield equivalent of `/fire-1-new`. The project exists, PROJECT.md has history. This command gathers "what's next" and takes you through the full cycle.
+Start a new milestone for an existing project. This is the brownfield equivalent of `/fire-1a-new`. The project exists, PROJECT.md has history. This command gathers "what's next" and takes you through the full cycle.
 
 **Creates/Updates:**
 - `.planning/PROJECT.md` - Updated with new milestone goals
@@ -43,7 +43,7 @@ arguments:
 **MANDATORY FGTAT STEP - Execute these checks before ANY user interaction:**
 
 ```bash
-[ -f .planning/PROJECT.md ] || { echo "ERROR: No PROJECT.md. Run /fire-1-new first."; exit 1; }
+[ -f .planning/PROJECT.md ] || { echo "ERROR: No PROJECT.md. Run /fire-1a-new first."; exit 1; }
 ```
 
 Check for active milestone (VISION.md exists):
@@ -282,7 +282,7 @@ Spawn fire-roadmapper agent with context:
 Update persistent state:
 
 ```markdown
-## .claude/dominion-flow.local.md
+## .claude/fire-flow.local.md
 
 ### Current Milestone
 - Version: v[X.Y]
@@ -348,7 +348,7 @@ Update persistent state:
 
 ## References
 
-- **Related:** `/fire-1-new` - Initialize new project (greenfield)
+- **Related:** `/fire-1a-new` - Initialize new project (greenfield)
 - **Related:** `/fire-complete-milestone` - Archive completed milestone
 - **Related:** `/fire-1a-discuss` - Discuss phase before planning
 - **Agent:** Uses `fire-roadmapper` for roadmap creation

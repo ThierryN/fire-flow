@@ -288,7 +288,7 @@ Return to list.
 After any todo action, update persistent state:
 
 ```markdown
-## .claude/dominion-flow.local.md
+## .claude/fire-flow.local.md
 
 ### Todos
 - Pending: [count]

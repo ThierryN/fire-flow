@@ -238,7 +238,7 @@ grep -r "{.*}" [modified-files] | grep -v "^Binary"
 - SWE-Bench Pro (2025): Single agent + retries vs multi-agent swarms
 - METR Study (2025): AI Impact on Developer Productivity
 - CNCF Four Pillars (2025): Golden Paths, Guardrails, Safety Nets, Manual Review
-- Full citation index: `~/.claude/plugins/dominion-flow/references/research-improvements.md`
+- Full citation index: `~/.claude/plugins/fire-flow/references/research-improvements.md`
 
 ---
 

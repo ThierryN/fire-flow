@@ -34,7 +34,7 @@ Read current project state from .planning/CONSCIENCE.md and related files.
 ```bash
 # Check for required state files
 if [ ! -f ".planning/CONSCIENCE.md" ]; then
-  echo "Error: No .planning/CONSCIENCE.md found. Run /fire-1-new first."
+  echo "Error: No .planning/CONSCIENCE.md found. Run /fire-1a-new first."
   exit 1
 fi
 ```
@@ -316,7 +316,7 @@ Categories:
 ║  Could not find .planning/CONSCIENCE.md in current directory.                    ║
 ║                                                                              ║
 ║  To initialize a new project:                                               ║
-║    /fire-1-new                                                             ║
+║    /fire-1a-new                                                             ║
 ║                                                                              ║
 ║  To resume an existing project:                                             ║
 ║    /fire-6-resume                                                          ║

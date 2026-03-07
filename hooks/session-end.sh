@@ -1,5 +1,5 @@
 #!/bin/bash
-# MIT License - Copyright (c) 2026 ThierryN - https://github.com/ThierryN/dominion-flow
+# MIT License - Copyright (c) 2026 ThierryN - https://github.com/ThierryN/fire-flow
 #
 # Dominion Flow Plugin - Session End Hook
 #
@@ -23,7 +23,7 @@
 #   The MEMORY_PROJECT path below points to a local project that handles
 #   vector indexing. If you do not have this project set up, this hook
 #   will skip silently — your session will still work normally.
-#   To set up vector memory, see: https://github.com/ThierryN/dominion-flow
+#   To set up vector memory, see: https://github.com/ThierryN/fire-flow
 
 echo "=============================================="
 echo "  DOMINION FLOW - Session End Consolidation"

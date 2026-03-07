@@ -268,7 +268,7 @@ next_action: "{what to do next}"
 ### Important Paths
 - **Project Root:** {absolute path}
 - **Planning Docs:** {path}/.planning/
-- **Skills Library:** ~/.claude/plugins/dominion-flow/skills-library/
+- **Skills Library:** ~/.claude/plugins/fire-flow/skills-library/
 - **Handoffs:** ~/.claude/warrior-handoffs/
 
 ---

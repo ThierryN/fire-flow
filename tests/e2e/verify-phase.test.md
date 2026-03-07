@@ -9,7 +9,7 @@ Validates that `/fire-4-verify` runs all defined verification steps from the BLU
 ---
 
 ## Prerequisites
-- Dominion Flow plugin installed
+- Fire Flow plugin installed
 - Project with completed or partially completed phase execution
 - BLUEPRINT.md with defined success criteria and verification steps
 
@@ -23,7 +23,7 @@ TEST_DIR=$(mktemp -d)
 cd "$TEST_DIR"
 
 # 2. Copy test project fixture
-cp -r ~/.claude/plugins/dominion-flow/tests/fixtures/test-project/.planning .
+cp -r ~/.claude/plugins/fire-flow/tests/fixtures/test-project/.planning .
 
 # 3. Create a completed plan with verification steps
 mkdir -p .planning/phases/01-test-phase

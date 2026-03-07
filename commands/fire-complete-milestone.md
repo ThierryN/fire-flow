@@ -157,7 +157,7 @@ Key accomplishments:
 - {accomplishment 2}
 
 ## Next Milestone Goals
-<!-- Defined by /fire-1-new or /fire-new-milestone -->
+<!-- Defined by /fire-1a-new or /fire-new-milestone -->
 ```
 
 ### Step 7: Commit and Tag
@@ -197,7 +197,7 @@ Use AskUserQuestion:
 Update persistent state:
 
 ```markdown
-## .claude/dominion-flow.local.md
+## .claude/fire-flow.local.md
 
 ### Milestone Completion
 - Version: v{version}

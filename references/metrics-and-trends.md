@@ -60,7 +60,7 @@ metrics:
 > enabling fine-grained learning signals beyond binary success/fail.
 
 ```yaml
-## Turn-Level Metrics (collected in dominion-flow.local.md per loop session)
+## Turn-Level Metrics (collected in fire-flow.local.md per loop session)
 iteration_rewards:
   - iteration: 1
     reward: 4.2

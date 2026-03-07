@@ -201,6 +201,41 @@ Use AskUserQuestion:
 
 **Skip condition:** If `--quick` flag is set, still load directives (they're tiny and high-value).
 
+### Step 2.9: Dead Ends Review (v11.3)
+
+> **Philosophy:** A fresh Claude instance with clean context is the best solver for problems that burned a previous instance. Check for dead ends FIRST — you might solve in 30 seconds what the last instance couldn't in 15 minutes.
+
+**Read `.planning/breadcrumbs/FAILURES.md`** — if it exists, look for entries tagged `[DEAD-END]`:
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ DEAD ENDS — {N} unsolved problem(s) from previous sessions                  │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  1. [{priority}] {title}                                                    │
+│     Shelved: {date} by {agent} — Attempts: {N}                             │
+│     Untested hypotheses: {N}                                                │
+│                                                                             │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+**For the highest-priority `[DEAD-END]` entry:**
+
+1. Read the full entry (problem, prior attempts, untested hypotheses, relevant files)
+2. With your fresh context, **attempt the top untested hypothesis**
+3. **If solved:**
+   - Move the entry to `breadcrumbs/LESSONS.md` with `[DEAD-END-SOLVED]` tag
+   - Remove the `[DEAD-END]` tag from `FAILURES.md`
+   - Log the solution approach for future reference
+4. **If still stuck after one focused attempt:**
+   - Update the entry with your new attempt
+   - Don't burn more tokens — move on to normal work
+   - The NEXT fresh instance will try again
+
+**Time budget:** Max 5 minutes on dead-end problems. This is a bonus attempt, not the main work.
+
+**Skip condition:** If `--quick` flag or no `FAILURES.md` exists, skip.
+
 ### Step 3: Display Project Status Summary
 
 ```
@@ -426,7 +461,7 @@ This command does NOT spawn agents. It loads context and provides routing recomm
 ║                                                                              ║
 ║  Options:                                                                    ║
 ║    A) Check if project exists: look for .planning/CONSCIENCE.md                   ║
-║    B) Initialize new project: /fire-1-new                                   ║
+║    B) Initialize new project: /fire-1a-new                                   ║
 ║    C) Check handoff directory: ls ~/.claude/warrior-handoffs/                ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
@@ -486,7 +521,7 @@ This command does NOT spawn agents. It loads context and provides routing recomm
 ║  Options:                                                                    ║
 ║    A) Create CONSCIENCE.md from handoff context                                   ║
 ║    B) Navigate to correct project directory                                  ║
-║    C) Initialize fresh: /fire-1-new                                         ║
+║    C) Initialize fresh: /fire-1a-new                                         ║
 ║                                                                              ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
 ```

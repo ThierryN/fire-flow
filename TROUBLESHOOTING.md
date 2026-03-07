@@ -171,14 +171,14 @@ Common failure modes and their fixes.
 - Agent's `tools:` list references unavailable tools
 
 **Fix Steps:**
-1. Check that all agent files exist: `ls ~/.claude/plugins/dominion-flow/agents/`
+1. Check that all agent files exist: `ls ~/.claude/plugins/fire-flow/agents/`
 2. Expected files: `fire-executor.md`, `fire-planner.md`, `fire-researcher.md`, `fire-verifier.md`, `fire-reviewer.md`
 3. Verify each file has valid YAML frontmatter with `name:` and `description:`
 4. If a file is missing, run `/fire-update` to pull the latest plugin version
 
 **Prevention:**
 - Don't manually edit agent files unless you know the frontmatter schema
-- After updating the plugin, verify agents: `ls ~/.claude/plugins/dominion-flow/agents/`
+- After updating the plugin, verify agents: `ls ~/.claude/plugins/fire-flow/agents/`
 - SWARM mode requires the experimental teams flag: `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`
 
 ---
@@ -196,7 +196,7 @@ Common failure modes and their fixes.
 - Skill was deleted or moved to a different category
 
 **Fix Steps:**
-1. Check the skills library exists: `ls ~/.claude/plugins/dominion-flow/skills-library/`
+1. Check the skills library exists: `ls ~/.claude/plugins/fire-flow/skills-library/`
 2. Run `/fire-skills-sync --pull` to pull latest skills from global to project
 3. Run `/fire-skills-sync --dry-run` to see what's out of sync
 4. If a specific skill is missing, search by keyword: `/fire-search "{topic}"`

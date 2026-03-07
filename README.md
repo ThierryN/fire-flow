@@ -1,20 +1,51 @@
-# Dominion Flow
+# Fire Flow (Dominion Flow) v12.2
 
-**A comprehensive orchestration platform that empowers your Claude agent.**
+**The most comprehensive orchestration platform for Claude Code.**
 
-Dominion Flow gives Claude a complete, structured way to take your project from idea to finished code — with built-in quality checks, session memory, parallel execution, and a library of proven patterns. Think of it as a project management system that lives inside Claude Code.
+Fire Flow gives Claude a complete, structured way to take your project from idea to finished code — with built-in quality checks, session memory, parallel execution, and a library of 478+ proven patterns. Think of it as a project management system that lives inside Claude Code.
+
+---
+
+## NEW in v12.2: Phoenix Rebuild
+
+**Every AI coding tool creates code. Fire Flow is the first that can take a messy "vibe coded" project and rebuild it clean.**
+
+```bash
+/fire-phoenix --source ./my-messy-app
+```
+
+Phoenix reverse-engineers what your code was *trying* to do, asks you clarifying questions, then rebuilds the entire project from scratch in a new folder — production-ready, properly architected, fully tested.
+
+**6-phase autonomous pipeline:**
+```
+AUTOPSY → INTENT → CLARIFY → VISION → REBUILD → COMPARISON
+```
+
+- Extracts developer INTENT from messy code (not just what it does, but what it was *trying* to do)
+- Classifies every feature: intended, accidental, workaround, or abandoned
+- Maps anti-patterns to clean replacements (12 common vibe-coder patterns)
+- Preserves edge cases and business rules (the important stuff)
+- Source folder is never modified — rebuild goes to a new target folder
+- Phoenix Score (PX-1 to PX-5) verifies feature parity, edge case coverage, and architecture improvement
+
+**Dry-run mode** analyzes without rebuilding — useful for auditing any codebase:
+```bash
+/fire-phoenix --source ./app --dry-run
+```
 
 ---
 
 ## What Does It Do?
 
-When you start a new project, Claude normally has no memory between sessions, no standard process, and no way to verify its own work. Dominion Flow fixes all of that:
+When you start a new project, Claude normally has no memory between sessions, no standard process, and no way to verify its own work. Fire Flow fixes all of that:
 
 - **Structured workflow** — A numbered pipeline (Plan → Execute → Verify → Handoff) so nothing gets skipped
 - **Session memory** — Claude picks up exactly where it left off, every time
 - **Parallel execution** — Multiple tasks run at the same time, safely, so work gets done faster
-- **Built-in quality gates** — A comprehensive checklist verifies every phase before moving on
-- **Skills library** — A growing collection of proven code patterns Claude can reuse instead of reinventing every time
+- **Built-in quality gates** — 70-point verification checklist with tiered gates (fast → must-haves → comprehensive)
+- **Skills library** — 478+ proven code patterns Claude can reuse instead of reinventing every time
+- **Phoenix Rebuild** — Take any messy codebase and rebuild it clean from extracted intent
+- **Research-backed methodology** — Circuit breaker intelligence, kill conditions, stuck-state classification, and more
 
 ---
 
@@ -24,35 +55,15 @@ This plugin is for anyone using Claude Code who wants:
 - Consistent, repeatable results on complex projects
 - Claude to remember what it was doing between sessions
 - Code that gets reviewed and verified, not just written
+- A messy "vibe coded" project cleaned up and rebuilt properly
 
 **No prior experience with orchestration or AI agents required.**
 
+---
 
+## Quick Install
 
-Introducing Dominion Flow: Elevate Your Claude Code Workflow
-
-Are you using Claude Code to build projects but feeling limited by session-hopping, lack of structure, or the need to constantly re-explain your requirements? Dominion Flow is a project management and orchestration plugin built to transform Claude from a simple assistant into a structured, persistent, and highly capable autonomous development agent.
-What is Dominion Flow?
-
-Dominion Flow acts as a professional-grade "operating system" inside your terminal. It introduces a formal, repeatable pipeline—Plan → Execute → Verify → Handoff—that ensures your project moves from an idea to working, verified code without skipping critical steps.
-Why Use It?
-
-    Persistent Memory: Through integrated vector database support (Qdrant), Dominion Flow allows Claude to remember your codebase, past decisions, and coding patterns across different sessions.
-
-    Structured Pipeline: Stop guessing where to start. The platform uses a clear, 39-command framework to guide you through every phase of development.
-
-    Quality & Verification: Built-in quality gates and automated testing (including Playwright E2E testing) ensure that code isn't just written—it's verified.
-
-    Autonomous Capabilities: Need to go hands-off? Features like /fire-autonomous allow Claude to plan, code, and verify entire project phases on its own.
-
-    Reusable Skills Library: Stop reinventing the wheel. Dominion Flow includes a library of proven, reusable patterns for authentication, APIs, payments, and more, which Claude can automatically learn and store as you build.
-
-Who Is It For?
-
-Whether you are a developer looking for a consistent, professional workflow or someone who wants to maximize the potential of Claude Code, Dominion Flow provides the structure and "long-term memory" required for complex, real-world projects.
-How to Get Started
-
-Dominion Flow is designed to be easily installed as a Claude Code plugin. One command does it all:
+One command does it all:
 
 ```bash
 npx @thierrynakoa/fire-flow
@@ -285,14 +296,14 @@ Claude will query Qdrant directly and confirm it is live.
 Start a new project with one command:
 
 ```bash
-/fire-1-new
+/fire-1a-new
 ```
 
 Claude will ask you a few simple questions about your project, then set everything up automatically. After that, the numbered commands walk you through each step:
 
 ```
-/fire-1-new      → Start your project (asks you questions, creates the plan)
-/fire-2-plan 1   → Plan the first phase of work
+/fire-1a-new      → Start your project (asks you questions, creates the plan)
+/fire-2-plan 1    → Plan the first phase of work
 /fire-3-execute 1 → Build it (Claude does the coding)
 /fire-4-verify 1  → Check that everything actually works
 /fire-5-handoff   → Save your progress before closing
@@ -300,11 +311,16 @@ Claude will ask you a few simple questions about your project, then set everythi
 ```
 
 **Want Claude to handle everything automatically?**
-After `/fire-1-new`, just run:
+After `/fire-1a-new`, just run:
 ```bash
 /fire-autonomous
 ```
 Claude will plan, build, and verify every phase without you having to type each command.
+
+**Have a messy existing project?** Rebuild it clean:
+```bash
+/fire-phoenix --source ./my-app
+```
 
 ---
 
@@ -316,32 +332,35 @@ Claude will plan, build, and verify every phase without you having to type each 
 
 | Feature | What It Does |
 |---------|-------------|
-| 42 slash commands | Every task has a dedicated command — no guessing |
-| Skills library | Proven patterns for auth, payments, APIs, and more |
+| 46 slash commands | Every task has a dedicated command — no guessing |
+| 478+ skills library | Proven patterns for auth, payments, APIs, and more |
+| Phoenix Rebuild | Reverse-engineer messy code intent, rebuild clean from scratch |
 | Breath-based parallelism | Independent tasks run at the same time |
-| 70-point verification | Every phase gets scored before moving on |
+| Tiered verification | Fast gate → must-haves → 70-point WARRIOR checklist |
 | Session handoffs | Claude remembers everything between sessions |
-| Circuit breaker | Stops loops that are stuck or going in circles |
+| Circuit breaker intelligence | 6-type stuck classification with kill conditions |
 | Auto skill extraction | Useful patterns discovered during work get saved automatically |
 | Playwright E2E testing | Automated browser testing built in |
 | Learncoding mode | Walk through any codebase step-by-step to learn it |
 | Security scanning | Detect prompt injection, OWASP vulnerabilities, credential leaks |
+| GoF design patterns | All 22 patterns mapped to AI agent architecture |
 
 ---
 
-## All 39 Commands
+## All 46 Commands
 
-Commands are grouped into 7 tiers. You only need Tier 1 for most projects.
+Commands are grouped into 8 tiers. You only need Tier 1 for most projects.
 
 | Tier | Purpose | Key Commands |
 |------|---------|-------------|
-| 1 — Core Workflow | The main pipeline | `/fire-1-new` through `/fire-6-resume` |
-| 2 — Autonomous | Full autopilot | `/fire-autonomous`, `/fire-loop` |
+| 1 — Core Workflow | The main pipeline | `/fire-1a-new` through `/fire-6-resume` |
+| 2 — Autonomous | Full autopilot + Phoenix Rebuild | `/fire-autonomous`, `/fire-phoenix`, `/fire-loop` |
 | 3 — Debug & Discover | Investigate problems | `/fire-debug`, `/fire-map-codebase` |
 | 4 — Verification | Quality gates | `/fire-7-review`, `/fire-verify-uat` |
 | 5 — Skills | Manage the pattern library | `/fire-search`, `/fire-add-new-skill` |
 | 6 — Analytics & PM | Track progress | `/fire-dashboard`, `/fire-todos` |
 | 7 — Milestones | Long-term projects | `/fire-new-milestone`, `/fire-complete-milestone` |
+| 8 — Advanced | Specialized tools | `/fire-cost`, `/fire-execute-plan` |
 
 See [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) for the complete list with descriptions.
 
@@ -371,7 +390,7 @@ You can also create your own skills as you work. When Claude discovers a useful 
 | File | What It Covers |
 |------|---------------|
 | [QUICK-START.md](./QUICK-START.md) | Step-by-step walkthrough of your first project |
-| [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) | All 39 commands with descriptions |
+| [COMMAND-REFERENCE.md](./COMMAND-REFERENCE.md) | All 46 commands with descriptions |
 | [references/warrior-principles.md](./references/warrior-principles.md) | The WARRIOR operating principles — what they are and why they matter |
 | [DOMINION-FLOW-OVERVIEW.md](./DOMINION-FLOW-OVERVIEW.md) | Full system diagrams and architecture |
 | [ARCHITECTURE-DIAGRAM.md](./ARCHITECTURE-DIAGRAM.md) | Visual overview of how everything connects |

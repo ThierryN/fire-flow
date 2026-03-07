@@ -73,7 +73,7 @@ Type: [keyword | category | tag | problem]
 ### Search Skills Library
 
 Search across all skill files in:
-- `~/.claude/plugins/dominion-flow/skills-library/`
+- `~/.claude/plugins/fire-flow/skills-library/`
 
 Categories to search (15 total):
 1. `database-solutions/` - Database patterns, queries, optimization

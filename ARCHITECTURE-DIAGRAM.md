@@ -14,7 +14,7 @@ Visual representations of the Dominion Flow system architecture.
 +-------------------------------------------------------------------------+
 |                        Dominion Flow orchestration SHELL                          |
 |                                                                         |
-|   /fire-1-new  -->  /fire-2-plan  -->  /fire-3-execute              |
+|   /fire-1a-new  -->  /fire-2-plan  -->  /fire-3-execute              |
 |         |                  |                    |                       |
 |         v                  v                    v                       |
 |   [Project Init]    [Phase Planning]    [Breath Execution]               |
@@ -34,7 +34,7 @@ Visual representations of the Dominion Flow system architecture.
 |   +-------------------+  +-------------------+  +-------------------+   |
 |   |  SKILLS LIBRARY   |  | HONESTY PROTOCOLS |  |   VALIDATION      |   |
 |   |                   |  |                   |  |   FRAMEWORK       |   |
-|   | - 190+ patterns   |  | - No false claims |  | - 70-point check  |   |
+|   | - 478+ patterns   |  | - No false claims |  | - 70-point check  |   |
 |   | - 15 categories   |  | - Admit unknowns  |  | - Must-haves      |   |
 |   | - Versioned       |  | - Evidence-based  |  | - Goal-backward   |   |
 |   | - Searchable      |  | - Flag assumptions|  | - Auto-verify     |   |
@@ -222,7 +222,10 @@ Visual representations of the Dominion Flow system architecture.
 +------------------+          +------------------+
 |    COMMANDS      |          |     AGENTS       |
 +------------------+          +------------------+
-| fire-1-new       |--------->| fire-planner    |
+| fire-1a-new      |--------->| fire-planner    |
+| fire-1b-research |--------->| fire-researcher |
+| fire-1c-setup    |          | fire-vision-    |
+|                  |          |   architect     |
 | fire-2-plan      |--------->| fire-executor   |
 | fire-3-execute   |--------->| fire-verifier   |
 | fire-4-verify    |--------->| fire-researcher |
@@ -429,7 +432,7 @@ skills-library/
             +-- work-with-complexity.md
             +-- ...
 
-Total: 190+ skills across 15 categories
+Total: 478+ skills across 15 categories
 Versioned: Git history for rollback
 Searchable: /fire-search command
 Contributable: /fire-contribute command

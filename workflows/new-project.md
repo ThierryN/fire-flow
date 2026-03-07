@@ -476,7 +476,7 @@ status: ready_to_plan
 
 **Purpose:** Ensure automatic context loading on session start.
 
-The Dominion Flow plugin includes SessionStart hooks that:
+The Fire Flow plugin includes SessionStart hooks that:
 1. Load CONSCIENCE.md context automatically
 2. Remind about WARRIOR handoffs
 3. Display last activity and next action
@@ -484,7 +484,7 @@ The Dominion Flow plugin includes SessionStart hooks that:
 **Verify hook configuration:**
 ```bash
 # Check hooks.json exists in plugin
-ls ~/.claude/plugins/dominion-flow/hooks/hooks.json
+ls ~/.claude/plugins/fire-flow/hooks/hooks.json
 ```
 
 ---

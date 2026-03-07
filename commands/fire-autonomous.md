@@ -180,7 +180,7 @@ FOR phase_number in range(from_phase, to_phase + 1):
 
     Run /fire-3-execute {phase_number} --auto-continue --autonomous
     // --auto-continue: no breath-boundary interrupts
-    // --autonomous: merge gate auto-routes verdicts (v9.0)
+    // --autonomous: merge gate auto-routes verdicts (v9.0, enhanced v12.0)
 
     // ──────────────────────────────────────────────────────
     // Step 3.3: AUTO-VERIFY (read results)
@@ -312,6 +312,23 @@ Write .planning/autonomous-log.md:
 
 ### Behavioral Directive Proposals
 {Any HIGH/CRITICAL findings from reviewer that should become rules}
+
+### DORA Metrics (v12.0 — AUTONOMOUS_ORCHESTRATION skill)
+
+| Metric | Value | Notes |
+|--------|-------|-------|
+| Deployment Frequency | {phases_completed}/{elapsed_time} | Phases per hour |
+| Change Lead Time | {avg time from plan to verified} | Plan→Execute→Verify avg |
+| Change Failure Rate | {failed_attempts}/{total_attempts} | Lower = better quality plans |
+| Recovery Time | {avg time from NEEDS FIX to next PASS} | Re-plan + re-execute avg |
+
+### Supervised Autonomy Assessment (v12.0)
+
+| Tier | Description | This Session |
+|------|-------------|-------------|
+| Human-in-the-loop | Every decision approved | Not used |
+| Human-on-the-loop | Monitoring, intervenes on blockers | Active (via circuit breaker) |
+| Human-out-of-loop | Full autonomy with instrumentation | {if no blockers: "Achieved"} |
 ```
 
 ### Step 6: Completion Banner
@@ -402,7 +419,7 @@ forward-looking context that the memory system doesn't capture.
 ### Step 8: Sabbath Rest — Session State
 
 ```
-Update .claude/dominion-flow.local.md:
+Update .claude/fire-flow.local.md:
 
 ---
 last_session: {timestamp}
@@ -524,5 +541,5 @@ WHAT IS DISABLED in autonomous mode:
 
 ---
 
-*Dominion Flow v9.0 — Full autopilot with instrumentation over restriction*
+*Dominion Flow v12.0 — Full autopilot with instrumentation over restriction*
 *Boris Cherny principle: "You don't trust; you instrument."*

@@ -45,8 +45,8 @@ SABBATH_FILE=$(ls .planning/loops/sabbath-${LOOP_ID}*.md 2>/dev/null | head -1)
 **If no LOOP_ID (resume most recent):**
 ```bash
 # Check Sabbath Rest state first
-if [ -f ".claude/dominion-flow.local.md" ]; then
-  LOOP_ID=$(grep "Loop ID:" .claude/dominion-flow.local.md | head -1 | cut -d: -f2 | xargs)
+if [ -f ".claude/fire-flow.local.md" ]; then
+  LOOP_ID=$(grep "Loop ID:" .claude/fire-flow.local.md | head -1 | cut -d: -f2 | xargs)
 fi
 
 # Or find most recent sabbath file

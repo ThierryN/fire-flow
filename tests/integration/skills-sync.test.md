@@ -4,12 +4,12 @@
 `skills-sync-bidirectional`
 
 ## Description
-Validates that skills can be synchronized bidirectionally between the Dominion Flow plugin's local skills library and the global WARRIOR workflow skills library. Tests both push (contribute) and pull (sync from global) operations.
+Validates that skills can be synchronized bidirectionally between the Fire Flow plugin's local skills library and the global WARRIOR workflow skills library. Tests both push (contribute) and pull (sync from global) operations.
 
 ---
 
 ## Prerequisites
-- Dominion Flow plugin installed at `~/.claude/plugins/dominion-flow/`
+- Fire Flow plugin installed at `~/.claude/plugins/fire-flow/`
 - WARRIOR workflow plugin installed at `~/.claude/plugins/warrior-workflow/`
 - Both plugins have skills-library directories
 - Write permissions to both directories
@@ -20,15 +20,15 @@ Validates that skills can be synchronized bidirectionally between the Dominion F
 
 ```bash
 # 1. Define paths
-DOMINION FLOW_SKILLS="$HOME/.claude/plugins/dominion-flow/skills-library"
+FIRE_FLOW_SKILLS="$HOME/.claude/plugins/fire-flow/skills-library"
 WARRIOR_SKILLS="$HOME/.claude/plugins/warrior-workflow/skills-library"
 
 # 2. Verify both directories exist
-[ -d "$DOMINION FLOW_SKILLS" ] && echo "Dominion Flow skills: exists" || echo "Dominion Flow skills: MISSING"
+[ -d "$FIRE_FLOW_SKILLS" ] && echo "Dominion Flow skills: exists" || echo "Dominion Flow skills: MISSING"
 [ -d "$WARRIOR_SKILLS" ] && echo "WARRIOR skills: exists" || echo "WARRIOR skills: MISSING"
 
 # 3. Count existing skills
-PF_COUNT=$(find "$DOMINION FLOW_SKILLS" -name "*.md" -type f 2>/dev/null | wc -l)
+PF_COUNT=$(find "$FIRE_FLOW_SKILLS" -name "*.md" -type f 2>/dev/null | wc -l)
 WF_COUNT=$(find "$WARRIOR_SKILLS" -name "*.md" -type f 2>/dev/null | wc -l)
 echo "Dominion Flow skills: $PF_COUNT"
 echo "WARRIOR skills: $WF_COUNT"
@@ -57,8 +57,8 @@ Integration test - sync-test
 EOF
 
 # 5. Create test skill in Dominion Flow (to test push)
-mkdir -p "$DOMINION FLOW_SKILLS/test-category"
-cat > "$DOMINION FLOW_SKILLS/test-category/dominion-flow-test.md" << 'EOF'
+mkdir -p "$FIRE_FLOW_SKILLS/test-category"
+cat > "$FIRE_FLOW_SKILLS/test-category/fire-flow-test.md" << 'EOF'
 # Dominion Flow Test Skill
 
 ## Overview
@@ -76,7 +76,7 @@ powerflow, test, push
 2. Dominion Flow step two
 
 ## Created By
-Integration test - dominion-flow
+Integration test - fire-flow
 EOF
 ```
 
@@ -111,7 +111,7 @@ EOF
 #   - Report synced files
 
 # Or if using specific skill:
-/fire-sync --push test-category/dominion-flow-test.md
+/fire-sync --push test-category/fire-flow-test.md
 ```
 
 ### Test Case 3: Bidirectional Sync
@@ -129,7 +129,7 @@ EOF
 ### Test Case 4: Conflict Detection
 ```bash
 # Create conflicting skill (same name, different content)
-cat > "$DOMINION FLOW_SKILLS/test-category/conflict-skill.md" << 'EOF'
+cat > "$FIRE_FLOW_SKILLS/test-category/conflict-skill.md" << 'EOF'
 # Conflict Skill - Dominion Flow Version
 Content from Dominion Flow
 EOF
@@ -155,7 +155,7 @@ EOF
 ### Pull Verification
 ```bash
 # Check skill was pulled to Dominion Flow
-PULLED_SKILL="$DOMINION FLOW_SKILLS/test-category/sync-test-skill.md"
+PULLED_SKILL="$FIRE_FLOW_SKILLS/test-category/sync-test-skill.md"
 [ -f "$PULLED_SKILL" ] && echo "PASS: Skill pulled to Dominion Flow" || echo "FAIL: Skill not pulled"
 
 # Verify content matches source
@@ -168,12 +168,12 @@ fi
 ### Push Verification
 ```bash
 # Check skill was pushed to WARRIOR
-PUSHED_SKILL="$WARRIOR_SKILLS/test-category/dominion-flow-test.md"
+PUSHED_SKILL="$WARRIOR_SKILLS/test-category/fire-flow-test.md"
 [ -f "$PUSHED_SKILL" ] && echo "PASS: Skill pushed to WARRIOR" || echo "FAIL: Skill not pushed"
 
 # Verify content matches source
 if [ -f "$PUSHED_SKILL" ]; then
-    diff "$PUSHED_SKILL" "$DOMINION FLOW_SKILLS/test-category/dominion-flow-test.md" > /dev/null
+    diff "$PUSHED_SKILL" "$FIRE_FLOW_SKILLS/test-category/fire-flow-test.md" > /dev/null
     [ $? -eq 0 ] && echo "PASS: Content matches" || echo "FAIL: Content differs"
 fi
 ```
@@ -181,19 +181,19 @@ fi
 ### Category Preservation
 ```bash
 # Verify category directories are preserved
-[ -d "$DOMINION FLOW_SKILLS/test-category" ] && echo "PASS: PF category preserved" || echo "FAIL: PF category missing"
+[ -d "$FIRE_FLOW_SKILLS/test-category" ] && echo "PASS: PF category preserved" || echo "FAIL: PF category missing"
 [ -d "$WARRIOR_SKILLS/test-category" ] && echo "PASS: WF category preserved" || echo "FAIL: WF category missing"
 ```
 
 ### Duplicate Prevention
 ```bash
 # Run sync again - should not duplicate
-BEFORE_COUNT=$(find "$DOMINION FLOW_SKILLS" -name "*.md" -type f | wc -l)
+BEFORE_COUNT=$(find "$FIRE_FLOW_SKILLS" -name "*.md" -type f | wc -l)
 
 # Sync again (in Claude Code):
 # /fire-sync --all
 
-AFTER_COUNT=$(find "$DOMINION FLOW_SKILLS" -name "*.md" -type f | wc -l)
+AFTER_COUNT=$(find "$FIRE_FLOW_SKILLS" -name "*.md" -type f | wc -l)
 [ "$BEFORE_COUNT" -eq "$AFTER_COUNT" ] && echo "PASS: No duplicates" || echo "FAIL: Duplicates created"
 ```
 
@@ -210,15 +210,15 @@ echo "Verify Claude Code reported conflict for 'conflict-skill.md'"
 
 ```bash
 # Remove test skills from both locations
-rm -f "$DOMINION FLOW_SKILLS/test-category/sync-test-skill.md"
-rm -f "$DOMINION FLOW_SKILLS/test-category/dominion-flow-test.md"
-rm -f "$DOMINION FLOW_SKILLS/test-category/conflict-skill.md"
+rm -f "$FIRE_FLOW_SKILLS/test-category/sync-test-skill.md"
+rm -f "$FIRE_FLOW_SKILLS/test-category/fire-flow-test.md"
+rm -f "$FIRE_FLOW_SKILLS/test-category/conflict-skill.md"
 rm -f "$WARRIOR_SKILLS/test-category/sync-test-skill.md"
-rm -f "$WARRIOR_SKILLS/test-category/dominion-flow-test.md"
+rm -f "$WARRIOR_SKILLS/test-category/fire-flow-test.md"
 rm -f "$WARRIOR_SKILLS/test-category/conflict-skill.md"
 
 # Remove test category if empty
-rmdir "$DOMINION FLOW_SKILLS/test-category" 2>/dev/null
+rmdir "$FIRE_FLOW_SKILLS/test-category" 2>/dev/null
 rmdir "$WARRIOR_SKILLS/test-category" 2>/dev/null
 
 echo "Cleanup complete"

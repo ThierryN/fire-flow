@@ -116,7 +116,7 @@ Add to history:
 ### Step 7: Update Sabbath Rest State
 
 ```markdown
-## .claude/dominion-flow.local.md
+## .claude/fire-flow.local.md
 
 ### Power Loop - Stopped
 - Loop ID: ${LOOP_ID}

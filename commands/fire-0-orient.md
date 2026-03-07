@@ -60,7 +60,7 @@ arguments:
 â”‚ DON'T USE WHEN:                                                             â”‚
 â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¤
 â”‚                                                                             â”‚
-â”‚  âœ— Starting a NEW project â†’ use /fire-1-new                                â”‚
+â”‚  âœ— Starting a NEW project â†’ use /fire-1a-new                                â”‚
 â”‚  âœ— Handoff file exists â†’ use /fire-6-resume                                â”‚
 â”‚  âœ— You already understand the project                                       â”‚
 â”‚                                                                             â”‚
@@ -185,7 +185,7 @@ Based on discovery, determine project state:
 â”‚  â””â”€â”€ Last Activity: {date from CONSCIENCE.md or git}                             â”‚
 â”‚                                                                             â”‚
 â”‚  Sabbath Rest (Session State):                                              â”‚
-â”‚  â”œâ”€â”€ dominion-flow.local.md: {status}                                          â”‚
+â”‚  â”œâ”€â”€ fire-flow.local.md: {status}                                          â”‚
 â”‚  â”œâ”€â”€ fire-debugger.local.md: {status}                                      â”‚
 â”‚  â””â”€â”€ [other .local.md files]                                                â”‚
 â”‚                                                                             â”‚
@@ -264,7 +264,7 @@ Based on assessment, recommend next action:
 â•‘  Options:                                                                    â•‘
 â•‘                                                                              â•‘
 â•‘  A) Initialize Dominion Flow for this project:                                  â•‘
-â•‘     â†’ /fire-1-new                                                           â•‘
+â•‘     â†’ /fire-1a-new                                                           â•‘
 â•‘     Creates: .planning/, CONSCIENCE.md, VISION.md                                â•‘
 â•‘                                                                              â•‘
 â•‘  B) Work without Dominion Flow (ad-hoc):                                        â•‘
@@ -346,7 +346,7 @@ Based on assessment, recommend next action:
 
 > *Like humans need sleep to reset, AI agents need state files to resume after context resets.*
 
-**Create/Update:** `.claude/dominion-flow.local.md`
+**Create/Update:** `.claude/fire-flow.local.md`
 
 ```markdown
 ---
@@ -437,7 +437,7 @@ START
   â”‚     â””â”€â–º Not found â†’ Continue
   â”‚
   â”œâ”€â–º Check .planning/CONSCIENCE.md
-  â”‚     â”œâ”€â–º Not found â†’ RECOMMEND /fire-1-new
+  â”‚     â”œâ”€â–º Not found â†’ RECOMMEND /fire-1a-new
   â”‚     â””â”€â–º Found â†’ Continue
   â”‚
   â”œâ”€â–º Parse CONSCIENCE.md for current phase
@@ -452,7 +452,7 @@ START
 
 ## Related Commands
 
-- `/fire-1-new` - Initialize Dominion Flow for new projects
+- `/fire-1a-new` - Initialize Dominion Flow for new projects
 - `/fire-6-resume` - Resume from WARRIOR handoff
 - `/fire-dashboard` - View detailed project status
 - `/fire-1a-discuss` - Gather context before planning

@@ -9,7 +9,7 @@ Validates that `/fire-6-resume` properly restores context from a previous sessio
 ---
 
 ## Prerequisites
-- Dominion Flow plugin installed
+- Fire Flow plugin installed
 - Existing handoff file in `~/.claude/warrior-handoffs/`
 - Project directory accessible
 
@@ -23,7 +23,7 @@ TEST_DIR=$(mktemp -d)
 cd "$TEST_DIR"
 
 # 2. Copy test project fixture
-cp -r ~/.claude/plugins/dominion-flow/tests/fixtures/test-project/.planning .
+cp -r ~/.claude/plugins/fire-flow/tests/fixtures/test-project/.planning .
 
 # 3. Create a handoff file (simulating previous session)
 HANDOFF_DIR="$HOME/.claude/warrior-handoffs"

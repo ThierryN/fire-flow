@@ -2,7 +2,7 @@
 description: Gather implementation context through adaptive questioning before planning
 ---
 
-# /fire-1a-discuss
+# /fire-1d-discuss
 
 > Think before you plan
 
@@ -24,7 +24,7 @@ arguments:
     required: true
     type: integer
     description: "Phase number to discuss"
-    example: "/fire-1a-discuss 3"
+    example: "/fire-1d-discuss 3"
 
   --quick:
     required: false
@@ -195,6 +195,34 @@ Before presenting gray areas, validate that captured decisions reach FILE-LEVEL 
 **IF score >= 8:**
   Proceed to Step 4 with high-specificity plan.
 
+### Step 3.7: Requirements Decomposition Check (v12.0)
+
+> **Source:** REQUIREMENTS_DECOMPOSITION skill — utility tree decomposition
+
+Before presenting gray areas, verify that requirements are decomposed to actionable depth:
+
+```
+FOR each requirement discussed so far:
+  CLASSIFY decomposition level:
+    Level 1: Quality attribute ("good performance")     → TOO VAGUE
+    Level 2: Sub-factor ("fast page loads")             → STILL VAGUE
+    Level 3: Refined sub-factor ("< 2s initial load")   → GETTING THERE
+    Level 4: Requirement ("Lazy-load images, code-split routes") → ACTIONABLE
+
+  IF requirement is Level 1 or Level 2:
+    → Generate follow-up question to decompose further
+    → "You mentioned '{requirement}' — what specifically does that mean?
+       For example: {suggest 2-3 Level 4 decompositions}"
+
+  IF requirement is Level 3:
+    → Accept but flag for planner to decompose to Level 4
+
+  IF requirement is Level 4:
+    → Accept as-is
+```
+
+**Goal:** No Level 1/2 requirements should survive the discuss phase. The planner receives Level 3+ requirements only.
+
 ### Step 4: Present Gray Areas
 
 ```
@@ -337,7 +365,7 @@ Track deferred ideas internally.
 
 > *Like humans need sleep to reset, AI agents need state files to resume after context resets.*
 
-**Create/Update:** `.claude/dominion-flow.local.md`
+**Create/Update:** `.claude/fire-flow.local.md`
 
 ```markdown
 ---
@@ -428,16 +456,16 @@ When reasonable, let user delegate to Claude's judgment.
 
 ```bash
 # Discuss phase 3 before planning
-/fire-1a-discuss 3
+/fire-1d-discuss 3
 
 # Quick discussion (2 questions per area)
-/fire-1a-discuss 5 --quick
+/fire-1d-discuss 5 --quick
 
 # Focus on specific areas only
-/fire-1a-discuss 2 --areas "layout,behavior"
+/fire-1d-discuss 2 --areas "layout,behavior"
 
 # Skip if already discussed
-/fire-1a-discuss 4 --skip-existing
+/fire-1d-discuss 4 --skip-existing
 ```
 
 ---

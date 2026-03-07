@@ -9,8 +9,8 @@ Validates that `/fire-contribute` allows users to add new skills to the skills l
 ---
 
 ## Prerequisites
-- Dominion Flow plugin installed
-- Skills library directory exists at `~/.claude/plugins/dominion-flow/skills-library/`
+- Fire Flow plugin installed
+- Skills library directory exists at `~/.claude/plugins/fire-flow/skills-library/`
 - Write permissions to skills library
 
 ---
@@ -19,7 +19,7 @@ Validates that `/fire-contribute` allows users to add new skills to the skills l
 
 ```bash
 # 1. Verify skills library exists
-SKILLS_LIB="$HOME/.claude/plugins/dominion-flow/skills-library"
+SKILLS_LIB="$HOME/.claude/plugins/fire-flow/skills-library"
 [ -d "$SKILLS_LIB" ] && echo "Skills library exists" || mkdir -p "$SKILLS_LIB"
 
 # 2. Note existing skills count

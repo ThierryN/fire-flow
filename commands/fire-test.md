@@ -37,7 +37,7 @@ End-to-end tests verify each command works in isolation:
 
 | Test | Command | Verification |
 |------|---------|--------------|
-| 1 | `/fire-1-new` | Creates correct .planning/ structure with all required files |
+| 1 | `/fire-1a-new` | Creates correct .planning/ structure with all required files |
 | 2 | `/fire-2-plan` | Generates valid BLUEPRINT.md with skills references and must-haves |
 | 3 | `/fire-3-execute` | Completes breath execution with RECORD.md output |
 | 4 | `/fire-4-verify` | Runs all Must-Haves + WARRIOR validation checks |
@@ -65,7 +65,7 @@ Step 1: Parse Arguments
 â””â”€â”€ Validate command name if --command specified
 
 Step 2: Create Temp Test Directory
-â”œâ”€â”€ Create isolated test directory: $TEMP/dominion-flow-test-{timestamp}/
+â”œâ”€â”€ Create isolated test directory: $TEMP/fire-flow-test-{timestamp}/
 â”œâ”€â”€ Initialize minimal project structure
 â”œâ”€â”€ Copy test fixtures from tests/fixtures/
 â””â”€â”€ Set up clean environment variables
@@ -136,7 +136,7 @@ Step 7: Return Status
 
 | Status | Test | Duration | Notes |
 |--------|------|----------|-------|
-| [x] | /fire-1-new creates correct structure | 0.5s | |
+| [x] | /fire-1a-new creates correct structure | 0.5s | |
 | [x] | /fire-2-plan generates valid plans | 0.8s | |
 | [x] | /fire-3-execute completes breaths | 1.2s | |
 | [x] | /fire-4-verify runs all checks | 0.6s | |
@@ -181,7 +181,7 @@ Fix: [recommended action]
 **Test Environment:**
 - OS: [Windows/macOS/Linux]
 - Shell: [PowerShell/Bash/Zsh]
-- Plugin Path: ~/.claude/plugins/dominion-flow/
+- Plugin Path: ~/.claude/plugins/fire-flow/
 - Temp Directory: [path]
 ```
 
@@ -258,7 +258,7 @@ tests/fixtures/
 - No existing .planning/ folder
 
 **Execute:**
-- Run /fire-1-new with test project name
+- Run /fire-1a-new with test project name
 
 **Verify:**
 - .planning/ directory exists
@@ -429,7 +429,7 @@ tests/fixtures/
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| "Plugin not found" | dominion-flow not installed | Install plugin to ~/.claude/plugins/dominion-flow/ |
+| "Plugin not found" | fire-flow not installed | Install plugin to ~/.claude/plugins/fire-flow/ |
 | "Skills library empty" | Skills not copied | Copy skills from WARRIOR to skills-library/ |
 | "Hook not firing" | hooks.json misconfigured | Check hooks/hooks.json syntax |
 | "Permission denied" | File permissions | Check write permissions on test directory |
@@ -445,7 +445,7 @@ tests/fixtures/
 ## Running Tests
 
 ### Prerequisites:
-1. Dominion Flow plugin installed at ~/.claude/plugins/dominion-flow/
+1. Dominion Flow plugin installed at ~/.claude/plugins/fire-flow/
 2. Skills library populated (or will use fixtures)
 3. Write access to temp directory
 4. Write access to ~/.claude/warrior-handoffs/
@@ -484,7 +484,7 @@ When `/fire-test` is invoked:
 2. **Set up test environment**:
    ```bash
    # Create temp directory
-   TEST_DIR="$TEMP/dominion-flow-test-$(date +%s)"
+   TEST_DIR="$TEMP/fire-flow-test-$(date +%s)"
    mkdir -p "$TEST_DIR"
 
    # Copy fixtures
@@ -494,7 +494,7 @@ When `/fire-test` is invoked:
 3. **Execute tests sequentially**, capturing output:
    ```
    Running E2E Tests...
-   [1/8] Testing /fire-1-new... PASS (0.5s)
+   [1/8] Testing /fire-1a-new... PASS (0.5s)
    [2/8] Testing /fire-2-plan... PASS (0.8s)
    ...
    ```

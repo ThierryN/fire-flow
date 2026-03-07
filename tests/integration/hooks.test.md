@@ -9,7 +9,7 @@ Validates that the Dominion Flow SessionStart hook fires correctly when Claude C
 ---
 
 ## Prerequisites
-- Dominion Flow plugin installed with hooks configured
+- Fire Flow plugin installed with hooks configured
 - Claude Code CLI available
 - hooks.json properly configured in plugin
 - Handoff files may or may not exist (tests both scenarios)
@@ -20,8 +20,8 @@ Validates that the Dominion Flow SessionStart hook fires correctly when Claude C
 
 ```bash
 # 1. Define paths
-DOMINION FLOW_ROOT="$HOME/.claude/plugins/dominion-flow"
-HOOKS_DIR="$DOMINION FLOW_ROOT/hooks"
+FIRE_FLOW_ROOT="$HOME/.claude/plugins/fire-flow"
+HOOKS_DIR="$FIRE_FLOW_ROOT/hooks"
 HANDOFF_DIR="$HOME/.claude/warrior-handoffs"
 
 # 2. Verify hooks directory exists
@@ -35,7 +35,7 @@ cat > "$HOOKS_DIR/hooks.json" << 'EOF'
 {
   "hooks": [
     {
-      "name": "dominion-flow-session-start",
+      "name": "fire-flow-session-start",
       "event": "SessionStart",
       "trigger": ["startup", "resume", "clear", "compact"],
       "script": "session-start.sh",
@@ -52,7 +52,7 @@ cat > "$HOOKS_DIR/session-start.sh" << 'EOF'
 # Injects context about handoffs and project state
 
 HANDOFF_DIR="$HOME/.claude/warrior-handoffs"
-DOMINION FLOW_ROOT="$HOME/.claude/plugins/dominion-flow"
+FIRE_FLOW_ROOT="$HOME/.claude/plugins/fire-flow"
 
 echo ""
 echo "=== Dominion Flow Context ==="

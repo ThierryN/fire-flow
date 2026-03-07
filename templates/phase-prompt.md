@@ -39,7 +39,7 @@ Output: [What artifacts will be created]
 </objective>
 
 <execution_context>
-@~/.claude/plugins/dominion-flow/templates/summary.md
+@~/.claude/plugins/fire-flow/templates/summary.md
 </execution_context>
 
 <honesty_precheck>

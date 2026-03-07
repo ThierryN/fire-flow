@@ -97,7 +97,7 @@ Search for evidence that CONTRADICTS the claim:
 
 ```bash
 # Search skills library for conflicting patterns
-grep -rl "{counter_keywords}" ~/.claude/plugins/dominion-flow/skills-library/ | head -10
+grep -rl "{counter_keywords}" ~/.claude/plugins/fire-flow/skills-library/ | head -10
 ```
 
 Then WebSearch with adversarial queries:
@@ -270,7 +270,7 @@ The key to effective fact-checking is asking the RIGHT adversarial questions. Us
 
 ## References
 
-- **Spawned by:** `/fire-1-new`, `/fire-new-milestone`
+- **Spawned by:** `/fire-1a-new`, `/fire-new-milestone`
 - **Consumes output from:** `fire-research-synthesizer` (SYNTHESIS.md)
 - **Output consumed by:** `fire-roadmapper` (informs risk assessment)
 - **Inspired by:** AITMPL deep-research-team fact-checker pattern (adversarial stance, post-synthesis timing)

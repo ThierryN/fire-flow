@@ -102,7 +102,7 @@ else:
 Fetch content for both versions:
 
 ```bash
-cd ~/.claude/plugins/dominion-flow/skills-library
+cd ~/.claude/plugins/fire-flow/skills-library
 
 # Get v1 content
 v1_content=$(git show {v1_ref}:{category}/{skill-name}.md)
@@ -111,7 +111,7 @@ v1_content=$(git show {v1_ref}:{category}/{skill-name}.md)
 v2_content=$(git show {v2_ref}:{category}/{skill-name}.md)
 
 # For project vs global comparison
-v1_content=$(cat ~/.claude/plugins/dominion-flow/skills-library/{category}/{skill-name}.md)
+v1_content=$(cat ~/.claude/plugins/fire-flow/skills-library/{category}/{skill-name}.md)
 v2_content=$(cat ~/.claude/fire-skills-global/{category}/{skill-name}.md)
 ```
 </step>
@@ -450,7 +450,7 @@ Output includes library-specific information:
 Skill: database-solutions/n-plus-1
 
 PROJECT LIBRARY:
-  Path:    ~/.claude/plugins/dominion-flow/skills-library/
+  Path:    ~/.claude/plugins/fire-flow/skills-library/
   Version: v2.1.0
   Updated: 2026-01-22
 

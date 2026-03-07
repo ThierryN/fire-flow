@@ -31,7 +31,7 @@ Restore a skill to a previous version from the git-backed skills library.
 ## Prerequisites
 
 The skills library must be git-versioned:
-- `~/.claude/plugins/dominion-flow/skills-library/.git/`
+- `~/.claude/plugins/fire-flow/skills-library/.git/`
 
 ## Arguments
 
@@ -68,10 +68,10 @@ Verify skill and version exist:
 
 ```bash
 # Check skill exists
-ls ~/.claude/plugins/dominion-flow/skills-library/{category}/{skill-name}.md
+ls ~/.claude/plugins/fire-flow/skills-library/{category}/{skill-name}.md
 
 # Find version in git history
-cd ~/.claude/plugins/dominion-flow/skills-library
+cd ~/.claude/plugins/fire-flow/skills-library
 git log --oneline -- {category}/{skill-name}.md | grep -i "v{version}"
 ```
 
@@ -201,7 +201,7 @@ Proceed with rollback?
 Upon confirmation:
 
 ```bash
-cd ~/.claude/plugins/dominion-flow/skills-library
+cd ~/.claude/plugins/fire-flow/skills-library
 
 # Checkout the target version
 git show {commit-hash}:{category}/{skill-name}.md > {category}/{skill-name}.md
@@ -262,7 +262,7 @@ Changes reverted:
   - {change 3 that was undone}
 
 Skill file updated:
-  ~/.claude/plugins/dominion-flow/skills-library/{category}/{skill-name}.md
+  ~/.claude/plugins/fire-flow/skills-library/{category}/{skill-name}.md
 
 SKILLS-INDEX.md updated:
   - Rollback recorded in history
@@ -357,7 +357,7 @@ If you need to undo a rollback:
 /fire-skills-sync --pull --skill {skill}
 
 # Option 3: Git reset (advanced)
-cd ~/.claude/plugins/dominion-flow/skills-library
+cd ~/.claude/plugins/fire-flow/skills-library
 git revert HEAD  # Reverts the rollback commit
 ```
 
@@ -388,7 +388,7 @@ Available versions: v2.1.0, v2.0.0, v1.2.0, v1.1.0, v1.0.0
 **Git not initialized:**
 ```
 Error: Skills library is not git-versioned
-Initialize with: cd ~/.claude/plugins/dominion-flow/skills-library && git init
+Initialize with: cd ~/.claude/plugins/fire-flow/skills-library && git init
 ```
 
 **Uncommitted changes:**

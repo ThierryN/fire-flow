@@ -161,6 +161,6 @@ File: .planning/research/SYNTHESIS.md
 
 ## References
 
-- **Spawned by:** `/fire-1-new`, `/fire-new-milestone`
+- **Spawned by:** `/fire-1a-new`, `/fire-new-milestone`
 - **Consumes output from:** `fire-project-researcher` (x4)
 - **Output consumed by:** `fire-roadmapper`

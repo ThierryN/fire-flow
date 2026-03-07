@@ -6,7 +6,7 @@
 
 ## Purpose
 
-Systematic daily workflow for finding, evaluating, and implementing AI research improvements into dominion-flow. Eliminates the need to explain the process each session — any fresh agent follows this pipeline autonomously.
+Systematic daily workflow for finding, evaluating, and implementing AI research improvements into fire-flow. Eliminates the need to explain the process each session — any fresh agent follows this pipeline autonomously.
 
 **Proven track record:** 7 successful executions (v3.2 through v8.0), producing 70+ implemented enhancements from 200+ papers analyzed.
 
@@ -82,7 +82,7 @@ Agent 2: Community Patterns + Industry Tools
   - Return: Top 10 patterns with source links
 
 Agent 3: Internal Gap Analysis (Explore subagent)
-  - Read: All workflow files in the dominion-flow plugin directory
+  - Read: All workflow files in the fire-flow plugin directory
   - Classify each gap: MEMORY | REFLECTION | PLANNING | ACTION | SYSTEM
   - Return: Top 10 gaps ranked by impact
 

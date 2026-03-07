@@ -43,7 +43,7 @@ Dominion Flow uses 6 numbered commands that take your project from start to fini
 ## Step 1: Start a New Project
 
 ```bash
-/fire-1-new
+/fire-1a-new
 ```
 
 This command:
@@ -311,7 +311,7 @@ When you solve a new problem, add it to the library:
 
 ### Starting Fresh
 ```bash
-/fire-1-new
+/fire-1a-new
 /fire-2-plan 1
 /fire-3-execute 1
 /fire-4-verify 1
@@ -320,7 +320,7 @@ When you solve a new problem, add it to the library:
 
 ### Full Autopilot (after project init)
 ```bash
-/fire-1-new
+/fire-1a-new
 /fire-autonomous
 ```
 

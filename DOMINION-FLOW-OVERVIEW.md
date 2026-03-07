@@ -1,59 +1,106 @@
-# Dominion Flow v10.0 -- Complete System Overview
+# Dominion Flow v12.2 -- Complete System Overview
 
 Bird's eye view of the entire Dominion Flow system.
+
+**Three Pillars:** Honesty Gate (accept mistakes, never blame) · Live Breadcrumbs (each instance smarter than the last) · Zero-Friction Tooling (ideas in, working app out)
+
+**v12.0 Research-Backed Enhancements:**
+- Tiered Verification (fast gate before slow gate — shift-left)
+- Stuck-State Classification (6 types, not just "stuck")
+- Kill Conditions (Google X pattern — pre-defined trip conditions)
+- Scope Manifests (AWS TBAC — bounded file/tool access per task)
+- Implied Scenario Detection (composition reveals what specification omits)
+- Requirements Decomposition (CMU SEI utility tree — Level 4 before execution)
+- Articulation Protocol (rubber duck step — catches 30-40% of stuck cases)
+- Sensitivity Analysis (rank failures by downstream impact, not frequency)
 
 ---
 
 ```
 +==============================================================================+
-|                        DOMINION FLOW v10.0 -- COMPLETE SYSTEM MAP             |
+|                        DOMINION FLOW v12.2 -- COMPLETE SYSTEM MAP             |
 +==============================================================================+
 
 
 ===============================================================================
- 1. THE LIFECYCLE -- How a project flows from idea to done
+ 1. THE LIFECYCLE -- How a project flows from idea to done (v12.0)
 ===============================================================================
 
   +-------------+    +--------------+    +--------------+    +--------------+
-  | /fire-1-new|--->| /fire-2-plan|--->|/fire-3-exec |--->|/fire-4-verify|
-  |  New Project|    |  Plan Phase  |    |Execute Phase |    | Verify Phase |
+  | /fire-1a-new |--->| /fire-2-plan |--->| /fire-3-exec |--->|/fire-4-verify|
+  |  New Project|    |  Plan Phase  |    | Execute Phase|    | Verify Phase |
+  |  + Vision   |    |  [H] Honesty |    | [H] Honesty  |    | [H] Honesty  |
   +------+------+    +------+-------+    +------+-------+    +------+-------+
-         |                  |                    |                   |
-    Questions          Research &            Breath-based          Goal-backward
-    Research           Planning              Execution           Verification
-    Roadmap            + Checking            + Commits           + 70-point
-         |                  |                    |                   |
-         v                  v                    v                   v
-   PROJECT.md          BLUEPRINT.md              RECORD.md        VERIFICATION.md
-   VISION.md                                                       |
-   CONSCIENCE.md                                                         |
-         |                                                     +----+----+
-         |                                                     |  PASS?  |
-         |                                                     +----+----+
-         |                                                   yes/     \no
-         |                                                  /           \
-  +------+--------------------------------------------------+    +----------+
-  |                  NEXT PHASE / MILESTONE                  |    | Gap Plans|
-  |              (loop back to /fire-2-plan)                |    | fix & re-|
-  +-----------------------------------------------------+    | verify   |
-                                                                  +----------+
+         |                  ^                    |                   |
+    Visual Input?           |               Breath-based          Goal-backward
+    Mode Gate               |               Execution           Verification
+    Vision Architect        |               + Commits           + 70-point
+    Zero-Friction CLI       |               + Playwright        + Playwright
+    Roadmap                 |                    |                   |
+         |                  |                    v                   v
+         v                  |                RECORD.md        VERIFICATION.md
+   PROJECT.md               |                    |                   |
+   VISION.md (LOCKED)       |                    |              +----+----+
+   CONSCIENCE.md            |                    |              |  PASS?  |
+   TOOLING-LOG.md           |                    |              +----+----+
+   breadcrumbs/             |                    |            yes/     \no
+         |                  |                    |           /           \
+  +------+------------------+--------------------+----------+   +----------------+
+  |           NEXT PHASE / MILESTONE                        |   | RECOVERY LOOP  |
+  |       (loop back to /fire-2-plan)                      |   | (v11.2)        |
+  +--------------------------------------------------------+   |                |
+                                                                | 1. Researcher  |
+  LIVE BREADCRUMBS (v11.2) -- updated by ALL agents:            |    searches:   |
+  +------------------------------------------------------+     |    Skills DB   |
+  | breadcrumbs/LESSONS.md     -- what worked              |     |    Context7    |
+  | breadcrumbs/FAILURES.md    -- what didn't + why        |     |    Web (last)  |
+  | breadcrumbs/PATTERNS.md    -- recurring patterns       |     |                |
+  | breadcrumbs/DEPENDENCIES.md -- env, packages, gotchas  |     | 2. Returns 2-3 |
+  +------------------------------------------------------+     |    alternatives|
+                                                                |    ranked by   |
+  DEAD ENDS (v11.3 — merged into FAILURES.md):                   |    confidence  |
+  +------------------------------------------------------+     |                |
+  | breadcrumbs/FAILURES.md [DEAD-END] tagged entries      |     | 3. Planner     |
+  |                                                        |     |    picks best  |
+  | Agent hits wall (3+ attempts) --> SHELVE & move on     |     |    alternative |
+  | Fresh Claude on /fire-6-resume --> reads shelf,        |     |    NEW blueprint|
+  |   attempts highest-priority problem with clean context |     +-------+--------+
+  +------------------------------------------------------+             |
+                                                                        v
+                                                                  back to /fire-2-plan
+                                                                  (with new approach)
 
   AUTONOMOUS PATH (v9.0):
   +------------------------------------------------------------------+
   | /fire-autonomous                                                  |
   |                                                                  |
-  | After /fire-1-new completes, runs the ENTIRE pipeline:           |
+  | After /fire-1a-new completes, runs the ENTIRE pipeline:           |
   |   2-plan --> 3-execute --> 4-verify (per phase, all phases)      |
   | Auto-routes merge gate and review gate verdicts.                 |
-  | No human checkpoints required.                                   |
+  | Dead ends shelved mid-run, solved on next session.               |
+  +------------------------------------------------------------------+
+
+  PHOENIX REBUILD (v12.2):
+  +------------------------------------------------------------------+
+  | /fire-phoenix --source <path>                                     |
+  |                                                                  |
+  | Takes a messy "vibe coded" project and rebuilds it clean:        |
+  |   AUTOPSY --> INTENT --> CLARIFY --> VISION --> REBUILD --> COMPARE|
+  | Source is READ-ONLY. Rebuild goes to new target folder.          |
+  | Extracts INTENT (what code was trying to do), asks user about    |
+  | ambiguities, then rebuilds using full Dominion Flow pipeline.    |
+  | Phoenix Score: PX-1 to PX-5 (feature parity, edge cases, etc.)  |
   +------------------------------------------------------------------+
 
   SESSION BOUNDARIES:
   +--------------+                              +--------------+
-  |/fire-5-hand |  === session break ===>      |/fire-6-resum|
+  |/fire-5-hand  |  === session break ===>      |/fire-6-resum |
   |   off        |   POWER-HANDOFF-*.md         |     e        |
   | Save context |   (WARRIOR 7-step)           | Load context |
+  | + breadcrumbs|                              | + breadcrumbs|
   +--------------+                              +--------------+
+
+  [H] = Honesty Gate -- mandatory 3-question checkpoint at every agent
 
 
 ===============================================================================
@@ -71,8 +118,11 @@ Bird's eye view of the entire Dominion Flow system.
                                 WARRIOR validation
 
   fire-researcher.md            Researches phase context using        /fire-research
-                                skills library, pattern matching,     /fire-1-new
-                                and external search                   /fire-2-plan
+                                skills library, pattern matching,     /fire-1a-new
+                                and external search. In RECOVERY      /fire-2-plan
+                                MODE (v11.2): 3-tier cascade          /fire-planner (on failure)
+                                (Skills→Context7→Web) returns         /fire-4-verify (gap research)
+                                2-3 ranked alternatives.
 
   fire-verifier.md              Must-haves verification +             /fire-4-verify
                                 WARRIOR 70-point validation           /fire-3-execute
@@ -80,6 +130,16 @@ Bird's eye view of the entire Dominion Flow system.
   fire-reviewer.md              Independent code review --            /fire-7-review
                                 architecture, patterns, perf,         /fire-3-execute
                                 maintainability, security             (parallel with verifier)
+
+  fire-vision-architect.md      Generates 2-3 competing               /fire-1a-new
+                                architecture vision branches.         /fire-new-milestone
+                                Anti-Frankenstein gate prevents
+                                incompatible stack combos.
+
+  fire-phoenix-analyst.md       Reverse-engineers developer intent    /fire-phoenix
+                                from messy codebases. Extracts what
+                                code was TRYING to do. Produces
+                                INTENT.md + INTENT-GRAPH.md.
 
 
   AGENT CAPABILITIES:
@@ -91,6 +151,8 @@ Bird's eye view of the entire Dominion Flow system.
   | fire-researcher         |    Y     |   Y   |      |  Y   |  Y   | Both    |    Y     |
   | fire-verifier           |    Y     |       |      |  Y   |  Y   |         |          |
   | fire-reviewer           |    Y     |       |      |  Y   |  Y   |         |          |
+  | fire-vision-architect   |    Y     |   Y   |      |      |  Y   |         |          | ← Forward + Backward modes
+  | fire-phoenix-analyst    |    Y     |   Y   |      |  Y   |  Y   |         |          | ← Intent extraction
   +-------------------------+----------+-------+------+------+------+---------+----------+
 
 
@@ -148,58 +210,111 @@ Bird's eye view of the entire Dominion Flow system.
 
 
 ===============================================================================
- 4. NEW PROJECT FLOW -- /fire-1-new deep dive
+ 4. NEW PROJECT FLOW -- 3-command chain
 ===============================================================================
 
-  User: "/fire-1-new My LMS Platform"
-         |
-         v
-  +----------------------+
-  | Adaptive Questioning |   "What's the core value?"
-  | (5-15 questions)     |   "Who are the users?"
-  |                      |   "What's v1 scope?"
-  +----------+-----------+
-             v
-  +----------------------+
-  | Write PROJECT.md     |   Core value, constraints, users
-  | Write REQUIREMENTS   |   REQ-IDs: AUTH-01, CONT-01, etc.
-  +----------+-----------+
-             v
-  +-------------------------------------------------------------+
-  | 4 PARALLEL RESEARCHERS (fire-project-researcher x4)         |
-  |                                                             |
-  |  +----------+ +----------+ +----------+ +----------+      |
-  |  | STACK    | | FEATURES | | ARCHITECT| | PITFALLS |      |
-  |  | research | | research | | research | | research |      |
-  |  +----+-----+ +----+-----+ +----+-----+ +----+-----+      |
-  |       |            |            |            |              |
-  |       v            v            v            v              |
-  |   STACK.md    FEATURES.md  ARCHITECT.md  PITFALLS.md       |
-  +-----------------------+-------------------------------------+
-                          v
-  +----------------------------------+
-  | fire-research-synthesizer        |
-  | Merges 4 files -> RECORD.md     |
-  +------------------+---------------+
-                     v
-  +----------------------------------+
-  | fire-roadmapper                  |
-  |                                  |
-  |  Requirements -> Phase grouping  |
-  |  Dependencies -> Ordering        |
-  |  Goal-backward -> Success crit.  |
-  |  Coverage validation (100%)      |
-  |                                  |
-  |  Output: VISION.md + CONSCIENCE  |
-  +----------------------------------+
+  /fire-1a-new  -->  /fire-1b-research  -->  /fire-1c-setup
+  (scaffold)       (research+vision)      (tooling+finalize)
+
+  Each command is <250 lines so agents follow every step.
+  Each command gates on the previous (checks files exist).
+
+  ┌─────────────────────────────────────────────────────┐
+  │  /fire-1a-new (Steps 1-3)                            │
+  │                                                     │
+  │  User: "/fire-1a-new My LMS Platform"                │
+  │         |                                           │
+  │         v                                           │
+  │  +----------------------+                           │
+  │  | Adaptive Questioning |  "What's the core value?" │
+  │  | (5-15 questions)     |  "Who are the users?"     │
+  │  +----------+-----------+                           │
+  │             |                                       │
+  │             v                                       │
+  │  +-----------------------------------------+        │
+  │  | MODE GATE: "Have you already started    |        │
+  │  |  building, or starting from scratch?"   |        │
+  │  +--------+------------------+-------------+        │
+  │           |                  |                      │
+  │    FORWARD MODE      BACKWARD MODE                  │
+  │    (has tech)        (vibe coders)                   │
+  │           |                  |                      │
+  │           v                  v                      │
+  │  +----------------------+                           │
+  │  | Write PROJECT.md     |  Core value, constraints  │
+  │  | Write REQUIREMENTS   |  REQ-IDs                  │
+  │  | Create .planning/    |  breadcrumbs/ (on-demand)  │
+  │  +----------+-----------+                           │
+  │             |                                       │
+  │  OUTPUT: 8 files (.planning/ scaffold)              │
+  │  NEXT: "Run /fire-1b-research"                       │
+  └─────────────────────────────────────────────────────┘
+                    |
+                    v
+  ┌─────────────────────────────────────────────────────┐
+  │  /fire-1b-research (Steps 3b-3d)                     │
+  │                                                     │
+  │  +-----------------------------------------------+  │
+  │  | 4 PARALLEL RESEARCHERS (+ GitHub search)      |  │
+  │  |  STACK | FEATURES | ARCHITECT | PITFALLS      |  │
+  │  |  --> SYNTHESIS.md (merged + GitHub refs)       |  │
+  │  +----------------------+------------------------+  │
+  │                         v                           │
+  │  +--------------------------------------------------│
+  │  | fire-vision-architect                            │
+  │  |  Anti-Frankenstein (forward) / Capability        │
+  │  |  Extraction (backward) --> 2-3 branches          │
+  │  |  User picks one --> VISION.md (LOCKED)           │
+  │  |  Rejected --> ALTERNATIVES.md                    │
+  │  +----------------------+---------------------------│
+  │                         v                           │
+  │  +--------------------------------------------------│
+  │  | fire-roadmapper                                  │
+  │  |  Reads LOCKED VISION.md (no stack changes)       │
+  │  |  Requirements --> phases --> ROADMAP.md           │
+  │  +--------------------------------------------------│
+  │                                                     │
+  │  OUTPUT: SYNTHESIS.md, VISION.md, ALTERNATIVES.md,  │
+  │          ROADMAP.md                                  │
+  │  NEXT: "Run /fire-1c-setup"                          │
+  └─────────────────────────────────────────────────────┘
+                    |
+                    v
+  ┌─────────────────────────────────────────────────────┐
+  │  /fire-1c-setup (Steps 4-6 + FINAL)                  │
+  │                                                     │
+  │  WARRIOR handoff --> ~/.claude/warrior-handoffs/     │
+  │  Zero-friction tooling --> install CLIs from VISION  │
+  │  SKILLS-INDEX.md --> empty tracking                  │
+  │  Update CONSCIENCE.md --> "Ready to plan"            │
+  │                                                     │
+  │  ┌─── MANDATORY FILE GATE ─────────────────────┐    │
+  │  │ Verify ALL 16 files exist                    │    │
+  │  │ If ANY missing --> abort, tell user which     │    │
+  │  │ command to re-run                            │    │
+  │  └─────────────────────────────────────────────┘    │
+  │                                                     │
+  │  OUTPUT: TOOLING-LOG.md, SKILLS-INDEX.md, handoff   │
+  │  NEXT: "Run /fire-2-plan 1"                         │
+  └─────────────────────────────────────────────────────┘
 
 
 ===============================================================================
- 5. VERIFICATION SYSTEM -- Dual-layer validation
+ 5. VERIFICATION SYSTEM -- Triple-layer validation (v12.0)
 ===============================================================================
 
   +---------------------------------------------------------+
-  | LAYER 1: MUST-HAVES (Goal-Backward)                     |
+  | TIER 1: FAST GATE (v12.0 — shift-left, seconds)         |
+  |                                                         |
+  |  Build compiles?  Types check?  Lint passes?            |
+  |  Files exist?     Imports resolve?                      |
+  |                                                         |
+  |  IF ANY FAIL --> STOP. Don't run Tier 2 or 3.           |
+  |  Catches 60%+ of failures in <30 seconds.               |
+  +---------------------------------------------------------+
+                          +
+  +---------------------------------------------------------+
+  | TIER 2: MUST-HAVES (Goal-Backward)                      |
   |                                                         |
   |  "What must be TRUE for this phase's goal?"             |
   |                                                         |
@@ -213,17 +328,30 @@ Bird's eye view of the entire Dominion Flow system.
   +---------------------------------------------------------+
                           +
   +---------------------------------------------------------+
-  | LAYER 2: WARRIOR 70-POINT CHECKLIST                     |
+  | TIER 3: WARRIOR 70-POINT CHECKLIST (scope-adaptive)     |
   |                                                         |
   |  Code Quality ........... /10   Performance ...... /10  |
   |  Testing ................ /10   Documentation .... /10  |
   |  Security ............... /10   Infrastructure ... /10  |
   |  E2E (Playwright) ...... /10                            |
   |                          ----                           |
-  |                          /70                            |
+  |                          /70 (max, adjusted per scope)  |
   |                                                         |
-  |  63-70 = APPROVED    49-55 = CONDITIONAL                |
-  |  56-62 = APPROVED*   <42   = REJECTED                   |
+  |  Scoring: percentage of ACTIVE sections only (v11.3)   |
+  |  90%+ = APPROVED    70-79% = CONDITIONAL                |
+  |  80-89% = APPROVED*  <60%   = REJECTED                  |
+  +---------------------------------------------------------+
+                          +
+  +---------------------------------------------------------+
+  | POST-VERIFICATION (v12.0)                                |
+  |                                                         |
+  |  Implied Scenario Detection:                            |
+  |    Positive (correct but unplanned) --> add to spec     |
+  |    Negative (incorrect/unintended) --> CRITICAL GAP     |
+  |                                                         |
+  |  Failure Sensitivity Analysis:                          |
+  |    Rank gaps by downstream impact (LOCAL < CASCADING)   |
+  |    Fix CASCADING failures first                         |
   +---------------------------------------------------------+
 
 
@@ -234,16 +362,24 @@ Bird's eye view of the entire Dominion Flow system.
   your-project/
   +-- .planning/
       +-- CONSCIENCE.md                    <-- Living project memory (updated constantly)
-      +-- VISION.md                  <-- Phase overview + success criteria
+      +-- VISION.md                  <-- Phase overview + success criteria (LOCKED)
       +-- REQUIREMENTS.md             <-- REQ-IDs with traceability
       +-- PROJECT.md                  <-- Core value, users, constraints
+      +-- TOOLING-LOG.md             <-- CLI tools installed + versions (v11.2)
       |
-      +-- research/                   <-- Created by /fire-1-new
+      +-- breadcrumbs/               <-- Live memory across agents (on-demand, v11.3)
+      |   +-- LESSONS.md              <-- What worked (created on first write)
+      |   +-- FAILURES.md             <-- What didn't + why + [DEAD-END] entries (created on first write)
+      |   +-- PATTERNS.md             <-- Recurring patterns (created on first write)
+      |   +-- DEPENDENCIES.md         <-- Env, packages, gotchas (created on first write)
+      |
+      +-- research/                   <-- Created by /fire-1a-new
       |   +-- STACK.md
       |   +-- FEATURES.md
       |   +-- ARCHITECTURE.md
       |   +-- PITFALLS.md
       |   +-- RECORD.md
+      |   +-- ALTERNATIVES.md         <-- Rejected vision branches (v11.2)
       |
       +-- codebase/                   <-- Created by /fire-map-codebase
       |   +-- STACK.md
@@ -262,7 +398,7 @@ Bird's eye view of the entire Dominion Flow system.
       |   |   +-- 01-01-RECORD.md    <-- After execution
       |   |   +-- 01-VERIFICATION.md  <-- After /fire-4-verify
       |   |   +-- 01-REVIEW.md       <-- After /fire-7-review (v8.0)
-      |   |   +-- 01-MEMORY.md       <-- From /fire-1a-discuss
+      |   |   +-- 01-MEMORY.md       <-- From /fire-1d-discuss
       |   |
       |   +-- 02-authentication/
       |   |   +-- ...
@@ -302,7 +438,7 @@ Bird's eye view of the entire Dominion Flow system.
 
 
 ===============================================================================
- 8. SKILLS LIBRARY -- 190+ reusable patterns
+ 8. SKILLS LIBRARY -- 478+ reusable patterns
 ===============================================================================
 
   +------------------+  +------------------+  +------------------+
@@ -317,8 +453,22 @@ Bird's eye view of the entire Dominion Flow system.
   | stripe,paypal,GTA|  |                  |  | stripe,zoom,yt   |
   +------------------+  +------------------+  +------------------+
   | lms-patterns     |  | methodology      |  | patterns-standard|
-  | (30+ skills)     |  | (10 skills)      |  | (15 skills)      |
+  | (30+ skills)     |  | (16 skills)      |  | (15 skills)      |
   +------------------+  +------------------+  +------------------+
+
+  v12.0 RESEARCH-BACKED METHODOLOGY SKILLS (6 new):
+  +-------------------------+  +-------------------------+  +-------------------------+
+  | RELIABILITY_PREDICTION  |  | QUALITY_GATES_AND_      |  | CIRCUIT_BREAKER_        |
+  | Implied scenarios,      |  | VERIFICATION            |  | INTELLIGENCE            |
+  | sensitivity analysis,   |  | Tiered gates, risk-     |  | 6-type stuck class,     |
+  | probability completeness|  | based testing, error    |  | kill conditions,        |
+  |                         |  | budgets, DoR/DoD        |  | articulation protocol   |
+  +-------------------------+  +-------------------------+  +-------------------------+
+  | CONTEXT_ROTATION        |  | AUTONOMOUS_             |  | REQUIREMENTS_           |
+  | Fresh-eyes science,     |  | ORCHESTRATION           |  | DECOMPOSITION           |
+  | fixation prevention,    |  | Planner/Worker/Judge,   |  | Utility tree (L1→L4),   |
+  | navigator pattern       |  | scope manifests, DORA   |  | ATAM tradeoffs, WDM     |
+  +-------------------------+  +-------------------------+  +-------------------------+
 
   /fire-search "stripe webhook" --> finds matching skills
   /fire-add-new-skill           --> add from current session
@@ -327,17 +477,19 @@ Bird's eye view of the entire Dominion Flow system.
 
 
 ===============================================================================
- 9. ALL 39 COMMANDS -- Organized by tier
+ 9. ALL 46 COMMANDS -- Organized by tier
 ===============================================================================
 
   TIER 1: CORE WORKFLOW      TIER 2: AUTONOMOUS       TIER 3: DEBUG/DISCOVERY
   ----------------------     -------------------      -----------------------
-  /fire-1-new               /fire-autonomous        /fire-debug
-  /fire-1a-discuss          /fire-loop              /fire-discover
-  /fire-2-plan              /fire-loop-resume       /fire-map-codebase
-  /fire-3-execute           /fire-loop-stop         /fire-0-orient
-  /fire-4-verify                                     /fire-research
-  /fire-5-handoff                                    /fire-brainstorm
+  /fire-1a-new               /fire-autonomous        /fire-debug
+  /fire-1b-research          /fire-loop              /fire-discover
+  /fire-1c-setup             /fire-loop-resume       /fire-map-codebase
+  /fire-1d-discuss          /fire-loop-stop         /fire-0-orient
+  /fire-2-plan               /fire-phoenix           /fire-research
+  /fire-3-execute                                    /fire-brainstorm
+  /fire-4-verify
+  /fire-5-handoff
   /fire-6-resume
 
   TIER 4: VERIFICATION       TIER 5: SKILLS MGMT     TIER 6: ANALYTICS/PM
@@ -363,39 +515,43 @@ Bird's eye view of the entire Dominion Flow system.
 
          +------------------------------------------------------+
          |                    YOU (the developer)                  |
-         |              Ideas, decisions, approvals             |
+         |   Ideas, screenshots, wireframes, decisions, approvals |
          +----------------------+-------------------------------+
                                 |
                     +-----------v-----------+
-                    |   39 SLASH COMMANDS    |
+                    |   46 SLASH COMMANDS    |
                     |   (Orchestrators)      |
                     +-----------+-----------+
                                 | spawn
-              +-----------------+------------------+
-              |                 |                   |
-    +---------v--------+ +-----v-------+ +---------v-------+
-    |  RESEARCHERS     | |   BUILDERS  | |   VALIDATORS    |
-    |                  | |             | |                 |
-    |  fire-researcher | | fire-       | | fire-verifier   |
-    |  (phase/project  | |  executor   | | fire-reviewer   |
-    |   research)      | | fire-       | |                 |
-    |                  | |  planner    | |                 |
-    +--------+---------+ +------+------+ +--------+--------+
-             |                  |                  |
-             |    +-------------v--------------+   |
-             +--->|   .planning/ STATE         |<--+
-                  |   (file-based memory)      |
-                  +-------------+--------------+
-                                |
-                  +-------------v--------------+
-                  |   190+ SKILLS LIBRARY      |
-                  |   (proven patterns)        |
-                  +-------------+--------------+
-                                |
-                  +-------------v--------------+
-                  |  WARRIOR HANDOFFS          |
-                  |  (session continuity)      |
-                  +----------------------------+
+         +----------------------+----------------------+
+         |                      |                      |
+  +------v---------+   +-------v-------+   +-----------v------+
+  |  RESEARCHERS   |   |   BUILDERS    |   |   VALIDATORS     |
+  |                |   |               |   |                  |
+  | fire-researcher|   | fire-executor |   | fire-verifier    |
+  | fire-vision-   |   | fire-planner  |   | fire-reviewer    |
+  |   architect    |   |               |   |                  |
+  +------+---------+   +-------+-------+   +--------+---------+
+         |                     |                     |
+         |     [H] HONESTY GATE at every agent [H]   |
+         |                     |                     |
+         |     +---------------v--------------+      |
+         +---->|   .planning/ STATE           |<-----+
+               |   + breadcrumbs/ (on-demand)  |
+               |   + TOOLING-LOG.md           |
+               +---------------+--------------+
+                               |
+               +---------------v--------------+
+               |   478+ SKILLS LIBRARY        |
+               |   (proven patterns)          |
+               +---------------+--------------+
+                               |
+               +---------------v--------------+
+               |  WARRIOR HANDOFFS            |
+               |  + breadcrumbs preserved     |
+               |  + dead ends documented      |
+               |  (session continuity)        |
+               +------------------------------+
 ```
 
 ---
@@ -404,6 +560,10 @@ Bird's eye view of the entire Dominion Flow system.
 
 | Version | Date | Headline Features |
 |---------|------|-------------------|
+| v12.2 | 2026-03-06 | Phoenix Rebuild: `/fire-phoenix` autonomous rebuild from messy-to-clean. fire-phoenix-analyst agent (intent extraction), PHOENIX_REBUILD_METHODOLOGY skill (anti-pattern map, intent graph, edge case protocol), GOF_DESIGN_PATTERNS_FOR_AI_AGENTS skill, phoenix-comparison template, PX-1 to PX-5 verification checks |
+| v12.1 | 2026-03-06 | v12.0 audit fixes: Tier naming alignment, DORA metrics in autonomous, Requirements Decomposition in discuss, researcher skill awareness, circuit breaker weight alignment |
+| v12.0 | 2026-03-06 | Research-backed upgrade: 6 new methodology skills (Reliability Prediction, Quality Gates, Circuit Breaker Intelligence, Context Rotation, Autonomous Orchestration, Requirements Decomposition), tiered verification, stuck-state classification, kill conditions, scope manifests, implied scenario detection |
+| v11.2 | 2026-03-06 | Branching Vision System + Honesty Gate + Zero-Friction CLI + Dead Ends Shelf: fire-vision-architect (Forward + Backward modes), Anti-Frankenstein gate, Visual Input fast-track (screenshots/wireframes/sketches), BACKWARD_PLANNING_INTERVIEW (10 beginner questions), ZERO_FRICTION_CLI_SETUP (auto-install all tools from VISION.md), DevTools guide for beginners, Honesty Gate universal enforcement (slim 10-line gates referencing canonical protocol), Live Breadcrumb Protocol (LESSONS/FAILURES/PATTERNS/DEPENDENCIES), Dead Ends Shelf (DEAD-ENDS.md — shelve unsolved problems, fresh instance retries on resume), Recovery Research Loop (Skills→Context7→Web), Verifier isolation (fresh instance), Playwright MCP non-negotiable |
 | v9.1 | 2026-02-24 | Research-backed intelligence: ReflexTree debugging, MAKER reasoning sharing, MemP failure memory, ATLAS agent selection, CriticGPT review profiles |
 | v1.0 | 2026-01 | Initial 6-command workflow (new, plan, execute, verify, handoff, resume) |
 | v2.0 | 2026-01 | Skills library integration, breath-based parallel execution |
@@ -418,4 +578,4 @@ Bird's eye view of the entire Dominion Flow system.
 
 ---
 
-*Generated 2026-02-24 -- Dominion Flow v10.0*
+*Generated 2026-03-06 -- Dominion Flow v12.2*

@@ -9,9 +9,9 @@ Validates that `/fire-2-plan` generates valid execution plans that integrate rel
 ---
 
 ## Prerequisites
-- Dominion Flow plugin installed
+- Fire Flow plugin installed
 - Existing project with `.planning/` structure
-- Skills library available at `~/.claude/plugins/dominion-flow/skills-library/`
+- Skills library available at `~/.claude/plugins/fire-flow/skills-library/`
 
 ---
 
@@ -23,7 +23,7 @@ TEST_DIR=$(mktemp -d)
 cd "$TEST_DIR"
 
 # 2. Copy test project fixture
-cp -r ~/.claude/plugins/dominion-flow/tests/fixtures/test-project/.planning .
+cp -r ~/.claude/plugins/fire-flow/tests/fixtures/test-project/.planning .
 
 # 3. Create a phase directory for testing
 mkdir -p .planning/phases/02-database-setup

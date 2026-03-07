@@ -27,7 +27,7 @@ View the complete version history, changelogs, and contributors for any skill.
 ## Prerequisites
 
 The skills library must be git-versioned:
-- `~/.claude/plugins/dominion-flow/skills-library/.git/`
+- `~/.claude/plugins/fire-flow/skills-library/.git/`
 - `~/.claude/fire-skills-global/.git/` (for global library)
 
 ## Arguments
@@ -64,7 +64,7 @@ Check if the skill file exists:
 
 ```bash
 # Check project library
-ls ~/.claude/plugins/dominion-flow/skills-library/{category}/{skill-name}.md
+ls ~/.claude/plugins/fire-flow/skills-library/{category}/{skill-name}.md
 
 # Check global library (if --global)
 ls ~/.claude/fire-skills-global/{category}/{skill-name}.md
@@ -88,7 +88,7 @@ Search for skills: /fire-search "{skill-name}"
 Query git log for the skill file:
 
 ```bash
-cd ~/.claude/plugins/dominion-flow/skills-library
+cd ~/.claude/plugins/fire-flow/skills-library
 
 git log --follow --format="%H|%ai|%an|%s" -- {category}/{skill-name}.md
 ```
