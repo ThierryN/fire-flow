@@ -77,7 +77,7 @@
     *, *::before, *::after { animation-duration: 0.01ms !important; animation-delay: 0ms !important; }
   }
 
-  .container { max-width: 1120px; margin: 0 auto; }
+  .container { max-width: 1400px; margin: 0 auto; }
 
   h1 {
     font-size: 42px; font-weight: 700; letter-spacing: -1.5px;
@@ -167,12 +167,12 @@
   /* ============ MERMAID SVG OVERRIDES ============ */
   .mermaid .nodeLabel {
     font-family: var(--font-body) !important;
-    font-size: 13px !important;
-    line-height: 1.4 !important;
+    font-size: 15px !important;
+    line-height: 1.5 !important;
   }
   .mermaid .edgeLabel {
     font-family: var(--font-mono) !important;
-    font-size: 11px !important;
+    font-size: 13px !important;
   }
   .mermaid .cluster rect {
     fill: rgba(255,255,255,0.03) !important;
@@ -353,51 +353,72 @@ flowchart TD
       <button onclick="resetZoom(this)" title="Reset">↺</button>
     </div>
     <pre class="mermaid">
-flowchart LR
-    classDef phase   fill:#313244,stroke:#fab387,stroke-width:2px,color:#fab387
-    classDef agent   fill:#1e1e2e,stroke:#89b4fa,stroke-width:2px,color:#89dcfa
-    classDef file    fill:#1e1e2e,stroke:#a6e3a1,stroke-width:1.5px,color:#a6e3a1
-    classDef start   fill:#fab387,stroke:#fab387,color:#1e1e2e
-    classDef verify  fill:#1e1e2e,stroke:#f38ba8,stroke-width:1.5px,color:#f38ba8
-    classDef cmd     fill:#313244,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4
+flowchart TD
+    classDef phase   fill:#313244,stroke:#fab387,stroke-width:2px,color:#fab387,font-size:16px
+    classDef agent   fill:#1e1e2e,stroke:#89b4fa,stroke-width:2px,color:#89dcfa,font-size:14px
+    classDef file    fill:#1e1e2e,stroke:#a6e3a1,stroke-width:1.5px,color:#a6e3a1,font-size:14px
+    classDef start   fill:#fab387,stroke:#fab387,color:#1e1e2e,font-size:16px
+    classDef verify  fill:#1e1e2e,stroke:#f38ba8,stroke-width:2px,color:#f38ba8,font-size:14px
+    classDef cmd     fill:#313244,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4,font-size:14px
+    classDef done    fill:#a6e3a1,stroke:#a6e3a1,color:#1e1e2e,font-size:16px
 
-    SOURCE(["Messy Codebase"]):::start
+    SOURCE(["MESSY CODEBASE<br/>source folder"]):::start
 
-    P1["Phase 1<br/>AUTOPSY"]:::phase
-    P2["Phase 2<br/>INTENT"]:::phase
-    P3["Phase 3<br/>CLARIFY"]:::phase
-    P4["Phase 4<br/>VISION"]:::phase
-    P5["Phase 5<br/>REBUILD"]:::phase
-    P6["Phase 6<br/>COMPARISON"]:::phase
+    subgraph PH1["Phase 1 — AUTOPSY"]
+        direction LR
+        P1["Analyze entire<br/>codebase structure"]:::phase
+        MAPPER{{"fire-codebase-mapper<br/>x4 parallel instances"}}:::agent
+        P1 -->|"spawns"| MAPPER
+    end
 
-    ANALYST{{"fire-phoenix<br/>-analyst"}}:::agent
-    MAPPER{{"fire-codebase<br/>-mapper x4"}}:::agent
+    subgraph PH2["Phase 2 — INTENT EXTRACTION"]
+        direction LR
+        P2["Reverse-engineer<br/>developer intent"]:::phase
+        ANALYST{{"fire-phoenix-analyst<br/>x2 parallel instances"}}:::agent
+        INTENT[("INTENT.md<br/>feature inventory")]:::file
+        GRAPH[("INTENT-GRAPH.md<br/>messy → clean map")]:::file
+        P2 -->|"spawns"| ANALYST
+        ANALYST -->|"writes"| INTENT
+        ANALYST -->|"writes"| GRAPH
+    end
 
-    INTENT[(INTENT.md)]:::file
-    GRAPH[(INTENT-GRAPH.md)]:::file
-    COMP[(PHOENIX-<br/>COMPARISON.md)]:::file
+    subgraph PH3["Phase 3 — CLARIFICATION"]
+        P3["Ask user:<br/>keep or drop?<br/>max 10 questions"]:::phase
+    end
 
-    PX["Phoenix Score<br/>PX-1 to PX-5"]:::verify
+    subgraph PH4["Phase 4 — VISION"]
+        P4["Design clean<br/>architecture from<br/>extracted requirements"]:::phase
+    end
 
-    PLAN["/fire-2-plan"]:::cmd
-    EXEC["/fire-3-execute"]:::cmd
-    VERI["/fire-4-verify"]:::cmd
+    subgraph PH5["Phase 5 — REBUILD"]
+        direction LR
+        P5["Build clean version<br/>in target folder"]:::phase
+        PLAN["/fire-2-plan<br/>plan each phase"]:::cmd
+        EXEC["/fire-3-execute<br/>breath execution"]:::cmd
+        VERI["/fire-4-verify<br/>Phoenix checks"]:::cmd
+        PX["Phoenix Score<br/>PX-1 Feature Parity 30%<br/>PX-2 Edge Cases 25%<br/>PX-3 Dependencies 20%<br/>PX-4 Complexity 15%<br/>PX-5 Architecture 10%"]:::verify
+        P5 --> PLAN
+        P5 --> EXEC
+        P5 --> VERI
+        VERI --> PX
+    end
 
-    SOURCE --> P1
-    P1 -->|"4 parallel mappers"| MAPPER
-    MAPPER --> P2
-    P2 -->|"2 parallel analysts"| ANALYST
-    ANALYST -->|writes| INTENT
-    ANALYST -->|writes| GRAPH
-    INTENT --> P3
-    P3 -->|"user questions"| P4
-    P4 --> P5
-    P5 -->|uses| PLAN
-    P5 -->|uses| EXEC
-    P5 -->|uses| VERI
-    VERI -->|"Phoenix checks"| PX
-    P5 --> P6
-    P6 -->|produces| COMP
+    subgraph PH6["Phase 6 — COMPARISON"]
+        direction LR
+        P6["Side-by-side<br/>metrics report"]:::phase
+        COMP[("PHOENIX-<br/>COMPARISON.md")]:::file
+        P6 -->|"produces"| COMP
+    end
+
+    CLEAN(["CLEAN REBUILD<br/>target folder"]):::done
+
+    SOURCE --> PH1
+    PH1 --> PH2
+    PH2 --> PH3
+    PH3 --> PH4
+    PH4 --> PH5
+    PH5 --> PH6
+    PH6 --> CLEAN
     </pre>
   </div>
 
@@ -652,7 +673,7 @@ flowchart LR
       tertiaryTextColor:   isDark ? '#a6e3a1' : '#40a02b',
       lineColor:           isDark ? '#a6adc8' : '#7287a0',
       edgeLabelBackground: isDark ? '#24273a' : '#f0f0f7',
-      fontSize: '13px',
+      fontSize: '15px',
       fontFamily: "'Space Grotesk', system-ui, sans-serif",
       clusterBkg:          isDark ? 'rgba(255,255,255,0.02)' : 'rgba(0,0,0,0.02)',
       clusterBorder:       isDark ? 'rgba(255,255,255,0.1)'  : 'rgba(0,0,0,0.1)',
