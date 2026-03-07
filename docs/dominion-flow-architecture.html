@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Fire Flow (Dominion Flow) v12.2 — Architecture</title>
+<title>Dominion Flow v12.2 — Architecture</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -249,7 +249,7 @@
 
 <div class="container">
 
-  <h1 class="animate" style="--i:0">Fire Flow <span class="version-badge">v12.2</span></h1>
+  <h1 class="animate" style="--i:0">Dominion Flow <span class="version-badge">v12.2</span></h1>
   <p class="subtitle animate" style="--i:1">architecture · command pipeline · phoenix rebuild · breath execution · session continuity</p>
 
   <!-- STATS BAR -->
@@ -629,7 +629,7 @@ flowchart LR
 
   <div class="callout animate" style="--i:17">
     <strong>Why files instead of memory?</strong> Claude has no memory between sessions —
-    each conversation starts blank. Fire Flow externalizes all state into markdown files in
+    each conversation starts blank. Dominion Flow externalizes all state into markdown files in
     <code>.planning/</code>. The agent is stateless by design; the <em>files</em> carry the memory.
     This is the same pattern databases use: the process is stateless, the storage persists.
     <br><br>

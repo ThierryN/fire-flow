@@ -1,14 +1,14 @@
-# Fire Flow (Dominion Flow) v12.2
+# Dominion Flow (Fire Flow) v12.2
 
 **The most comprehensive orchestration platform for Claude Code.**
 
-Fire Flow gives Claude a complete, structured way to take your project from idea to finished code — with built-in quality checks, session memory, parallel execution, and a library of 478+ proven patterns. Think of it as a project management system that lives inside Claude Code.
+Dominion Flow gives Claude a complete, structured way to take your project from idea to finished code — with built-in quality checks, session memory, parallel execution, and a library of 478+ proven patterns. Think of it as a project management system that lives inside Claude Code.
 
 ---
 
 ## NEW in v12.2: Phoenix Rebuild
 
-**Every AI coding tool creates code. Fire Flow is the first that can take a messy "vibe coded" project and rebuild it clean.**
+**Every AI coding tool creates code. Dominion Flow is the first that can take a messy "vibe coded" project and rebuild it clean.**
 
 ```bash
 /fire-phoenix --source ./my-messy-app
@@ -37,7 +37,7 @@ AUTOPSY → INTENT → CLARIFY → VISION → REBUILD → COMPARISON
 
 ## What Does It Do?
 
-When you start a new project, Claude normally has no memory between sessions, no standard process, and no way to verify its own work. Fire Flow fixes all of that:
+When you start a new project, Claude normally has no memory between sessions, no standard process, and no way to verify its own work. Dominion Flow fixes all of that:
 
 - **Structured workflow** — A numbered pipeline (Plan → Execute → Verify → Handoff) so nothing gets skipped
 - **Session memory** — Claude picks up exactly where it left off, every time

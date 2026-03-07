@@ -1,10 +1,10 @@
-# Fire Flow v12.2 — Launch Content
+# Dominion Flow v12.2 — Launch Content
 
 ## GitHub Release Notes
 
 ### v12.2.0 — Phoenix Rebuild
 
-Every AI coding tool creates code. **Fire Flow is the first that can take a messy "vibe coded" project and rebuild it clean.**
+Every AI coding tool creates code. **Dominion Flow is the first that can take a messy "vibe coded" project and rebuild it clean.**
 
 ```bash
 /fire-phoenix --source ./my-messy-app
@@ -24,7 +24,7 @@ Phoenix doesn't just reformat your code — it reverse-engineers what you were *
 | INTENT | AI extracts what each feature was *trying* to do |
 | CLARIFY | Asks you what to keep and what to drop |
 | VISION | Designs clean architecture from your requirements |
-| REBUILD | Builds the clean version using Fire Flow's full pipeline |
+| REBUILD | Builds the clean version using Dominion Flow's full pipeline |
 | COMPARISON | Side-by-side metrics: before vs after |
 
 **Your source code is never touched.** The rebuild goes to a new folder.
@@ -88,7 +88,7 @@ Every AI coding tool creates code. But what happens when that code is a mess? Yo
 
 Sound familiar? That's what vibe coding produces.
 
-Fire Flow v12.2 introduces Phoenix Rebuild — the first AI tool that can take a messy codebase and rebuild it clean.
+Dominion Flow v12.2 introduces Phoenix Rebuild — the first AI tool that can take a messy codebase and rebuild it clean.
 
 One command:
 /fire-phoenix --source ./my-messy-app
@@ -113,7 +113,7 @@ Your source code is never modified. The rebuild goes to a new folder. And dry-ru
 
 Real test results: Found a 5,725-line god component, 9 stub models with no logic, broken integrations, and 55 features classified automatically.
 
-Fire Flow: 46 commands, 15 agents, 478+ proven patterns.
+Dominion Flow: 46 commands, 15 agents, 478+ proven patterns.
 
 Install: npx @thierrynakoa/fire-flow
 GitHub: github.com/ThierryN/fire-flow
@@ -127,7 +127,7 @@ GitHub: github.com/ThierryN/fire-flow
 **Tweet 1:**
 Every AI coding tool creates code.
 
-Fire Flow v12.2 is the first that can take a messy "vibe coded" project and rebuild it clean.
+Dominion Flow v12.2 is the first that can take a messy "vibe coded" project and rebuild it clean.
 
 One command:
 /fire-phoenix --source ./my-messy-app
@@ -170,7 +170,7 @@ Real results from testing on a production MERN app:
 All in one automated pass.
 
 **Tweet 5:**
-Fire Flow v12.2 also ships:
+Dominion Flow v12.2 also ships:
 
 - Circuit breaker intelligence (6 stuck-state types)
 - Tiered verification (fast gate -> must-haves -> 70-point checklist)
@@ -185,7 +185,7 @@ Install: npx @thierrynakoa/fire-flow
 
 ### Short Post (Discord / Reddit / Communities)
 
-**Fire Flow v12.2 — Phoenix Rebuild**
+**Dominion Flow v12.2 — Phoenix Rebuild**
 
 Take any messy "vibe coded" project and rebuild it clean. One command:
 
