@@ -265,15 +265,29 @@ All core commands (`/fire-1a-new` through `/fire-6-resume`, `/fire-autonomous`, 
 
 ---
 
-## Optional: Power Features
+## Highly Recommended: Persistent Memory with Docker + Qdrant + Ollama
 
-The core workflow works out of the box. These extras unlock **persistent memory**, **codebase search**, and **Docker Hub access** — features that make Claude dramatically more capable on larger projects.
+Without persistent memory, Claude starts every session from scratch — it forgets your codebase, past decisions, what worked, and what didn't. **With Qdrant and Ollama installed, Claude remembers everything across sessions.** It can recall past debugging sessions, reuse solutions it discovered weeks ago, and pick up exactly where it left off with full context.
+
+This is the difference between an AI that helps you for 30 minutes and one that becomes a long-term collaborator on your project.
+
+**What you get:**
+
+| Without Memory | With Qdrant + Ollama |
+|----------------|---------------------|
+| Claude forgets everything when you close the session | Claude recalls past sessions, decisions, and patterns |
+| You re-explain your project every time | Claude already knows your codebase and conventions |
+| Same mistakes get repeated across sessions | Lessons learned persist — Claude gets smarter over time |
+| Skills and patterns are discovered but lost | Auto-extracted skills are stored and reused |
+| Handoffs rely on text files only | Handoffs are backed by vector search across all history |
+
+**The setup takes about 10 minutes and runs entirely on your local machine — no cloud services, no data leaving your computer.**
 
 ---
 
 ### Step 1 — Install Docker Desktop
 
-Docker Desktop is required to run Qdrant. Install it before anything else.
+Docker Desktop is required to run Qdrant (the vector database that stores Claude's memory). Install it before anything else.
 
 **Windows (PC):**
 
@@ -310,7 +324,7 @@ Docker Desktop is required to run Qdrant. Install it before anything else.
 
 ### Step 2 — Run Qdrant (Vector Database)
 
-Qdrant stores Claude's persistent memory across sessions — so Claude remembers your codebase, past decisions, and patterns from previous work.
+Qdrant is the brain behind Claude's long-term memory. Every session handoff, debugging insight, skill discovery, and architectural decision gets stored as a searchable vector. When Claude starts a new session, it automatically searches this memory for relevant context — giving it continuity that no other AI coding tool provides.
 
 ```bash
 docker pull qdrant/qdrant
@@ -356,19 +370,24 @@ claude mcp add qdrant -s user -- cmd /c uvx mcp-server-qdrant \
 
 ### Step 4 — Install Ollama (Local Embeddings)
 
-Ollama runs locally and generates the vectors that get stored in Qdrant.
+Ollama is the engine that converts your code, decisions, and session context into vectors that Qdrant can search. It runs entirely on your machine — no API keys, no cloud calls, no cost per query. Once installed, it works silently in the background.
 
 1. Download and install from [ollama.com](https://ollama.com)
 2. Pull the embedding model:
    ```bash
    ollama pull nomic-embed-text
    ```
+3. Ollama starts automatically after install. Verify it's running:
+   ```bash
+   ollama list
+   ```
+   You should see `nomic-embed-text` in the output.
 
 ---
 
-### Step 5 — Run Docker Hub MCP Server (hub-mcp)
+### Step 5 (Optional) — Run Docker Hub MCP Server (hub-mcp)
 
-hub-mcp lets Claude search Docker Hub, browse images and tags, and pull images by just asking.
+hub-mcp lets Claude search Docker Hub, browse images and tags, and pull images by just asking. This is optional — it's useful if you work with Docker images regularly.
 
 ```bash
 docker pull docker/hub-mcp
