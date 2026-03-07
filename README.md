@@ -472,7 +472,38 @@ Claude will plan, build, and verify every phase without you having to type each 
 
 ## How Does It Compare?
 
+There are several open-source orchestration tools for Claude Code. Here's an honest, side-by-side comparison across 14 features:
+
 ![Feature Comparison](./docs/feature-comparison.png)
+
+### Why Dominion Flow Wins
+
+Most orchestration plugins do one or two things well. Dominion Flow is the only one that covers the **entire development lifecycle** — from initial project setup to production verification — in a single, free, open-source package.
+
+**Features no other free orchestration tool offers:**
+
+| Exclusive to Dominion Flow | What It Means for You |
+|---------------------------|----------------------|
+| **Phoenix Rebuild** | Take any messy "vibe coded" project and rebuild it clean. No other tool does this. |
+| **478+ skills library** | The largest collection of reusable patterns for AI-assisted development. Next closest has 60. |
+| **Playwright E2E testing** | Claude can open a real browser and prove your app works. No other orchestration tool integrates this. |
+| **Tiered verification (3-tier + 70-point)** | Fast gate catches obvious issues in 30 seconds. Full checklist catches everything else. Other tools have basic checks at best. |
+| **6-type circuit breaker** | Classifies WHY Claude is stuck (stall, spin, degrade, blocked, thrash, drift) and takes different action for each. Others just retry or stop. |
+| **GoF design patterns for AI** | All 22 Gang of Four patterns mapped to AI agent architecture. Educational and practical. |
+| **Learncoding mode** | Walk through any codebase step-by-step to understand it before changing it. A learning tool built into a production tool. |
+| **46 commands in 8 tiers** | Most tools have 5-10 commands. Dominion Flow covers planning, execution, verification, debugging, security, analytics, milestones, and learning. |
+
+**Where others are strong too** (credit where it's due):
+
+- **claude-mem** — Best-in-class session memory if memory is all you need
+- **GSD** — Solid plan-execute-verify pipeline with goal-backward verification
+- **everything-cc** — Good skills system with built-in security (AgentShield)
+- **Ruflo** — Strong swarm-based parallel execution
+- **Composio** — Powerful multi-agent orchestration with 30+ agents and CI self-healing
+
+**The difference:** Those tools specialize. Dominion Flow integrates. You get structured workflow, memory, verification, security, debugging, skills, E2E testing, autonomous mode, Phoenix Rebuild, and a learning system — all working together in one coherent pipeline. And it's completely free.
+
+---
 
 ## Key Features
 
