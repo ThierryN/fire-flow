@@ -215,7 +215,57 @@ See [TROUBLESHOOTING.md](./TROUBLESHOOTING.md) for additional diagnostics, or op
 
 ---
 
-## Optional but Recommended: Power Features
+## Highly Recommended: Install the Playwright Plugin
+
+Dominion Flow includes built-in E2E (end-to-end) browser testing through its `/fire-test` and `/fire-verify-uat` commands. For these to work, Claude needs the **Playwright plugin** — which gives Claude the ability to open a real browser, click buttons, fill forms, take screenshots, and verify that your application actually works the way a real user would experience it.
+
+**This is the single most impactful add-on you can install.** Without it, Dominion Flow can still verify your code quality and logic — but with it, Claude can launch your app in a browser and prove it works visually.
+
+### Install Playwright Plugin (One Command)
+
+```bash
+claude plugin install playwright@claude-plugins-official
+```
+
+That's it. Restart Claude Code and the Playwright tools are available immediately.
+
+### What This Unlocks
+
+| Capability | What Claude Can Do |
+|------------|-------------------|
+| **Visual verification** | Open your app in a browser and confirm UI renders correctly |
+| **Form testing** | Fill out forms, submit them, and verify responses |
+| **Click-through flows** | Test multi-step user journeys (signup → login → dashboard) |
+| **Screenshot comparison** | Capture before/after screenshots during Phoenix Rebuild |
+| **Error detection** | Catch console errors, broken links, and missing elements |
+| **Responsive testing** | Test at different viewport sizes (mobile, tablet, desktop) |
+
+### How Dominion Flow Uses Playwright
+
+Once installed, Playwright is automatically used by:
+
+- **`/fire-verify-uat`** — Runs user acceptance tests against your running application
+- **`/fire-test`** — Includes E2E test generation and execution
+- **`/fire-4-verify`** — The 70-point WARRIOR checklist awards up to 10 points for E2E coverage
+- **`/fire-phoenix`** — Phase 6 (COMPARISON) uses screenshots to visually compare source vs rebuild
+
+### Verify Playwright Is Working
+
+After installing, ask Claude:
+
+> *"Take a screenshot of http://localhost:3000"*
+
+If Claude opens a browser and returns a screenshot, Playwright is working. If your app isn't running yet, you can test with any public URL:
+
+> *"Take a screenshot of https://example.com"*
+
+### Don't Have Playwright Yet? Dominion Flow Still Works
+
+All core commands (`/fire-1a-new` through `/fire-6-resume`, `/fire-autonomous`, `/fire-phoenix`) work without Playwright. E2E testing features will simply be skipped, and the verifier will redistribute those points to other categories. But you'll get significantly more value from Dominion Flow with Playwright installed.
+
+---
+
+## Optional: Power Features
 
 The core workflow works out of the box. These extras unlock **persistent memory**, **codebase search**, and **Docker Hub access** — features that make Claude dramatically more capable on larger projects.
 
