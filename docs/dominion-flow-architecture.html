@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dominion Flow — Architecture</title>
+<title>Fire Flow (Dominion Flow) v12.2 — Architecture</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -26,6 +26,8 @@
     --danger: #f38ba8;
     --danger-dim: rgba(243,139,168,0.13);
     --amber: #f9e2af;
+    --phoenix: #fab387;
+    --phoenix-dim: rgba(250,179,135,0.13);
     --font-body: 'Space Grotesk', system-ui, sans-serif;
     --font-mono: 'JetBrains Mono', 'SF Mono', Consolas, monospace;
   }
@@ -48,6 +50,8 @@
       --danger: #d20f39;
       --danger-dim: rgba(210,15,57,0.1);
       --amber: #df8e1d;
+      --phoenix: #fe640b;
+      --phoenix-dim: rgba(254,100,11,0.1);
     }
   }
 
@@ -90,6 +94,15 @@
     margin-bottom: 44px;
   }
 
+  .version-badge {
+    display: inline-block;
+    font-family: var(--font-mono); font-size: 10px;
+    color: var(--phoenix); background: var(--phoenix-dim);
+    border: 1px solid var(--phoenix); border-radius: 4px;
+    padding: 2px 8px; letter-spacing: 0.05em;
+    margin-left: 8px; vertical-align: middle;
+  }
+
   .section-header {
     display: flex; align-items: center; gap: 12px;
     margin-bottom: 14px; margin-top: 36px;
@@ -99,6 +112,10 @@
     color: var(--primary); background: var(--primary-dim);
     border: 1px solid var(--primary); border-radius: 4px;
     padding: 2px 7px; letter-spacing: 0.05em;
+  }
+  .section-num.phoenix {
+    color: var(--phoenix); background: var(--phoenix-dim);
+    border-color: var(--phoenix);
   }
   .section-title {
     font-size: 13px; font-weight: 600; color: var(--text-dim);
@@ -190,6 +207,9 @@
     font-size: 12px; line-height: 1.7;
     color: var(--text-dim); margin-top: 28px;
   }
+  .callout.phoenix-callout {
+    border-left-color: var(--phoenix);
+  }
   .callout strong { color: var(--text); }
   .callout code {
     font-family: var(--font-mono); font-size: 11px;
@@ -197,10 +217,31 @@
     padding: 1px 5px; border-radius: 3px;
   }
 
+  /* ============ STATS BAR ============ */
+  .stats-bar {
+    display: flex; gap: 24px; flex-wrap: wrap;
+    margin-bottom: 36px; padding: 14px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .stat {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .stat-value {
+    font-family: var(--font-mono); font-size: 20px; font-weight: 700;
+    color: var(--primary);
+  }
+  .stat-label {
+    font-family: var(--font-mono); font-size: 10px; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.06em;
+  }
+
   @media (max-width: 768px) {
     body { padding: 20px 16px; }
     h1 { font-size: 26px; }
     .mermaid-wrap { padding: 32px 12px 20px; }
+    .stats-bar { gap: 16px; }
   }
 </style>
 </head>
@@ -208,16 +249,26 @@
 
 <div class="container">
 
-  <h1 class="animate" style="--i:0">Dominion Flow</h1>
-  <p class="subtitle animate" style="--i:1">architecture · command pipeline · breath execution · session continuity</p>
+  <h1 class="animate" style="--i:0">Fire Flow <span class="version-badge">v12.2</span></h1>
+  <p class="subtitle animate" style="--i:1">architecture · command pipeline · phoenix rebuild · breath execution · session continuity</p>
 
-  <!-- DIAGRAM 1: Full pipeline -->
-  <div class="section-header animate" style="--i:2">
-    <span class="section-num">01</span>
-    <span class="section-title">Full Command Pipeline</span>
+  <!-- STATS BAR -->
+  <div class="stats-bar animate" style="--i:2">
+    <div class="stat"><span class="stat-value">46</span><span class="stat-label">Commands</span></div>
+    <div class="stat"><span class="stat-value">15</span><span class="stat-label">Agents</span></div>
+    <div class="stat"><span class="stat-value">478+</span><span class="stat-label">Skills</span></div>
+    <div class="stat"><span class="stat-value">70</span><span class="stat-label">Verification Points</span></div>
+    <div class="stat"><span class="stat-value" style="color:var(--phoenix)">6</span><span class="stat-label">Phoenix Phases</span></div>
+    <div class="stat"><span class="stat-value">8</span><span class="stat-label">Command Tiers</span></div>
   </div>
 
-  <div class="mermaid-wrap animate" style="--i:3">
+  <!-- DIAGRAM 1: Full pipeline -->
+  <div class="section-header animate" style="--i:3">
+    <span class="section-num">01</span>
+    <span class="section-title">Core Command Pipeline</span>
+  </div>
+
+  <div class="mermaid-wrap animate" style="--i:4">
     <div class="zoom-controls">
       <button onclick="zoomDiagram(this, 1.25)" title="Zoom in">+</button>
       <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">−</button>
@@ -230,24 +281,29 @@ flowchart TD
     classDef file    fill:#1e1e2e,stroke:#a6e3a1,stroke-width:1.5px,color:#a6e3a1
     classDef start   fill:#cba6f7,stroke:#cba6f7,color:#1e1e2e
     classDef session fill:#313244,stroke:#f9e2af,stroke-width:1.5px,color:#f9e2af,stroke-dasharray:5 4
+    classDef safety  fill:#1e1e2e,stroke:#f38ba8,stroke-width:1.5px,color:#f38ba8
 
-    START(["▶  New Project"]):::start
+    START(["New Project"]):::start
 
-    C1["/fire-1-new<br/>Init Project"]:::cmd
+    C1["/fire-1a-new<br/>Init Project"]:::cmd
     C2["/fire-2-plan<br/>Plan Phase N"]:::cmd
     C3["/fire-3-execute<br/>Breath Execution"]:::cmd
-    C4["/fire-4-verify<br/>70-point Gate"]:::cmd
+    C4["/fire-4-verify<br/>Tiered Gate"]:::cmd
     C5["/fire-5-handoff<br/>Save Session"]:::cmd
     C6["/fire-6-resume<br/>Restore Context"]:::session
+    AUTO["/fire-autonomous<br/>Full Autopilot"]:::cmd
 
-    PLANNER{{"fire-planner<br/>agent"}}:::agent
-    EXECUTOR{{"fire-executor<br/>agent"}}:::agent
-    VERIFIER{{"fire-verifier<br/>agent"}}:::agent
+    PLANNER{{"fire-planner<br/>DoR + Scope Manifest"}}:::agent
+    EXECUTOR{{"fire-executor<br/>Circuit Breaker"}}:::agent
+    VERIFIER{{"fire-verifier<br/>70-point WARRIOR"}}:::agent
+    REVIEWER{{"fire-reviewer<br/>15 Personas"}}:::agent
+
+    CB["Circuit Breaker<br/>6-type classification"]:::safety
 
     CON[(CONSCIENCE.md)]:::file
     VIS[(VISION.md)]:::file
     BLU[(BLUEPRINT.md)]:::file
-    HAN[(POWER-HANDOFF-*.md)]:::file
+    HAN[(HANDOFF-*.md)]:::file
 
     START --> C1
     C1 -->|creates| CON
@@ -258,33 +314,115 @@ flowchart TD
     PLANNER -->|writes| BLU
     BLU --> C3
     C3 -->|invokes| EXECUTOR
+    EXECUTOR -->|monitors| CB
+    CB -->|BLOCKED| C5
     EXECUTOR -->|updates| CON
     EXECUTOR --> C4
     C4 -->|invokes| VERIFIER
+    C4 -->|invokes| REVIEWER
     VERIFIER -->|PASS| C5
-    VERIFIER -->|FAIL — rework| C3
+    VERIFIER -->|FAIL| C3
     C5 -->|creates| HAN
     HAN -.->|next session| C6
     C6 -->|reads| HAN
     C6 --> C2
+    AUTO -.->|automates| C2
+    AUTO -.->|automates| C3
+    AUTO -.->|automates| C4
     </pre>
   </div>
 
-  <div class="legend animate" style="--i:4">
+  <div class="legend animate" style="--i:5">
     <div class="legend-item"><div class="legend-dot" style="background:#cba6f7"></div>/fire-* commands</div>
     <div class="legend-item"><div class="legend-dot" style="background:#89b4fa"></div>Subagents</div>
     <div class="legend-item"><div class="legend-dot" style="background:#a6e3a1"></div>State files (.planning/)</div>
     <div class="legend-item"><div class="legend-dot" style="background:#f9e2af"></div>Cross-session boundary</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#f38ba8"></div>Failure / rework path</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f38ba8"></div>Safety / circuit breaker</div>
   </div>
 
-  <!-- DIAGRAM 2: Breath execution -->
-  <div class="section-header animate" style="--i:5">
-    <span class="section-num">02</span>
+  <!-- DIAGRAM 2: Phoenix Rebuild Pipeline (NEW in v12.2) -->
+  <div class="section-header animate" style="--i:6">
+    <span class="section-num phoenix">02</span>
+    <span class="section-title">Phoenix Rebuild Pipeline — /fire-phoenix (NEW in v12.2)</span>
+  </div>
+
+  <div class="mermaid-wrap animate" style="--i:7">
+    <div class="zoom-controls">
+      <button onclick="zoomDiagram(this, 1.25)" title="Zoom in">+</button>
+      <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">−</button>
+      <button onclick="resetZoom(this)" title="Reset">↺</button>
+    </div>
+    <pre class="mermaid">
+flowchart LR
+    classDef phase   fill:#313244,stroke:#fab387,stroke-width:2px,color:#fab387
+    classDef agent   fill:#1e1e2e,stroke:#89b4fa,stroke-width:2px,color:#89dcfa
+    classDef file    fill:#1e1e2e,stroke:#a6e3a1,stroke-width:1.5px,color:#a6e3a1
+    classDef start   fill:#fab387,stroke:#fab387,color:#1e1e2e
+    classDef verify  fill:#1e1e2e,stroke:#f38ba8,stroke-width:1.5px,color:#f38ba8
+    classDef cmd     fill:#313244,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4
+
+    SOURCE(["Messy Codebase"]):::start
+
+    P1["Phase 1<br/>AUTOPSY"]:::phase
+    P2["Phase 2<br/>INTENT"]:::phase
+    P3["Phase 3<br/>CLARIFY"]:::phase
+    P4["Phase 4<br/>VISION"]:::phase
+    P5["Phase 5<br/>REBUILD"]:::phase
+    P6["Phase 6<br/>COMPARISON"]:::phase
+
+    ANALYST{{"fire-phoenix<br/>-analyst"}}:::agent
+    MAPPER{{"fire-codebase<br/>-mapper x4"}}:::agent
+
+    INTENT[(INTENT.md)]:::file
+    GRAPH[(INTENT-GRAPH.md)]:::file
+    COMP[(PHOENIX-<br/>COMPARISON.md)]:::file
+
+    PX["Phoenix Score<br/>PX-1 to PX-5"]:::verify
+
+    PLAN["/fire-2-plan"]:::cmd
+    EXEC["/fire-3-execute"]:::cmd
+    VERI["/fire-4-verify"]:::cmd
+
+    SOURCE --> P1
+    P1 -->|"4 parallel mappers"| MAPPER
+    MAPPER --> P2
+    P2 -->|"2 parallel analysts"| ANALYST
+    ANALYST -->|writes| INTENT
+    ANALYST -->|writes| GRAPH
+    INTENT --> P3
+    P3 -->|"user questions"| P4
+    P4 --> P5
+    P5 -->|uses| PLAN
+    P5 -->|uses| EXEC
+    P5 -->|uses| VERI
+    VERI -->|"Phoenix checks"| PX
+    P5 --> P6
+    P6 -->|produces| COMP
+    </pre>
+  </div>
+
+  <div class="callout phoenix-callout animate" style="--i:8">
+    <strong>Phoenix Rebuild</strong> takes a messy "vibe coded" project and rebuilds it clean from extracted intent.
+    The source folder is <strong>never modified</strong> — the rebuild goes to a new target folder.
+    <br><br>
+    <strong>Intent extraction</strong> is the key innovation: instead of literally translating messy code, the
+    <code>fire-phoenix-analyst</code> agent reverse-engineers what the developer was <em>trying</em> to do.
+    Every feature is classified as INTENDED, ACCIDENTAL, WORKAROUND, or ABANDONED. The rebuild preserves
+    intent while removing accidental complexity.
+    <br><br>
+    <strong>Phoenix Score (PX-1 to PX-5):</strong>
+    Feature Parity (30%) + Edge Case Coverage (25%) + Dependency Compatibility (20%) +
+    Accidental Complexity Removal (15%) + Architecture Improvement (10%).
+    Score of 90%+ = APPROVED.
+  </div>
+
+  <!-- DIAGRAM 3: Breath execution -->
+  <div class="section-header animate" style="--i:9">
+    <span class="section-num">03</span>
     <span class="section-title">Breath Execution Pattern (inside /fire-3-execute)</span>
   </div>
 
-  <div class="mermaid-wrap animate" style="--i:6">
+  <div class="mermaid-wrap animate" style="--i:10">
     <div class="zoom-controls">
       <button onclick="zoomDiagram(this, 1.25)" title="Zoom in">+</button>
       <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">−</button>
@@ -295,43 +433,143 @@ flowchart LR
     classDef task fill:#313244,stroke:#89b4fa,stroke-width:1.5px,color:#cdd6f4
     classDef gate fill:#cba6f7,stroke:#cba6f7,color:#1e1e2e
     classDef check fill:#1e1e2e,stroke:#a6e3a1,stroke-width:1.5px,color:#a6e3a1
+    classDef safety fill:#1e1e2e,stroke:#f38ba8,stroke-width:1.5px,color:#f38ba8
 
     START2(["BLUEPRINT.md<br/>loaded"]):::check
 
-    subgraph B1["Breath 1  —  all tasks run simultaneously"]
+    subgraph B1["Breath 1 — all tasks run simultaneously"]
         direction TB
         T1["Task A<br/>DB Schema"]:::task
         T2["Task B<br/>API Route"]:::task
         T3["Task C<br/>Auth Model"]:::task
     end
 
-    subgraph B2["Breath 2  —  starts only when Breath 1 is complete"]
+    subgraph B2["Breath 2 — starts only when Breath 1 is complete"]
         direction TB
         T4["Task D<br/>Controller"]:::task
         T5["Task E<br/>Tests"]:::task
     end
 
-    subgraph B3["Breath 3  —  final"]
+    CB2["Circuit Breaker<br/>Check"]:::safety
+
+    subgraph B3["Breath 3 — final"]
         direction TB
         T6["Task F<br/>Integration"]:::task
     end
 
-    DONE(["Phase complete<br/>→ /fire-4-verify"]):::gate
+    DONE(["Phase complete<br/>Tiered verification"]):::gate
 
     START2 --> B1
-    B1 -->|"all done ✓"| B2
-    B2 -->|"all done ✓"| B3
+    B1 -->|"all done"| CB2
+    CB2 -->|"OK"| B2
+    B2 -->|"all done"| B3
     B3 --> DONE
     </pre>
   </div>
 
-  <!-- DIAGRAM 3: Session continuity -->
-  <div class="section-header animate" style="--i:7">
-    <span class="section-num">03</span>
+  <!-- DIAGRAM 4: Tiered Verification (NEW in v12.0) -->
+  <div class="section-header animate" style="--i:11">
+    <span class="section-num">04</span>
+    <span class="section-title">Tiered Verification Gate (v12.0)</span>
+  </div>
+
+  <div class="mermaid-wrap animate" style="--i:12">
+    <div class="zoom-controls">
+      <button onclick="zoomDiagram(this, 1.25)" title="Zoom in">+</button>
+      <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">−</button>
+      <button onclick="resetZoom(this)" title="Reset">↺</button>
+    </div>
+    <pre class="mermaid">
+flowchart TD
+    classDef tier1 fill:#313244,stroke:#a6e3a1,stroke-width:2px,color:#a6e3a1
+    classDef tier2 fill:#313244,stroke:#89b4fa,stroke-width:2px,color:#89b4fa
+    classDef tier3 fill:#313244,stroke:#cba6f7,stroke-width:2px,color:#cba6f7
+    classDef fail  fill:#1e1e2e,stroke:#f38ba8,stroke-width:1.5px,color:#f38ba8
+    classDef pass  fill:#a6e3a1,stroke:#a6e3a1,color:#1e1e2e
+
+    ENTRY(["Phase complete"])
+
+    T1["Tier 1: Fast Gate<br/>Build + lint + type check<br/>~30 seconds"]:::tier1
+    T1F["FAIL FAST<br/>Fix before continuing"]:::fail
+
+    T2["Tier 2: Must-Haves<br/>Tests pass + coverage + security<br/>~2 minutes"]:::tier2
+    T2F["FAIL<br/>Rework required"]:::fail
+
+    T3["Tier 3: 70-point WARRIOR<br/>Full checklist + review<br/>~5 minutes"]:::tier3
+    T3F["CONDITIONAL<br/>Gaps logged"]:::fail
+
+    PASS(["APPROVED"]):::pass
+
+    ENTRY --> T1
+    T1 -->|"pass"| T2
+    T1 -->|"fail"| T1F
+    T2 -->|"pass"| T3
+    T2 -->|"fail"| T2F
+    T3 -->|"pass"| PASS
+    T3 -->|"gaps"| T3F
+    T3F -->|"non-critical"| PASS
+    </pre>
+  </div>
+
+  <!-- DIAGRAM 5: Agent Architecture -->
+  <div class="section-header animate" style="--i:13">
+    <span class="section-num">05</span>
+    <span class="section-title">Agent Architecture — 15 Specialized Agents</span>
+  </div>
+
+  <div class="mermaid-wrap animate" style="--i:14">
+    <div class="zoom-controls">
+      <button onclick="zoomDiagram(this, 1.25)" title="Zoom in">+</button>
+      <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">−</button>
+      <button onclick="resetZoom(this)" title="Reset">↺</button>
+    </div>
+    <pre class="mermaid">
+flowchart TD
+    classDef core    fill:#313244,stroke:#cba6f7,stroke-width:2px,color:#cdd6f4
+    classDef phoenix fill:#313244,stroke:#fab387,stroke-width:2px,color:#fab387
+    classDef support fill:#1e1e2e,stroke:#89b4fa,stroke-width:1.5px,color:#89b4fa
+    classDef map     fill:#1e1e2e,stroke:#a6e3a1,stroke-width:1.5px,color:#a6e3a1
+
+    subgraph CORE["Core Pipeline Agents"]
+        direction LR
+        P["fire-planner<br/>DoR + decomposition"]:::core
+        E["fire-executor<br/>circuit breaker"]:::core
+        V["fire-verifier<br/>70-point gate"]:::core
+        R["fire-reviewer<br/>15 personas"]:::core
+    end
+
+    subgraph PHOENIX["Phoenix Rebuild Agents"]
+        direction LR
+        PA["fire-phoenix-analyst<br/>intent extraction"]:::phoenix
+        PV["fire-vision-architect<br/>stack migration"]:::phoenix
+    end
+
+    subgraph MAPPER["Codebase Analysis"]
+        direction LR
+        M1["fire-codebase-mapper<br/>tech stack"]:::map
+        M2["fire-codebase-mapper<br/>architecture"]:::map
+        M3["fire-codebase-mapper<br/>quality"]:::map
+        M4["fire-codebase-mapper<br/>concerns"]:::map
+    end
+
+    subgraph SUPPORT["Specialized Agents"]
+        direction LR
+        S1["fire-researcher<br/>web research"]:::support
+        S2["fire-debugger<br/>plan-aware"]:::support
+        S3["fire-security-scanner<br/>6-layer scan"]:::support
+        S4["fire-playwright<br/>E2E testing"]:::support
+        S5["fire-learncoding<br/>walkthrough"]:::support
+    end
+    </pre>
+  </div>
+
+  <!-- DIAGRAM 6: Session continuity -->
+  <div class="section-header animate" style="--i:15">
+    <span class="section-num">06</span>
     <span class="section-title">Session Continuity — How State Survives Between Sessions</span>
   </div>
 
-  <div class="mermaid-wrap animate" style="--i:8">
+  <div class="mermaid-wrap animate" style="--i:16">
     <div class="zoom-controls">
       <button onclick="zoomDiagram(this, 1.25)" title="Zoom in">+</button>
       <button onclick="zoomDiagram(this, 0.8)" title="Zoom out">−</button>
@@ -350,8 +588,8 @@ flowchart LR
         H1["/fire-5-handoff"]:::session1
     end
 
-    HANDOFF[("POWER-HANDOFF-<br/>2026-03-05.md")]:::file
-    BORDER(["— session ends —"]):::boundary
+    HANDOFF[("HANDOFF-<br/>2026-03-06.md")]:::file
+    BORDER(["session ends"]):::boundary
 
     subgraph S2["Session 2"]
         R1["/fire-6-resume"]:::session2
@@ -362,21 +600,30 @@ flowchart LR
     W1 --> U1 --> H1
     H1 -->|"writes snapshot"| HANDOFF
     HANDOFF --> BORDER
-    BORDER -.->|"next day / next session"| R1
+    BORDER -.->|"next session"| R1
     R1 -->|"reads"| HANDOFF
     R1 --> R2 --> R3
     </pre>
   </div>
 
-  <div class="callout animate" style="--i:9">
+  <div class="callout animate" style="--i:17">
     <strong>Why files instead of memory?</strong> Claude has no memory between sessions —
-    each conversation starts blank. Dominion Flow externalizes all state into markdown files in
+    each conversation starts blank. Fire Flow externalizes all state into markdown files in
     <code>.planning/</code>. The agent is stateless by design; the <em>files</em> carry the memory.
     This is the same pattern databases use: the process is stateless, the storage persists.
     <br><br>
     <strong>Breath execution</strong> solves dependency ordering: tasks within a breath run in
     <code>parallel</code> (multiple subagents at once), but the next breath only starts when
     all tasks in the current breath are complete. Maximum parallelism, zero dependency violations.
+    <br><br>
+    <strong>Circuit breaker intelligence (v12.0)</strong> classifies stuck states into 6 types
+    (stall, spin, degrade, blocked, thrash, drift) with Google X-style kill conditions.
+    When the agent is genuinely stuck, it stops cleanly instead of burning tokens.
+    <br><br>
+    <strong>Phoenix Rebuild (v12.2)</strong> is the first AI coding tool that can take a messy
+    "vibe coded" project and rebuild it clean from extracted developer intent. The 6-phase pipeline
+    (AUTOPSY, INTENT, CLARIFY, VISION, REBUILD, COMPARISON) preserves what matters and removes
+    accidental complexity.
   </div>
 
 </div>
