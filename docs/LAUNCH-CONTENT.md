@@ -116,9 +116,10 @@ Real test results: Found a 5,725-line god component, 9 stub models with no logic
 Dominion Flow: 46 commands, 15 agents, 478+ proven patterns.
 
 Install: npx @thierrynakoa/fire-flow
+Update: npx @thierrynakoa/fire-flow --update
 GitHub: github.com/ThierryN/fire-flow
 
-#ClaudeCode #AI #WebDevelopment #Programming #VibeCoding #FireFlow
+#ClaudeCode #AI #WebDevelopment #Programming #VibeCoding #DominionFlow
 
 ---
 
@@ -178,6 +179,7 @@ Dominion Flow v12.2 also ships:
 - GoF design patterns mapped to AI agents
 
 Install: npx @thierrynakoa/fire-flow
+Update: npx @thierrynakoa/fire-flow --update
 
 #ClaudeCode #AI #WebDev
 
@@ -202,4 +204,32 @@ Tested on a real app: found a 5,725-LOC god component, 9 stub models, broken int
 Also: circuit breaker intelligence, tiered verification, 478+ patterns, 46 commands, 15 agents.
 
 Install: `npx @thierrynakoa/fire-flow`
+Update: `npx @thierrynakoa/fire-flow --update`
 GitHub: github.com/ThierryN/fire-flow
+
+---
+
+### Facebook — "Know Someone?" (Spaghetti Monster / Frankenstein)
+
+Know someone who could use this?
+
+We all know that developer with a project they're afraid to touch. The Spaghetti Monster — 5,000 lines in one file, copy-paste everywhere, no error handling, config values hardcoded in 47 places. Or the Frankenstein — it was built by 3 different AI tools over 6 weekends, each one bolting on another limb until the whole thing lurches forward but nobody knows how.
+
+It works. But nobody wants to maintain it. And rewriting from scratch? Who has the time?
+
+That's exactly what Phoenix Rebuild was built for.
+
+One command:
+/fire-phoenix --source ./that-scary-project
+
+Phoenix reverse-engineers what the code was TRYING to do — not what it actually does. Every feature gets classified: was this intentional, accidental, a workaround, or abandoned halfway through? Then it rebuilds the entire project from scratch in a new folder. Clean architecture. Proper error handling. Real tests. Your original code is never touched.
+
+Tag that friend. You know the one. The one who says "it works, don't touch it" while sweating. This is for them.
+
+Dominion Flow — free, open source, MIT licensed.
+
+Install: npx @thierrynakoa/fire-flow
+Update: npx @thierrynakoa/fire-flow --update
+GitHub: github.com/ThierryN/fire-flow
+
+#ClaudeCode #AI #WebDevelopment #VibeCoding #PhoenixRebuild #SpaghettiCode #DominionFlow
