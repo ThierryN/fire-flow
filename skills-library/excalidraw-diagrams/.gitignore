@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+*.pyo
+*.excalidraw
+.DS_Store
+*.zip
+node_modules/

@@ -1,0 +1,793 @@
+# Dominion Flow Validation Configuration
+# Used by fire-verifier and /fire-4-verify command
+#
+# This configuration defines all 60 validation checks from the WARRIOR checklist
+# organized into 10 categories, each worth 10 points (6 checks per category).
+#
+# Checks can be:
+#   - automated: Run via command with pass/fail result
+#   - semi-automated: Run via command but may need human interpretation
+#   - manual: Require human verification
+#
+# Version History:
+#   1.0 - Initial comprehensive validation config
+
+version: "1.0"
+
+# ============================================================================
+# AUTOMATED CHECKS CONFIGURATION
+# These checks can be run automatically via command line
+# ============================================================================
+
+automated_checks:
+
+  # --------------------------------------------------------------------------
+  # Category 1: CODE QUALITY (10 points, 6 checks)
+  # Ensures code follows best practices and standards
+  # --------------------------------------------------------------------------
+  code_quality:
+    - name: "TypeScript Compilation"
+      description: "Verify TypeScript compiles without errors"
+      command: "npx tsc --noEmit"
+      required: true
+      timeout: 60
+      points: 1.67
+
+    - name: "ESLint Check"
+      description: "No linting errors or warnings"
+      command: "npx eslint . --ext .ts,.tsx --max-warnings 0"
+      required: true
+      timeout: 30
+      points: 1.67
+
+    - name: "Prettier Format"
+      description: "Code formatting is consistent"
+      command: "npx prettier --check ."
+      required: false
+      timeout: 30
+      points: 1.67
+
+    - name: "No Console Logs"
+      description: "No debug console.log statements in production code"
+      command: "grep -rn 'console.log' src/ --include='*.ts' --include='*.tsx' | grep -v '.test.' | grep -v '.spec.' | wc -l"
+      required: false
+      max_count: 0
+      timeout: 15
+      points: 1.67
+
+    - name: "No TODO/FIXME in Critical Paths"
+      description: "Critical code paths have no unresolved TODOs"
+      command: "grep -rn 'TODO\\|FIXME\\|XXX\\|HACK' src/ --include='*.ts' --include='*.tsx' | wc -l"
+      required: false
+      max_count: 5
+      timeout: 15
+      points: 1.67
+
+    - name: "Dead Code Detection"
+      description: "No unused exports or unreachable code"
+      command: "npx ts-prune --error"
+      required: false
+      timeout: 60
+      points: 1.65
+
+  # --------------------------------------------------------------------------
+  # Category 2: TESTING (10 points, 6 checks)
+  # Ensures adequate test coverage and passing tests
+  # --------------------------------------------------------------------------
+  testing:
+    - name: "Unit Tests Pass"
+      description: "All unit tests pass successfully"
+      command: "npm run test"
+      required: true
+      timeout: 120
+      points: 1.67
+
+    - name: "Unit Test Coverage"
+      description: "Unit test coverage meets threshold"
+      command: "npm run test -- --coverage --coverageThreshold='{\"global\":{\"branches\":80,\"functions\":80,\"lines\":80}}'"
+      required: true
+      timeout: 180
+      coverage_threshold: 80
+      points: 1.67
+
+    - name: "Integration Tests Pass"
+      description: "All integration tests pass successfully"
+      command: "npm run test:integration"
+      required: false
+      timeout: 300
+      points: 1.67
+
+    - name: "E2E Tests Pass"
+      description: "End-to-end tests pass in headless mode"
+      command: "npm run test:e2e"
+      required: false
+      timeout: 600
+      points: 1.67
+
+    - name: "No Skipped Tests"
+      description: "No tests marked as .skip or .only"
+      command: "grep -rn '\\.skip\\|\\.only' __tests__/ tests/ src/ --include='*.test.*' --include='*.spec.*' 2>/dev/null | wc -l"
+      required: false
+      max_count: 0
+      timeout: 15
+      points: 1.67
+
+    - name: "Test Isolation"
+      description: "Tests can run independently (no order dependency)"
+      command: "npm run test -- --runInBand --randomize"
+      required: false
+      timeout: 180
+      points: 1.65
+
+  # --------------------------------------------------------------------------
+  # Category 3: SECURITY (10 points, 6 checks)
+  # Ensures no security vulnerabilities or exposed secrets
+  # --------------------------------------------------------------------------
+  security:
+    - name: "Dependency Audit"
+      description: "No high/critical vulnerabilities in dependencies"
+      command: "npm audit --audit-level=high"
+      required: true
+      timeout: 30
+      points: 1.67
+
+    - name: "Secret Scan"
+      description: "No secrets, API keys, or credentials in code"
+      command: "npx secretlint \"**/*\""
+      required: true
+      timeout: 60
+      points: 1.67
+
+    - name: "SAST Scan"
+      description: "Static Application Security Testing passes"
+      command: "npx semgrep --config=auto . --error"
+      required: false
+      timeout: 120
+      points: 1.67
+
+    - name: "No Hardcoded URLs"
+      description: "Environment-specific URLs use env vars"
+      command: "grep -rn 'localhost:\\|127\\.0\\.0\\.1:\\|http://.*:' src/ --include='*.ts' --include='*.tsx' | grep -v 'test\\|spec\\|mock' | wc -l"
+      required: false
+      max_count: 0
+      timeout: 15
+      points: 1.67
+
+    - name: "Dependency License Check"
+      description: "All dependencies have compatible licenses"
+      command: "npx license-checker --onlyAllow 'MIT;Apache-2.0;BSD-2-Clause;BSD-3-Clause;ISC;CC0-1.0;Unlicense'"
+      required: false
+      timeout: 30
+      points: 1.67
+
+    - name: "No Eval or Dynamic Code"
+      description: "No eval(), new Function(), or innerHTML assignments"
+      command: "grep -rn 'eval(\\|new Function(\\|innerHTML\\s*=' src/ --include='*.ts' --include='*.tsx' | wc -l"
+      required: false
+      max_count: 0
+      timeout: 15
+      points: 1.65
+
+  # --------------------------------------------------------------------------
+  # Category 4: PERFORMANCE (10 points, 6 checks)
+  # Ensures application meets performance requirements
+  # --------------------------------------------------------------------------
+  performance:
+    - name: "Bundle Size Check"
+      description: "Production bundle within size limits"
+      command: "npx bundlesize"
+      required: false
+      max_size: "500kb"
+      timeout: 60
+      points: 1.67
+
+    - name: "No Memory Leaks"
+      description: "No obvious memory leak patterns detected"
+      command: "grep -rn 'setInterval\\|addEventListener' src/ --include='*.ts' --include='*.tsx' -A5 | grep -v 'clearInterval\\|removeEventListener\\|useEffect.*return' | wc -l"
+      required: false
+      timeout: 15
+      points: 1.67
+
+    - name: "No Synchronous Heavy Operations"
+      description: "Heavy operations are async/non-blocking"
+      command: "grep -rn 'readFileSync\\|writeFileSync\\|execSync' src/ --include='*.ts' | wc -l"
+      required: false
+      max_count: 0
+      timeout: 15
+      points: 1.67
+
+    - name: "Lazy Loading Implemented"
+      description: "Large components use code splitting"
+      command: "grep -rn 'React.lazy\\|dynamic(\\|import(' src/ --include='*.tsx' | wc -l"
+      required: false
+      min_count: 1
+      timeout: 15
+      points: 1.67
+
+    - name: "No N+1 Query Patterns"
+      description: "Database queries don't have N+1 patterns"
+      command: "grep -rn 'for.*await.*find\\|forEach.*await.*query' src/ server/ --include='*.ts' | wc -l"
+      required: false
+      max_count: 0
+      timeout: 15
+      points: 1.67
+
+    - name: "Caching Strategy Exists"
+      description: "Appropriate caching is implemented"
+      command: "grep -rn 'cache\\|Cache\\|memoize\\|useMemo\\|useCallback' src/ --include='*.ts' --include='*.tsx' | wc -l"
+      required: false
+      min_count: 1
+      timeout: 15
+      points: 1.65
+
+  # --------------------------------------------------------------------------
+  # Category 5: DOCUMENTATION (10 points, 6 checks)
+  # Ensures code and project are well documented
+  # --------------------------------------------------------------------------
+  documentation:
+    - name: "README Exists"
+      description: "Project has a README.md file"
+      command: "test -f README.md && echo 'exists' || echo 'missing'"
+      required: true
+      expected_output: "exists"
+      timeout: 5
+      points: 1.67
+
+    - name: "README Has Required Sections"
+      description: "README contains setup, usage, and API documentation"
+      command: "grep -E '^#+.*(Setup|Install|Usage|API|Getting Started)' README.md | wc -l"
+      required: false
+      min_count: 3
+      timeout: 5
+      points: 1.67
+
+    - name: "API Documentation"
+      description: "API endpoints are documented (OpenAPI/Swagger)"
+      command: "test -f openapi.yaml -o -f swagger.json -o -f docs/api.md && echo 'exists' || echo 'missing'"
+      required: false
+      expected_output: "exists"
+      timeout: 5
+      points: 1.67
+
+    - name: "JSDoc Coverage"
+      description: "Public functions have JSDoc comments"
+      command: "grep -rn 'export.*function\\|export const.*=' src/ --include='*.ts' | wc -l"
+      required: false
+      timeout: 15
+      points: 1.67
+
+    - name: "CHANGELOG Exists"
+      description: "Project maintains a changelog"
+      command: "test -f CHANGELOG.md -o -f HISTORY.md && echo 'exists' || echo 'missing'"
+      required: false
+      expected_output: "exists"
+      timeout: 5
+      points: 1.67
+
+    - name: "Architecture Documentation"
+      description: "High-level architecture is documented"
+      command: "test -f docs/architecture.md -o -f ARCHITECTURE.md -o -d .planning && echo 'exists' || echo 'missing'"
+      required: false
+      expected_output: "exists"
+      timeout: 5
+      points: 1.65
+
+  # --------------------------------------------------------------------------
+  # Category 6: DATABASE (10 points, 6 checks)
+  # Ensures database design and operations are sound
+  # --------------------------------------------------------------------------
+  database:
+    - name: "Migrations Up-to-Date"
+      description: "All migrations have been applied"
+      command: "npx prisma migrate status 2>&1 | grep -q 'Database schema is up to date' && echo 'synced' || echo 'pending'"
+      required: true
+      expected_output: "synced"
+      timeout: 30
+      points: 1.67
+
+    - name: "Schema Valid"
+      description: "Database schema validates without errors"
+      command: "npx prisma validate"
+      required: true
+      timeout: 15
+      points: 1.67
+
+    - name: "Indexes Defined"
+      description: "Required indexes are defined in schema"
+      command: "grep -c '@@index\\|@unique\\|@@unique' prisma/schema.prisma 2>/dev/null || echo '0'"
+      required: false
+      min_count: 1
+      timeout: 5
+      points: 1.67
+
+    - name: "Foreign Keys Defined"
+      description: "Relationships have proper foreign key constraints"
+      command: "grep -c '@relation' prisma/schema.prisma 2>/dev/null || echo '0'"
+      required: false
+      min_count: 0
+      timeout: 5
+      points: 1.67
+
+    - name: "No Raw SQL Injection Risk"
+      description: "No string concatenation in SQL queries"
+      command: "grep -rn '\\$\\{.*\\}.*SELECT\\|\\$\\{.*\\}.*INSERT\\|\\$\\{.*\\}.*UPDATE\\|\\$\\{.*\\}.*DELETE' src/ server/ --include='*.ts' | wc -l"
+      required: false
+      max_count: 0
+      timeout: 15
+      points: 1.67
+
+    - name: "Seed Data Available"
+      description: "Database seed scripts exist for development"
+      command: "test -f prisma/seed.ts -o -f prisma/seed.js -o -f scripts/seed.ts && echo 'exists' || echo 'missing'"
+      required: false
+      expected_output: "exists"
+      timeout: 5
+      points: 1.65
+
+  # --------------------------------------------------------------------------
+  # Category 7: API DESIGN (10 points, 6 checks)
+  # Ensures API follows best practices
+  # --------------------------------------------------------------------------
+  api_design:
+    - name: "Consistent Response Format"
+      description: "API responses follow consistent structure"
+      command: "grep -rn 'res\\.json({' server/ src/api/ --include='*.ts' | head -20 | wc -l"
+      required: false
+      timeout: 15
+      points: 1.67
+
+    - name: "Error Handling Middleware"
+      description: "Global error handling is implemented"
+      command: "grep -rn 'app\\.use.*err.*req.*res\\|errorHandler\\|ErrorBoundary' server/ src/ --include='*.ts' --include='*.tsx' | wc -l"
+      required: false
+      min_count: 1
+      timeout: 15
+      points: 1.67
+
+    - name: "Input Validation"
+      description: "Request inputs are validated"
+      command: "grep -rn 'zod\\|joi\\|yup\\|class-validator\\|express-validator' src/ server/ --include='*.ts' | wc -l"
+      required: false
+      min_count: 1
+      timeout: 15
+      points: 1.67
+
+    - name: "Rate Limiting Configured"
+      description: "Rate limiting is implemented on API routes"
+      command: "grep -rn 'rateLimit\\|rate-limit\\|throttle' server/ src/ --include='*.ts' | wc -l"
+      required: false
+      min_count: 0
+      timeout: 15
+      points: 1.67
+
+    - name: "CORS Configured"
+      description: "CORS is properly configured"
+      command: "grep -rn 'cors(\\|Access-Control-Allow' server/ src/ --include='*.ts' | wc -l"
+      required: false
+      min_count: 1
+      timeout: 15
+      points: 1.67
+
+    - name: "API Versioning"
+      description: "API versioning strategy is implemented"
+      command: "grep -rn '/api/v[0-9]\\|/v[0-9]/' server/ src/ --include='*.ts' | wc -l"
+      required: false
+      min_count: 0
+      timeout: 15
+      points: 1.65
+
+  # --------------------------------------------------------------------------
+  # Category 8: INFRASTRUCTURE (10 points, 6 checks)
+  # Ensures deployment and infrastructure readiness
+  # --------------------------------------------------------------------------
+  infrastructure:
+    - name: "Dockerfile Exists"
+      description: "Project can be containerized"
+      command: "test -f Dockerfile && echo 'exists' || echo 'missing'"
+      required: false
+      expected_output: "exists"
+      timeout: 5
+      points: 1.67
+
+    - name: "Docker Compose Available"
+      description: "Multi-container setup is defined"
+      command: "test -f docker-compose.yml -o -f docker-compose.yaml -o -f compose.yml && echo 'exists' || echo 'missing'"
+      required: false
+      expected_output: "exists"
+      timeout: 5
+      points: 1.67
+
+    - name: "Environment Template"
+      description: "Environment variable template exists"
+      command: "test -f .env.example -o -f .env.template -o -f .env.sample && echo 'exists' || echo 'missing'"
+      required: true
+      expected_output: "exists"
+      timeout: 5
+      points: 1.67
+
+    - name: "Health Check Endpoint"
+      description: "Application has health check endpoint"
+      command: "grep -rn '/health\\|/healthz\\|/ready\\|/live' server/ src/ --include='*.ts' | wc -l"
+      required: false
+      min_count: 1
+      timeout: 15
+      points: 1.67
+
+    - name: "Logging Configured"
+      description: "Structured logging is implemented"
+      command: "grep -rn 'winston\\|pino\\|bunyan\\|log4js\\|logger\\.' server/ src/ --include='*.ts' | wc -l"
+      required: false
+      min_count: 1
+      timeout: 15
+      points: 1.67
+
+    - name: "Graceful Shutdown"
+      description: "Application handles SIGTERM gracefully"
+      command: "grep -rn 'SIGTERM\\|SIGINT\\|graceful' server/ src/ --include='*.ts' | wc -l"
+      required: false
+      min_count: 0
+      timeout: 15
+      points: 1.65
+
+  # --------------------------------------------------------------------------
+  # Category 9: GIT & VERSION CONTROL (10 points, 6 checks)
+  # Ensures proper version control practices
+  # --------------------------------------------------------------------------
+  version_control:
+    - name: "Gitignore Complete"
+      description: "Sensitive and build files are ignored"
+      command: "grep -E 'node_modules|.env$|\\.env\\.local|dist/|build/|coverage/' .gitignore | wc -l"
+      required: true
+      min_count: 3
+      timeout: 5
+      points: 1.67
+
+    - name: "No Secrets in Git History"
+      description: "Git history doesn't contain secrets"
+      command: "git log -p --all -S 'password=' --oneline 2>/dev/null | head -5 | wc -l"
+      required: false
+      max_count: 0
+      timeout: 30
+      points: 1.67
+
+    - name: "Branch Protection Reminder"
+      description: "Main branch should have protection rules"
+      command: "git branch --show-current"
+      required: false
+      timeout: 5
+      points: 1.67
+      note: "Manual verification required for branch protection rules"
+
+    - name: "Commit Message Convention"
+      description: "Recent commits follow conventional format"
+      command: "git log --oneline -10 | grep -E '^[a-f0-9]+ (feat|fix|docs|style|refactor|test|chore|perf|ci|build|revert)(\\(.*\\))?:' | wc -l"
+      required: false
+      min_count: 5
+      timeout: 10
+      points: 1.67
+
+    - name: "No Large Files"
+      description: "Repository doesn't contain large binary files"
+      command: "find . -type f -size +10M -not -path './.git/*' -not -path './node_modules/*' 2>/dev/null | wc -l"
+      required: false
+      max_count: 0
+      timeout: 30
+      points: 1.67
+
+    - name: "Clean Working Directory"
+      description: "No uncommitted changes before deploy"
+      command: "git status --porcelain | wc -l"
+      required: false
+      max_count: 0
+      timeout: 5
+      points: 1.65
+
+  # --------------------------------------------------------------------------
+  # Category 10: ACCESSIBILITY & UX (10 points, 6 checks)
+  # Ensures frontend accessibility and user experience
+  # --------------------------------------------------------------------------
+  accessibility:
+    - name: "ARIA Labels Present"
+      description: "Interactive elements have ARIA labels"
+      command: "grep -rn 'aria-label\\|aria-labelledby\\|aria-describedby' src/ --include='*.tsx' --include='*.jsx' | wc -l"
+      required: false
+      min_count: 1
+      timeout: 15
+      points: 1.67
+
+    - name: "Alt Text on Images"
+      description: "Images have alt text"
+      command: "grep -rn '<img' src/ --include='*.tsx' --include='*.jsx' | grep -v 'alt=' | wc -l"
+      required: false
+      max_count: 0
+      timeout: 15
+      points: 1.67
+
+    - name: "Semantic HTML"
+      description: "Semantic HTML elements are used"
+      command: "grep -rn '<header\\|<footer\\|<main\\|<nav\\|<section\\|<article\\|<aside' src/ --include='*.tsx' --include='*.jsx' | wc -l"
+      required: false
+      min_count: 1
+      timeout: 15
+      points: 1.67
+
+    - name: "Keyboard Navigation"
+      description: "Interactive elements are keyboard accessible"
+      command: "grep -rn 'onKeyDown\\|onKeyUp\\|onKeyPress\\|tabIndex' src/ --include='*.tsx' --include='*.jsx' | wc -l"
+      required: false
+      min_count: 0
+      timeout: 15
+      points: 1.67
+
+    - name: "Color Contrast"
+      description: "UI components use accessible color contrast"
+      command: "grep -rn 'text-gray-[1-3]00\\|text-white.*bg-gray-[1-3]00' src/ --include='*.tsx' | wc -l"
+      required: false
+      max_count: 0
+      timeout: 15
+      points: 1.67
+      note: "Low contrast color combinations that may fail WCAG"
+
+    - name: "Focus Indicators"
+      description: "Focus states are visible"
+      command: "grep -rn 'focus:\\|:focus\\|focus-visible' src/ --include='*.tsx' --include='*.css' --include='*.scss' | wc -l"
+      required: false
+      min_count: 1
+      timeout: 15
+      points: 1.65
+
+
+# ============================================================================
+# SCORING CONFIGURATION
+# Defines how checks are weighted and scored
+# ============================================================================
+
+scoring:
+  # Total possible score: 70 points (7 categories x 10 points)
+  max_score: 70
+
+  # Category weights (all equal at 10 points each)
+  categories:
+    code_quality:
+      weight: 10
+      checks: 6
+      description: "Code follows standards and best practices"
+
+    testing:
+      weight: 10
+      checks: 6
+      description: "Adequate test coverage and all tests pass"
+
+    security:
+      weight: 10
+      checks: 6
+      description: "No vulnerabilities or exposed secrets"
+
+    performance:
+      weight: 10
+      checks: 6
+      description: "Application meets performance requirements"
+
+    documentation:
+      weight: 10
+      checks: 6
+      description: "Code and project are well documented"
+
+    database:
+      weight: 10
+      checks: 6
+      description: "Database design and operations are sound"
+
+    api_design:
+      weight: 10
+      checks: 6
+      description: "API follows best practices"
+
+    infrastructure:
+      weight: 10
+      checks: 6
+      description: "Deployment and infrastructure ready"
+
+    version_control:
+      weight: 10
+      checks: 6
+      description: "Proper version control practices"
+
+    accessibility:
+      weight: 10
+      checks: 6
+      description: "Frontend accessibility and UX"
+
+  # Score thresholds for deploy decisions
+  thresholds:
+    excellent: 63    # 90% - Ship with confidence
+    good: 56         # 80% - Ship with minor follow-ups
+    conditional: 49  # 70% - Ship with documented tech debt
+    minimum: 42      # 60% - Requires justification to ship
+
+  # Deploy recommendations based on score
+  recommendations:
+    - range: [63, 70]
+      status: "EXCELLENT"
+      decision: "Deploy immediately"
+      message: "All critical checks pass, code is production-ready"
+
+    - range: [48, 53]
+      status: "GOOD"
+      decision: "Deploy with follow-up"
+      message: "Minor issues to address in next sprint"
+
+    - range: [42, 47]
+      status: "CONDITIONAL"
+      decision: "Deploy with tech debt ticket"
+      message: "Document known issues, plan remediation"
+
+    - range: [36, 41]
+      status: "MINIMUM"
+      decision: "Requires approval"
+      message: "Stakeholder sign-off needed on risks"
+
+    - range: [0, 35]
+      status: "FAIL"
+      decision: "Do not deploy"
+      message: "Critical issues must be resolved first"
+
+
+# ============================================================================
+# MANUAL CHECKS CONFIGURATION
+# These checks require human verification
+# ============================================================================
+
+manual_checks:
+  code_quality:
+    - name: "Code review completed"
+      description: "At least one team member has reviewed the code"
+      verification: "Check PR has approved review"
+
+    - name: "No copy-paste code"
+      description: "DRY principle followed, no duplicated logic"
+      verification: "Manual code inspection"
+
+  security:
+    - name: "No hardcoded credentials"
+      description: "Verify no passwords, API keys, or secrets in code"
+      verification: "Search for common patterns: password=, apiKey=, secret="
+
+    - name: "Authentication tested"
+      description: "Auth flows work correctly and securely"
+      verification: "Test login, logout, token refresh, protected routes"
+
+    - name: "Authorization verified"
+      description: "Users can only access their own resources"
+      verification: "Test accessing other users' data returns 403"
+
+  documentation:
+    - name: "Setup instructions current"
+      description: "Verify README setup steps work on fresh install"
+      verification: "Clone repo, follow README, verify app runs"
+
+    - name: "API examples work"
+      description: "Code examples in docs are copy-paste runnable"
+      verification: "Test each API example manually"
+
+  testing:
+    - name: "Edge cases covered"
+      description: "Tests include boundary conditions and error paths"
+      verification: "Review test files for edge case coverage"
+
+    - name: "Realistic test data"
+      description: "Tests use production-like data, not trivial examples"
+      verification: "Review test fixtures and mocks"
+
+  performance:
+    - name: "Load tested"
+      description: "Application handles expected concurrent users"
+      verification: "Run load test, verify response times under load"
+
+    - name: "Mobile performance"
+      description: "Application performs well on mobile devices"
+      verification: "Test on real device or Chrome DevTools throttling"
+
+  ux:
+    - name: "User flows tested"
+      description: "Key user journeys work end-to-end"
+      verification: "Walk through main user flows manually"
+
+    - name: "Error messages helpful"
+      description: "Error messages guide users to resolution"
+      verification: "Trigger errors, verify messages are actionable"
+
+
+# ============================================================================
+# EXECUTION CONFIGURATION
+# Controls how validations are run
+# ============================================================================
+
+execution:
+  # Parallel execution settings
+  parallel:
+    enabled: true
+    max_concurrent: 4
+
+  # Timeout settings (in seconds)
+  timeouts:
+    default: 60
+    long_running: 300
+    e2e: 600
+
+  # Retry settings for flaky checks
+  retry:
+    enabled: true
+    max_attempts: 2
+    delay_seconds: 5
+
+  # Output settings
+  output:
+    format: "detailed"  # "summary" | "detailed" | "json"
+    show_commands: true
+    show_output: true
+    color: true
+
+  # Skip settings
+  skip:
+    # Categories to skip (e.g., if no frontend)
+    categories: []
+    # Individual checks to skip by name
+    checks: []
+
+  # Environment-specific overrides
+  environments:
+    development:
+      skip_categories: []
+      required_score: 36
+
+    staging:
+      skip_categories: []
+      required_score: 42
+
+    production:
+      skip_categories: []
+      required_score: 48
+
+
+# ============================================================================
+# CUSTOM PROJECT OVERRIDES
+# Add project-specific check modifications here
+# ============================================================================
+
+project_overrides:
+  # Example: Override bundle size for specific project
+  # performance:
+  #   "Bundle Size Check":
+  #     max_size: "750kb"
+
+  # Example: Skip certain checks for this project
+  # skip_checks:
+  #   - "E2E Tests Pass"
+  #   - "API Versioning"
+
+
+# ============================================================================
+# REPORTING CONFIGURATION
+# Controls validation report generation
+# ============================================================================
+
+reporting:
+  # Report file settings
+  file:
+    enabled: true
+    path: ".validation-report.json"
+    include_command_output: false
+
+  # Markdown report for PRs
+  markdown:
+    enabled: true
+    path: ".validation-report.md"
+    include_checklist: true
+
+  # Slack/Teams notification
+  notifications:
+    enabled: false
+    webhook_url: "${VALIDATION_WEBHOOK_URL}"
+    on_failure: true
+    on_success: false

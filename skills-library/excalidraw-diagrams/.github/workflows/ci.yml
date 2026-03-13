@@ -1,0 +1,558 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  # Allow manual trigger
+  workflow_dispatch:
+
+jobs:
+  # Job 1: Run Python unit tests
+  unit-tests:
+    name: Unit Tests (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run unit tests
+        run: |
+          python tests/test_generator.py
+          python tests/test_diagram_types.py
+          python tests/test_prompt_generation.py
+          python tests/test_line_routing_validator.py
+
+      - name: Test example diagram generation
+        run: |
+          python -c "
+          import sys
+          sys.path.insert(0, 'scripts')
+          from excalidraw_generator import (
+              Diagram, Flowchart, ArchitectureDiagram,
+              DiagramStyle, FlowchartStyle, ArchitectureStyle
+          )
+
+          # Test basic diagram with style
+          d = Diagram(diagram_style=DiagramStyle(roughness=0, color_scheme='corporate'))
+          d.box(100, 100, 'Test', color='blue')
+          d.save('test_output.excalidraw')
+          print('✓ Basic diagram with DiagramStyle')
+
+          # Test flowchart with FlowchartStyle
+          fc = Flowchart(flowchart_style=FlowchartStyle(decision_color='orange'))
+          fc.start('Start')
+          fc.process('p1', 'Process')
+          fc.decision('d1', 'OK?')
+          fc.end('End')
+          fc.connect('__start__', 'p1')
+          fc.connect('p1', 'd1')
+          fc.connect('d1', '__end__', label='Yes')
+          fc.save('test_flowchart.excalidraw')
+          print('✓ Flowchart with FlowchartStyle')
+
+          # Test architecture diagram with ArchitectureStyle
+          arch = ArchitectureDiagram(architecture_style=ArchitectureStyle(service_color='cyan'))
+          arch.user('user', 'User', x=50, y=100)
+          arch.component('api', 'API Gateway', x=200, y=100)
+          arch.service('svc', 'Auth Service', x=350, y=100)
+          arch.database('db', 'Database', x=500, y=100)
+          arch.connect('user', 'api')
+          arch.connect('api', 'svc')
+          arch.connect('svc', 'db')
+          arch.save('test_arch.excalidraw')
+          print('✓ Architecture diagram with ArchitectureStyle')
+
+          # Test Class Diagram
+          d = Diagram()
+          parent = d.box(200, 50, 'Animal\\n---------\\n+ speak()', color='blue')
+          child = d.box(200, 200, 'Dog\\n---------\\n+ bark()', color='blue')
+          d.arrow_between(child, parent)
+          d.save('test_class.excalidraw')
+          print('✓ Class diagram')
+
+          # Test Use Case Diagram
+          d = Diagram()
+          actor = d.box(50, 100, 'Customer', shape='ellipse', color='gray')
+          usecase = d.box(200, 100, 'Place Order', shape='ellipse', color='blue')
+          d.line_between(actor, usecase)
+          d.save('test_usecase.excalidraw')
+          print('✓ Use Case diagram')
+
+          # Test State Machine
+          fc = Flowchart()
+          fc.start('●')
+          fc.process('idle', 'Idle')
+          fc.process('active', 'Active')
+          fc.end('◉')
+          fc.connect('__start__', 'idle')
+          fc.connect('idle', 'active', label='start')
+          fc.connect('active', '__end__', label='done')
+          fc.save('test_state.excalidraw')
+          print('✓ State Machine diagram')
+
+          print('\\nAll example diagrams generated successfully!')
+          "
+
+      - name: Validate generated files are valid JSON
+        run: |
+          for f in *.excalidraw; do
+            echo "Validating $f..."
+            python -c "import json; json.load(open('$f'))"
+          done
+
+  # Job 2: Generate diagram gallery with PNG previews
+  diagram-gallery:
+    name: Diagram Gallery
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Needed for gh-pages deployment
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Python dependencies
+        run: pip install grandalf
+
+      - name: Install npm dependencies and Playwright
+        run: |
+          cd scripts
+          npm install
+          npx playwright install chromium
+
+      - name: Generate example diagrams
+        run: |
+          mkdir -p diagrams
+          python3 << 'EOF'
+          import sys
+          sys.path.insert(0, 'scripts')
+          from excalidraw_generator import (
+              Diagram, Flowchart, ArchitectureDiagram, AutoLayoutFlowchart,
+              DiagramStyle, FlowchartStyle, ArchitectureStyle, LayoutConfig
+          )
+
+          # 1. Architecture Diagram
+          arch = ArchitectureDiagram(
+              architecture_style=ArchitectureStyle(service_color='violet')
+          )
+          arch.user('user', 'User', x=50, y=150)
+          arch.component('web', 'Web App', x=200, y=130, color='blue')
+          arch.service('api', 'API Gateway', x=400, y=130, color='violet')
+          arch.service('auth', 'Auth Service', x=600, y=80, color='cyan')
+          arch.database('db', 'PostgreSQL', x=600, y=200, color='green')
+          arch.connect('user', 'web', 'HTTPS')
+          arch.connect('web', 'api', 'REST')
+          arch.connect('api', 'auth', 'JWT')
+          arch.connect('api', 'db', 'SQL')
+          arch.save('diagrams/01_architecture.excalidraw')
+          print('✓ Architecture diagram')
+
+          # 2. Flowchart with decisions - using two-column branch layout
+          fc = Flowchart(
+              direction='vertical',
+              spacing=80,
+              flowchart_style=FlowchartStyle(decision_color='orange')
+          )
+          # Main column - center
+          fc.position_at(200, 50)
+          fc.start('Start')
+          fc.process('input', 'Get Input')
+          fc.decision('valid', 'Valid?')
+
+          # Yes branch (right column)
+          fc.position_at(350, 380)
+          fc.process('proc', 'Process Data')
+          fc.end('End')
+
+          # No branch (left column) - for loop back
+          fc.position_at(50, 380)
+          fc.process('error', 'Show Error')
+
+          # Connections
+          fc.connect('__start__', 'input')
+          fc.connect('input', 'valid')
+          fc.connect('valid', 'proc', 'Yes')
+          fc.connect('valid', 'error', 'No')
+          fc.connect('proc', '__end__')
+          # Loop back: exit left, enter left to route around other boxes
+          fc.connect('error', 'input', from_side='left', to_side='left')
+          fc.save('diagrams/02_flowchart.excalidraw')
+          print('✓ Flowchart diagram')
+
+          # 3. Auto-layout flowchart
+          auto = AutoLayoutFlowchart(
+              layout_config=LayoutConfig(vertical_spacing=80, horizontal_spacing=200),
+              diagram_style=DiagramStyle(roughness=0, color_scheme='corporate')
+          )
+          auto.add_node('start', 'Start', shape='ellipse', color='green', node_type='terminal')
+          auto.add_node('fetch', 'Fetch Data', color='blue', node_type='process')
+          auto.add_node('check', 'Cache Hit?', shape='diamond', color='yellow', node_type='decision')
+          auto.add_node('cache', 'Return Cache', color='cyan', node_type='process')
+          auto.add_node('api', 'Call API', color='blue', node_type='process')
+          auto.add_node('store', 'Update Cache', color='violet', node_type='process')
+          auto.add_node('end', 'Return', shape='ellipse', color='red', node_type='terminal')
+          auto.add_edge('start', 'fetch')
+          auto.add_edge('fetch', 'check')
+          auto.add_edge('check', 'cache', 'Yes')
+          auto.add_edge('check', 'api', 'No')
+          auto.add_edge('cache', 'end')
+          auto.add_edge('api', 'store')
+          auto.add_edge('store', 'end')
+          auto.compute_layout()  # Required to position nodes
+          auto.save('diagrams/03_auto_flowchart.excalidraw')
+          print('✓ Auto-layout flowchart')
+
+          # 4. Class diagram (UML)
+          d = Diagram(diagram_style=DiagramStyle(roughness=0))
+          animal = d.box(200, 50, 'Animal\n─────────\n+ name: str\n─────────\n+ speak()', color='blue')
+          dog = d.box(100, 220, 'Dog\n─────────\n+ breed: str\n─────────\n+ bark()', color='blue')
+          cat = d.box(300, 220, 'Cat\n─────────\n+ indoor: bool\n─────────\n+ meow()', color='blue')
+          d.arrow_between(dog, animal)
+          d.arrow_between(cat, animal)
+          d.save('diagrams/04_class_diagram.excalidraw')
+          print('✓ Class diagram')
+
+          # 5. State machine
+          fc = Flowchart(direction='horizontal', spacing=150)
+          fc.start('●')
+          fc.process('idle', 'Idle')
+          fc.process('loading', 'Loading')
+          fc.process('ready', 'Ready')
+          fc.process('error', 'Error')
+          fc.end('◉')
+          fc.connect('__start__', 'idle')
+          fc.connect('idle', 'loading', 'fetch')
+          fc.connect('loading', 'ready', 'success')
+          fc.connect('loading', 'error', 'fail')
+          fc.connect('error', 'idle', 'retry')
+          fc.connect('ready', '__end__', 'done')
+          fc.save('diagrams/05_state_machine.excalidraw')
+          print('✓ State machine diagram')
+
+          # 6. Sketchy style diagram
+          d = Diagram(diagram_style=DiagramStyle(roughness=2, color_scheme='vibrant'))
+          idea = d.box(100, 100, 'Idea', color='violet')
+          design = d.box(300, 100, 'Design', color='blue')
+          build = d.box(500, 100, 'Build', color='green')
+          ship = d.box(700, 100, 'Ship!', color='orange')
+          d.arrow_between(idea, design)
+          d.arrow_between(design, build)
+          d.arrow_between(build, ship)
+          d.save('diagrams/06_sketchy_style.excalidraw')
+          print('✓ Sketchy style diagram')
+
+          print('\nAll diagrams generated!')
+          EOF
+
+      - name: Convert diagrams to PNG with Playwright
+        run: |
+          for f in diagrams/*.excalidraw; do
+            name=$(basename "$f" .excalidraw)
+            echo "Converting $name..."
+            node scripts/export_playwright.js "$f" "diagrams/${name}.png"
+          done
+          ls -la diagrams/
+
+      - name: Upload diagram artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: diagram-gallery
+          path: diagrams/
+
+      - name: Generate gallery HTML
+        if: github.ref == 'refs/heads/main'
+        run: |
+          python3 << 'EOF'
+          import os
+          from datetime import datetime
+          from pathlib import Path
+
+          descriptions = {
+              "01_architecture": "Microservices architecture with user, API, and database",
+              "02_flowchart": "Decision flowchart with validation loop",
+              "03_auto_flowchart": "Auto-layout caching logic flowchart",
+              "04_class_diagram": "UML class inheritance (Animal/Dog/Cat)",
+              "05_state_machine": "State machine with transitions",
+              "06_sketchy_style": "Hand-drawn style process flow",
+          }
+
+          pngs = sorted(Path("diagrams").glob("*.png"))
+          cards = []
+          for png in pngs:
+              name = png.stem
+              desc = descriptions.get(name, "Generated diagram")
+              cards.append(f'''<div class="card">
+              <a href="gallery/{name}.png"><img src="gallery/{name}.png" alt="{name}"></a>
+              <h3>{name}</h3>
+              <p>{desc}</p>
+            </div>''')
+
+          html = f'''<!DOCTYPE html>
+          <html>
+          <head>
+            <title>Excalidraw Diagram Gallery</title>
+            <style>
+              body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 1200px; margin: 0 auto; padding: 20px; background: #f5f5f5; }}
+              h1 {{ color: #333; }}
+              .gallery {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px; }}
+              .card {{ background: white; border-radius: 8px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }}
+              .card img {{ width: 100%; border-radius: 4px; }}
+              .card h3 {{ margin: 12px 0 8px 0; color: #1a73e8; }}
+              .card p {{ color: #666; margin: 0; font-size: 14px; }}
+            </style>
+          </head>
+          <body>
+            <h1>Excalidraw Diagram Gallery</h1>
+            <p>Generated diagrams from CI test suite. Click images to view full size.</p>
+            <div class="gallery">
+              {"".join(cards)}
+            </div>
+            <p style="margin-top: 20px; color: #999; font-size: 12px;">Generated by CI on {datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")}</p>
+          </body>
+          </html>'''
+
+          Path("/tmp/gallery_index.html").write_text(html)
+          print("Generated gallery HTML")
+          EOF
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # Save files to temp location before switching branches
+          mkdir -p /tmp/gh-pages/gallery
+          cp diagrams/*.png /tmp/gh-pages/gallery/
+          cp /tmp/gallery_index.html /tmp/gh-pages/index.html
+
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Clean untracked files before switching branches
+          git clean -fd
+
+          # Fetch gh-pages if it exists, otherwise create orphan
+          if git fetch origin gh-pages:gh-pages 2>/dev/null; then
+            git checkout gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf . 2>/dev/null || true
+          fi
+
+          # Clear existing content and copy new files
+          rm -rf gallery index.html 2>/dev/null || true
+          cp -r /tmp/gh-pages/* .
+
+          # Commit and push
+          git add .
+          git commit -m "Update diagram gallery from CI run ${{ github.run_number }}" || echo "No changes to commit"
+          git push origin gh-pages --force
+
+      - name: Create diagram gallery in step summary
+        run: |
+          # Determine the base URL for images
+          REPO_OWNER="${{ github.repository_owner }}"
+          REPO_NAME="${{ github.event.repository.name }}"
+          BASE_URL="https://${REPO_OWNER}.github.io/${REPO_NAME}/gallery"
+
+          echo "## 📊 Diagram Gallery" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Generated diagrams from the test suite. View the [full gallery](https://${REPO_OWNER}.github.io/${REPO_NAME}/) or download artifacts to edit in [Excalidraw](https://excalidraw.com)." >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          for f in diagrams/*.excalidraw; do
+            name=$(basename "$f" .excalidraw)
+            elements=$(python3 -c "import json; d=json.load(open('$f')); print(len(d.get('elements', [])))")
+
+            case "$name" in
+              01_architecture) desc="Microservices architecture with user, API, and database" ;;
+              02_flowchart) desc="Decision flowchart with validation loop" ;;
+              03_auto_flowchart) desc="Auto-layout caching logic flowchart" ;;
+              04_class_diagram) desc="UML class inheritance (Animal/Dog/Cat)" ;;
+              05_state_machine) desc="State machine with transitions" ;;
+              06_sketchy_style) desc="Hand-drawn style process flow" ;;
+              *) desc="Generated diagram" ;;
+            esac
+
+            echo "### $name" >> $GITHUB_STEP_SUMMARY
+            echo "$desc ($elements elements)" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            # Only embed images if on main branch (gh-pages deployed)
+            if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+              echo "![${name}](${BASE_URL}/${name}.png)" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "_Image preview available after merge to main_" >> $GITHUB_STEP_SUMMARY
+            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+          done
+
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "📥 Download the **diagram-gallery** artifact for editable .excalidraw files" >> $GITHUB_STEP_SUMMARY
+
+  # Job 3: Validate SKILL.md format
+  validate-skill:
+    name: Validate Skill Format
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check SKILL.md exists
+        run: test -f SKILL.md
+
+      - name: Validate SKILL.md frontmatter
+        run: |
+          python3 << 'EOF'
+          import re
+
+          with open('SKILL.md') as f:
+              content = f.read()
+
+          # Check frontmatter exists
+          if not content.startswith('---'):
+              print("ERROR: SKILL.md must start with YAML frontmatter (---)")
+              exit(1)
+
+          # Extract frontmatter
+          match = re.match(r'^---\n(.*?)\n---', content, re.DOTALL)
+          if not match:
+              print("ERROR: Invalid frontmatter format")
+              exit(1)
+
+          frontmatter = match.group(1)
+
+          # Check required fields
+          if 'name:' not in frontmatter:
+              print("ERROR: SKILL.md frontmatter must contain 'name' field")
+              exit(1)
+
+          if 'description:' not in frontmatter:
+              print("ERROR: SKILL.md frontmatter must contain 'description' field")
+              exit(1)
+
+          # Validate name format (lowercase, hyphens only)
+          name_match = re.search(r'name:\s*(\S+)', frontmatter)
+          if name_match:
+              name = name_match.group(1)
+              if not re.match(r'^[a-z0-9-]+$', name):
+                  print(f"WARNING: Skill name '{name}' should be lowercase with hyphens only")
+
+          print("SKILL.md validation passed!")
+          EOF
+
+  # Job 4: Integration test with Claude Code (requires API key)
+  integration-test:
+    name: Integration Test with Claude Code
+    runs-on: ubuntu-latest
+    # Only run if ANTHROPIC_API_KEY is available (not on forks)
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install skill to test location
+        run: |
+          mkdir -p ~/.claude/skills
+          cp -r . ~/.claude/skills/excalidraw-diagrams
+
+      - name: Test skill with Claude Code
+        uses: robtaylor/claude-code-action@main
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          claude_args: "--allowedTools Write,Read,Bash,Glob,Grep,Skill"
+          prompt: |
+            I want to verify the excalidraw-diagrams skill is working correctly.
+
+            Please do the following:
+            1. Create a simple architecture diagram showing: User -> API -> Database
+            2. Save it as 'ci_test_diagram.excalidraw' in the current directory
+            3. Verify the file was created and contains valid Excalidraw JSON
+
+            Use the excalidraw-diagrams skill to generate this diagram.
+            Report success or failure.
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Verify output file exists
+        run: |
+          if [ -f ci_test_diagram.excalidraw ]; then
+            echo "Success: Diagram file was created"
+            python -c "import json; d=json.load(open('ci_test_diagram.excalidraw')); print(f'Elements: {len(d.get(\"elements\", []))}')"
+          else
+            echo "Warning: Expected diagram file not found (skill may not have been triggered)"
+            # List what files were created
+            ls -la ./*.excalidraw 2>/dev/null || echo "No .excalidraw files found"
+          fi
+
+      - name: Convert diagram to PNG with Playwright
+        if: always()
+        run: |
+          if [ -f ci_test_diagram.excalidraw ]; then
+            cd ~/.claude/skills/excalidraw-diagrams/scripts
+            npm install
+            npx playwright install chromium
+            node export_playwright.js "$GITHUB_WORKSPACE/ci_test_diagram.excalidraw" "$GITHUB_WORKSPACE/ci_test_diagram.png"
+            echo "PNG conversion complete"
+            ls -la "$GITHUB_WORKSPACE"/*.png 2>/dev/null || echo "No PNG files created"
+          fi
+
+      - name: Upload diagram artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: excalidraw-diagram
+          path: |
+            ci_test_diagram.excalidraw
+            ci_test_diagram.png
+          if-no-files-found: ignore
+
+      - name: Add diagram to step summary
+        if: always()
+        run: |
+          echo "## 📊 Generated Excalidraw Diagram" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ -f ci_test_diagram.excalidraw ]; then
+            ELEMENTS=$(python -c "import json; d=json.load(open('ci_test_diagram.excalidraw')); print(len(d.get('elements', [])))")
+            echo "✅ **Diagram created successfully** with $ELEMENTS elements" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+
+            if [ -f ci_test_diagram.png ]; then
+              echo "📸 PNG preview available in **excalidraw-diagram** artifact" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+
+            echo "### Downloads" >> $GITHUB_STEP_SUMMARY
+            echo "- Download the **excalidraw-diagram** artifact to view/edit in [Excalidraw](https://excalidraw.com)" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "⚠️ **No diagram was generated**" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "The skill may not have been triggered or an error occurred." >> $GITHUB_STEP_SUMMARY
+          fi

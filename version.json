@@ -1,0 +1,11 @@
+{
+  "version": "13.0.0",
+  "commit": "local",
+  "branch": "main",
+  "updatedAt": "2026-03-12T22:00:00Z",
+  "installMethod": "local",
+  "changelog": {
+    "13.0.0": "17 research-backed changes across 3 waves: Societies of Thought plan critique, Spec-Driven verification, SE-Agent TDD + Implied Scenarios, FoldAgent cross-turn compression, Variation Injection, CNCF taxonomy, Frequency-Ranked Core Learnings, Background Agent Execution, Multi-Agent Reflexion, Adversarial Judge separation, Magentic-UI confidence escalation",
+    "12.6.0": "Unified /fire-skill CLI, 6 skill templates, import/validate/stats scripts"
+  }
+}

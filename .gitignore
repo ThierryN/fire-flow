@@ -1,0 +1,28 @@
+nul
+*.local.md
+
+# Temp/scan scripts
+pii_scan.py
+pii_report.txt
+apply_fixes.py
+fix_paths*.py
+
+# Research pipeline (private)
+agents/fire-researcher.md
+agents/fire-research-synthesizer.md
+agents/fire-project-researcher.md
+commands/fire-research.md
+
+# Memory project files (private)
+skills-library/_general/methodology/LIVE_BREADCRUMB_PROTOCOL.md
+skills-library/_general/methodology/RESEARCH_BACKED_WORKFLOW_UPGRADE.md
+skills-library/_general/methodology/RESEARCH_VISUAL_GUIDE.md
+skills-library/_general/methodology/llm-judge-memory-crud.md
+skills-library/_general/database-solutions/qdrant-blue-green-aliases.md
+skills-library/automation/session-memory-lifecycle.md
+skills-library/methodology/HEARTBEAT_PROTOCOL.md
+skills-library/methodology/PORTAL_MEMORY_ARCHITECTURE.md
+skills-library/methodology/PRODUCTION_MEMORY_PATTERNS.md
+skills-library/methodology/REFLEXION_MEMORY_PATTERN.md
+skills-library/methodology/RESEARCH_BACKED_WORKFLOW_UPGRADE.md
+skills-library/vector-memory/

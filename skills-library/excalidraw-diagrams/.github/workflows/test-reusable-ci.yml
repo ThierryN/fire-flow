@@ -1,0 +1,25 @@
+# Test using the reusable skill-ci workflow from anthropics/skills
+name: Skill CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Grant permissions needed by the reusable workflow
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+jobs:
+  test:
+    # Using robtaylor/skills fork while testing, will change to anthropics/skills
+    uses: robtaylor/skills/.github/workflows/skill-ci.yml@add-skill-ci
+    with:
+      skill_path: "."
+      run_api_test: true
+      run_claude_code_test: true
+    secrets: inherit
