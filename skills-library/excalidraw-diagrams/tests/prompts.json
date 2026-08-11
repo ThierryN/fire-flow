@@ -1,0 +1,64 @@
+{
+  "prompts": [
+    {
+      "id": "microservices",
+      "name": "Microservices Architecture",
+      "description": "E-commerce platform with multiple services",
+      "prompt": "Create an architecture diagram for an e-commerce platform showing: User, Web Frontend, API Gateway, Auth Service, Product Service, Order Service, Payment Service, and PostgreSQL and Redis databases. Show the connections between services with labels for the protocols (REST, gRPC). Save as 'microservices.excalidraw'."
+    },
+    {
+      "id": "cicd_pipeline",
+      "name": "CI/CD Pipeline",
+      "description": "GitHub Actions deployment workflow",
+      "prompt": "Create a flowchart showing a CI/CD pipeline: Developer pushes code -> GitHub triggers workflow -> Run Tests (decision: pass/fail) -> if fail, notify developer and stop -> if pass, Build Docker Image -> Push to Registry -> Deploy to Staging -> Run E2E Tests (decision) -> if pass, Deploy to Production -> Send success notification. Save as 'cicd_pipeline.excalidraw'."
+    },
+    {
+      "id": "state_machine",
+      "name": "Order State Machine",
+      "description": "E-commerce order lifecycle states",
+      "prompt": "Create a state machine diagram for an e-commerce order: states are Created, Pending Payment, Paid, Processing, Shipped, Delivered, Cancelled, Refunded. Show transitions with event labels like 'payment_received', 'items_packed', 'delivered', 'cancel_requested', 'refund_approved'. Use a horizontal layout. Save as 'state_machine.excalidraw'."
+    },
+    {
+      "id": "class_diagram",
+      "name": "Class Hierarchy",
+      "description": "Vehicle class inheritance",
+      "prompt": "Create a UML class diagram showing: Vehicle (base class with properties: make, model, year and methods: start(), stop()) -> Car (extends Vehicle, adds: numDoors, trunk_capacity) and Motorcycle (extends Vehicle, adds: hasSidecar). Also show an Engine class that Vehicle has-a relationship with. Save as 'class_diagram.excalidraw'."
+    },
+    {
+      "id": "data_flow",
+      "name": "Data Pipeline",
+      "description": "ETL data processing flow",
+      "prompt": "Create a data flow diagram showing an ETL pipeline: Data Sources (API, Database, S3) -> Ingestion Layer (Kafka) -> Processing (Spark jobs for Transform, Validate, Enrich) -> Data Warehouse (Snowflake) -> Analytics (Dashboards, Reports, ML Models). Use different colors for each stage. Save as 'data_flow.excalidraw'."
+    },
+    {
+      "id": "network_topology",
+      "name": "Network Architecture",
+      "description": "Cloud VPC network layout",
+      "prompt": "Create a network architecture diagram showing: Internet -> Load Balancer -> Public Subnet (with NAT Gateway and Bastion Host) -> Private Subnet (with Web Servers and App Servers) -> Database Subnet (with Primary DB and Read Replica). Show the VPC boundary and subnet boundaries. Save as 'network_topology.excalidraw'."
+    },
+    {
+      "id": "user_journey",
+      "name": "User Registration Flow",
+      "description": "User signup and onboarding",
+      "prompt": "Create a flowchart for user registration: Start -> Enter Email -> Validate Email Format (decision) -> if invalid, show error and loop back -> Check if Email Exists (decision) -> if exists, prompt login -> Enter Password -> Validate Password Strength -> Create Account -> Send Verification Email -> User Clicks Link -> Account Verified -> Onboarding Tutorial -> End. Save as 'user_journey.excalidraw'."
+    },
+    {
+      "id": "event_driven",
+      "name": "Event-Driven Architecture",
+      "description": "Async messaging with events",
+      "prompt": "Create an architecture diagram for event-driven system: Order Service publishes OrderCreated event -> Event Bus (Kafka/SNS) -> multiple consumers: Inventory Service (reserves stock), Notification Service (sends email), Analytics Service (tracks metrics), Shipping Service (prepares label). Show the event flow with arrows. Save as 'event_driven.excalidraw'."
+    },
+    {
+      "id": "decision_tree",
+      "name": "Support Ticket Routing",
+      "description": "Customer support triage logic",
+      "prompt": "Create a decision tree flowchart for support ticket routing: New Ticket -> Is it urgent? (Yes: Priority Queue) -> Is it billing related? (Yes: Billing Team, No: next check) -> Is it technical? (Yes: check complexity) -> Simple issue? (Yes: Tier 1 Support, No: Tier 2 Support) -> Default: General Support. Use diamond shapes for decisions. Save as 'decision_tree.excalidraw'."
+    },
+    {
+      "id": "deployment",
+      "name": "Kubernetes Deployment",
+      "description": "K8s cluster architecture",
+      "prompt": "Create a deployment architecture diagram: Kubernetes Cluster containing: Ingress Controller -> Service (ClusterIP) -> Deployment with 3 Pod replicas -> each Pod has App Container and Sidecar. Show ConfigMap and Secret connecting to Pods. Show PersistentVolumeClaim connecting to Pods. External: Container Registry and Monitoring (Prometheus/Grafana). Save as 'deployment.excalidraw'."
+    }
+  ]
+}

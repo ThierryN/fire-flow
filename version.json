@@ -1,0 +1,11 @@
+{
+  "version": "12.9.0",
+  "commit": "local",
+  "branch": "main",
+  "updatedAt": "2026-03-25T00:00:00Z",
+  "installMethod": "local",
+  "changelog": {
+    "12.9.0": "Multi-agent orchestration research upgrade. Observation masking, decision log, monitor agent bridge, dead task detection, voting verdicts, hierarchical review, task queue persistence, scope-isolated tool allowlists, breadcrumb aggregation, semaphore bounding.",
+    "12.6.0": "Unified /fire-skill CLI, 6 skill templates, import/validate/stats scripts"
+  }
+}

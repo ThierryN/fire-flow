@@ -1,0 +1,448 @@
+name: Prompt Gallery
+
+on:
+  # Run on main branch pushes
+  push:
+    branches: [main]
+    paths:
+      - 'tests/prompts.json'
+      - 'scripts/excalidraw_generator.py'
+      - 'SKILL.md'
+      - '.github/workflows/prompt-gallery.yml'
+  # Allow manual trigger
+  workflow_dispatch:
+  # Run weekly to catch any regressions
+  schedule:
+    - cron: '0 0 * * 0'  # Weekly on Sunday
+
+jobs:
+  generate-gallery:
+    name: Generate Prompt Gallery
+    runs-on: ubuntu-latest
+    # Only run if ANTHROPIC_API_KEY is available
+    if: github.repository == 'robtaylor/excalidraw-diagrams'
+    permissions:
+      contents: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          pip install grandalf
+          cd scripts
+          npm install
+          npx playwright install chromium
+
+      - name: Install skill to test location
+        run: |
+          mkdir -p ~/.claude/skills
+          cp -r . ~/.claude/skills/excalidraw-diagrams
+
+      - name: Create output directory
+        run: mkdir -p gallery_output
+
+      - name: Generate diagrams with Claude
+        uses: robtaylor/claude-code-action@main
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          claude_args: "--allowedTools Write,Read,Bash,Glob,Grep,Skill"
+          prompt: |
+            You are testing the excalidraw-diagrams skill by generating diagrams from prompts.
+
+            Read the file tests/prompts.json which contains an array of test prompts.
+
+            For EACH prompt in the array:
+            1. Use the excalidraw-diagrams skill to generate the diagram as described
+            2. Save it to the gallery_output/ directory with the filename specified in the prompt
+            3. After generating each diagram, verify the file exists and report the element count
+
+            Work through ALL prompts in the file. Report a summary at the end showing:
+            - Total prompts processed
+            - Successful generations
+            - Any failures
+
+            Use the excalidraw-diagrams skill (invoke /excalidraw-diagrams) to create each diagram.
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+      - name: Move diagrams to gallery_output if needed
+        run: |
+          # Move any .excalidraw files from root to gallery_output
+          for f in *.excalidraw; do
+            [ -f "$f" ] && mv "$f" gallery_output/ 2>/dev/null || true
+          done
+          echo "Diagrams in gallery_output:"
+          ls -la gallery_output/*.excalidraw 2>/dev/null || echo "No diagrams found"
+
+      - name: Convert diagrams to PNG
+        run: |
+          cd gallery_output
+          for f in ./*.excalidraw; do
+            if [ -f "$f" ]; then
+              name=$(basename "$f" .excalidraw)
+              echo "Converting $name..."
+              node "$GITHUB_WORKSPACE/scripts/export_playwright.js" "$f" "${name}.png" || echo "Failed to convert $name"
+            fi
+          done
+          echo "Generated PNGs:"
+          ls -la *.png 2>/dev/null || echo "No PNGs generated"
+
+      - name: Validate line routing
+        id: validate
+        run: |
+          cd gallery_output
+          echo "## Line Routing Validation" > validation_report.md
+          echo "" >> validation_report.md
+
+          TOTAL_ERRORS=0
+          TOTAL_WARNINGS=0
+          TOTAL_INFO=0
+
+          for f in ./*.excalidraw; do
+            if [ -f "$f" ]; then
+              name=$(basename "$f" .excalidraw)
+              echo "Validating $name..."
+
+              # Run validator and capture output
+              OUTPUT=$(python3 "$GITHUB_WORKSPACE/scripts/line_routing_validator.py" "$f" 2>&1) || true
+
+              # Count issues
+              ERRORS=$(echo "$OUTPUT" | grep -c '\[ERROR\]' || echo "0")
+              WARNINGS=$(echo "$OUTPUT" | grep -c '\[WARNING\]' || echo "0")
+              INFO=$(echo "$OUTPUT" | grep -c '\[INFO\]' || echo "0")
+
+              TOTAL_ERRORS=$((TOTAL_ERRORS + ERRORS))
+              TOTAL_WARNINGS=$((TOTAL_WARNINGS + WARNINGS))
+              TOTAL_INFO=$((TOTAL_INFO + INFO))
+
+              if [ "$ERRORS" -gt 0 ] || [ "$WARNINGS" -gt 0 ]; then
+                echo "### $name" >> validation_report.md
+                echo '```' >> validation_report.md
+                echo "$OUTPUT" | grep -E '\[(ERROR|WARNING|INFO)\]' >> validation_report.md || true
+                echo '```' >> validation_report.md
+                echo "" >> validation_report.md
+              fi
+            fi
+          done
+
+          echo "" >> validation_report.md
+          echo "**Summary**: $TOTAL_ERRORS errors, $TOTAL_WARNINGS warnings, $TOTAL_INFO info" >> validation_report.md
+
+          # Export for later steps
+          echo "errors=$TOTAL_ERRORS" >> $GITHUB_OUTPUT
+          echo "warnings=$TOTAL_WARNINGS" >> $GITHUB_OUTPUT
+          echo "info=$TOTAL_INFO" >> $GITHUB_OUTPUT
+
+          # Show report
+          cat validation_report.md
+
+      - name: Generate gallery HTML
+        run: |
+          python3 << 'EOF'
+          import json
+          from pathlib import Path
+          from datetime import datetime
+
+          # Load prompts for descriptions
+          prompts_data = json.load(open('tests/prompts.json'))
+          prompts_map = {p['id']: p for p in prompts_data['prompts']}
+
+          gallery_dir = Path('gallery_output')
+          pngs = sorted(gallery_dir.glob('*.png'))
+
+          cards = []
+          for png in pngs:
+              name = png.stem
+              prompt_info = prompts_map.get(name, {})
+              title = prompt_info.get('name', name.replace('_', ' ').title())
+              desc = prompt_info.get('description', 'Generated diagram')
+              prompt_text = prompt_info.get('prompt', '')[:200] + '...' if prompt_info.get('prompt', '') else ''
+
+              cards.append(f'''
+              <div class="card">
+                <a href="{name}.png" target="_blank">
+                  <img src="{name}.png" alt="{title}" loading="lazy">
+                </a>
+                <h3>{title}</h3>
+                <p class="description">{desc}</p>
+                <details>
+                  <summary>View prompt</summary>
+                  <p class="prompt">{prompt_info.get('prompt', 'N/A')}</p>
+                </details>
+                <div class="actions">
+                  <a href="{name}.excalidraw" download class="btn">Download .excalidraw</a>
+                </div>
+              </div>
+              ''')
+
+          html = f'''<!DOCTYPE html>
+          <html lang="en">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Excalidraw Diagram Gallery - AI Generated</title>
+            <style>
+              :root {{
+                --bg: #0d1117;
+                --card-bg: #161b22;
+                --text: #c9d1d9;
+                --text-muted: #8b949e;
+                --accent: #58a6ff;
+                --border: #30363d;
+              }}
+              * {{ box-sizing: border-box; }}
+              body {{
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                max-width: 1400px;
+                margin: 0 auto;
+                padding: 20px;
+                background: var(--bg);
+                color: var(--text);
+              }}
+              h1 {{ color: var(--text); margin-bottom: 8px; }}
+              .subtitle {{ color: var(--text-muted); margin-bottom: 24px; }}
+              .gallery {{
+                display: grid;
+                grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+                gap: 24px;
+              }}
+              .card {{
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                border-radius: 12px;
+                padding: 16px;
+                transition: transform 0.2s, box-shadow 0.2s;
+              }}
+              .card:hover {{
+                transform: translateY(-4px);
+                box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+              }}
+              .card img {{
+                width: 100%;
+                border-radius: 8px;
+                background: white;
+                cursor: pointer;
+              }}
+              .card h3 {{
+                margin: 16px 0 8px 0;
+                color: var(--accent);
+                font-size: 1.1em;
+              }}
+              .card .description {{
+                color: var(--text-muted);
+                margin: 0 0 12px 0;
+                font-size: 14px;
+              }}
+              .card details {{
+                margin: 12px 0;
+                font-size: 13px;
+              }}
+              .card summary {{
+                cursor: pointer;
+                color: var(--accent);
+              }}
+              .card .prompt {{
+                color: var(--text-muted);
+                background: var(--bg);
+                padding: 12px;
+                border-radius: 6px;
+                margin-top: 8px;
+                font-size: 12px;
+                line-height: 1.5;
+              }}
+              .actions {{
+                margin-top: 12px;
+              }}
+              .btn {{
+                display: inline-block;
+                padding: 8px 16px;
+                background: var(--accent);
+                color: white;
+                text-decoration: none;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 500;
+              }}
+              .btn:hover {{
+                opacity: 0.9;
+              }}
+              .stats {{
+                background: var(--card-bg);
+                border: 1px solid var(--border);
+                border-radius: 8px;
+                padding: 16px;
+                margin-bottom: 24px;
+                display: flex;
+                gap: 32px;
+              }}
+              .stat {{
+                text-align: center;
+              }}
+              .stat-value {{
+                font-size: 2em;
+                font-weight: bold;
+                color: var(--accent);
+              }}
+              .stat-label {{
+                color: var(--text-muted);
+                font-size: 14px;
+              }}
+              footer {{
+                margin-top: 40px;
+                padding-top: 20px;
+                border-top: 1px solid var(--border);
+                color: var(--text-muted);
+                font-size: 12px;
+                text-align: center;
+              }}
+              footer a {{ color: var(--accent); }}
+            </style>
+          </head>
+          <body>
+            <h1>Excalidraw Diagram Gallery</h1>
+            <p class="subtitle">AI-generated diagrams using Claude Code with the excalidraw-diagrams skill</p>
+
+            <div class="stats">
+              <div class="stat">
+                <div class="stat-value">{len(pngs)}</div>
+                <div class="stat-label">Diagrams Generated</div>
+              </div>
+              <div class="stat">
+                <div class="stat-value">{len(prompts_data['prompts'])}</div>
+                <div class="stat-label">Test Prompts</div>
+              </div>
+            </div>
+
+            <div class="gallery">
+              {"".join(cards)}
+            </div>
+
+            <footer>
+              Generated on {datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")} by
+              <a href="https://github.com/robtaylor/excalidraw-diagrams">excalidraw-diagrams</a> |
+              <a href="https://github.com/robtaylor/excalidraw-diagrams/actions">View CI Runs</a>
+            </footer>
+          </body>
+          </html>'''
+
+          (gallery_dir / 'index.html').write_text(html)
+          print(f"Generated gallery with {len(pngs)} diagrams")
+          EOF
+
+      - name: Upload gallery artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prompt-gallery
+          path: gallery_output/
+
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # Configure git
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Save gallery files
+          cp -r gallery_output /tmp/prompt-gallery
+
+          # Clean and switch to gh-pages
+          git clean -fd
+          if git fetch origin gh-pages:gh-pages 2>/dev/null; then
+            git checkout gh-pages
+          else
+            git checkout --orphan gh-pages
+            git rm -rf . 2>/dev/null || true
+          fi
+
+          # Create prompt-gallery subdirectory
+          rm -rf prompt-gallery 2>/dev/null || true
+          mkdir -p prompt-gallery
+          cp -r /tmp/prompt-gallery/* prompt-gallery/
+
+          # Update main gallery page to link to prompt gallery
+          if [ -f index.html ]; then
+            # Add link to prompt gallery if not already present
+            if ! grep -q "prompt-gallery" index.html; then
+              sed -i 's|</body>|<p style="margin-top: 20px; text-align: center;"><a href="prompt-gallery/" style="color: #1a73e8;">View AI-Generated Prompt Gallery →</a></p></body>|' index.html
+            fi
+          fi
+
+          # Commit and push
+          git add .
+          git commit -m "Update prompt gallery from CI run ${{ github.run_number }}" || echo "No changes"
+          git push origin gh-pages --force
+
+      - name: Generate step summary
+        if: always()
+        run: |
+          # Use /tmp copies since gh-pages deployment may have changed working directory
+          echo "## 🎨 Prompt Gallery Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Count results from /tmp where we saved files before gh-pages switch
+          TOTAL_PROMPTS=10  # Known from prompts.json
+          GENERATED=$(ls /tmp/prompt-gallery/*.excalidraw 2>/dev/null | wc -l | tr -d ' ')
+          PNGS=$(ls /tmp/prompt-gallery/*.png 2>/dev/null | wc -l | tr -d ' ')
+
+          echo "| Metric | Count |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Total Prompts | $TOTAL_PROMPTS |" >> $GITHUB_STEP_SUMMARY
+          echo "| Diagrams Generated | $GENERATED |" >> $GITHUB_STEP_SUMMARY
+          echo "| PNG Exports | $PNGS |" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Add validation summary
+          echo "### 🔍 Line Routing Validation" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          VALIDATION_ERRORS="${{ steps.validate.outputs.errors }}"
+          VALIDATION_WARNINGS="${{ steps.validate.outputs.warnings }}"
+          VALIDATION_INFO="${{ steps.validate.outputs.info }}"
+          if [ -n "$VALIDATION_ERRORS" ]; then
+            if [ "$VALIDATION_ERRORS" -gt 0 ]; then
+              echo "⚠️ **$VALIDATION_ERRORS errors**, $VALIDATION_WARNINGS warnings, $VALIDATION_INFO info" >> $GITHUB_STEP_SUMMARY
+            elif [ "$VALIDATION_WARNINGS" -gt 0 ]; then
+              echo "⚡ **$VALIDATION_WARNINGS warnings**, $VALIDATION_INFO info" >> $GITHUB_STEP_SUMMARY
+            else
+              echo "✅ No routing issues detected" >> $GITHUB_STEP_SUMMARY
+            fi
+            echo "" >> $GITHUB_STEP_SUMMARY
+            if [ -f /tmp/prompt-gallery/validation_report.md ]; then
+              echo "<details><summary>View details</summary>" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+              cat /tmp/prompt-gallery/validation_report.md >> $GITHUB_STEP_SUMMARY
+              echo "</details>" >> $GITHUB_STEP_SUMMARY
+              echo "" >> $GITHUB_STEP_SUMMARY
+            fi
+          fi
+
+          if [ "$GENERATED" -gt 0 ]; then
+            echo "### Generated Diagrams" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            for f in /tmp/prompt-gallery/*.excalidraw; do
+              if [ -f "$f" ]; then
+                name=$(basename "$f" .excalidraw)
+                elements=$(python3 -c "import json; print(len(json.load(open('$f')).get('elements', [])))")
+                echo "- **$name**: $elements elements" >> $GITHUB_STEP_SUMMARY
+              fi
+            done
+          fi
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+            echo "🌐 **[View Gallery](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/prompt-gallery/)**" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "📦 Download the **prompt-gallery** artifact to view results" >> $GITHUB_STEP_SUMMARY
+          fi

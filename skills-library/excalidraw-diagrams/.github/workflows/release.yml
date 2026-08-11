@@ -1,0 +1,42 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+  # Allow manual trigger for testing
+  workflow_dispatch:
+
+jobs:
+  build-release:
+    name: Build Release Artifacts
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write  # Required to upload release assets
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run tests
+        run: python tests/test_generator.py
+
+      - name: Create capability zip
+        run: python scripts/create_capability_zip.py
+
+      - name: Upload capability zip as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: excalidraw-diagrams-capability
+          path: excalidraw-diagrams-capability.zip
+
+      - name: Upload to release
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: excalidraw-diagrams-capability.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
