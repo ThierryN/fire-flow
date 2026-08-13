@@ -1,6 +1,6 @@
 {
   "name": "dominion-flow",
-  "version": "12.9.0",
+  "version": "13.1.1",
   "description": "Research-backed orchestration for Claude Code. Structured workflow from idea to production with parallel execution, session memory, 70-point validation, autonomous mode, and adversarial review. 51 commands, 15 agents across 7 departments.",
   "author": "Thierry Nakoa",
   "homepage": "https://github.com/ThierryN/fire-flow",

@@ -1,10 +1,11 @@
 {
-  "version": "12.9.0",
+  "version": "13.1.1",
   "commit": "local",
   "branch": "main",
-  "updatedAt": "2026-03-25T00:00:00Z",
+  "updatedAt": "2026-08-13T00:00:00Z",
   "installMethod": "local",
   "changelog": {
+    "13.1.1": "Version markers synced across package.json, plugin.json, .claude-plugin/plugin.json and version.json. Fixed scripts/sync-version.sh, which replaced every version-shaped string in the docs and would overwrite the release history in DOMINION-FLOW-OVERVIEW.md.",
     "12.9.0": "Multi-agent orchestration research upgrade. Observation masking, decision log, monitor agent bridge, dead task detection, voting verdicts, hierarchical review, task queue persistence, scope-isolated tool allowlists, breadcrumb aggregation, semaphore bounding.",
     "12.6.0": "Unified /fire-skill CLI, 6 skill templates, import/validate/stats scripts"
   }

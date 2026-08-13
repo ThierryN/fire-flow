@@ -5,55 +5,84 @@
 # Run from the plugin root: bash scripts/sync-version.sh [new-version]
 #
 # If no version argument is given, reads from plugin.json (source of truth).
+#
+# Docs are updated by replacing the OLD version string only, never by matching
+# any version-shaped text. DOMINION-FLOW-OVERVIEW.md carries the release history
+# (v1.0 ... v13.0); a pattern-based replace would rewrite every historical entry.
 
 set -euo pipefail
 
 PLUGIN_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 
-# Get version from argument or plugin.json
+read_json_version() {
+    grep '"version"' "$1" | head -1 | sed 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/'
+}
+
+# The version currently recorded — what we replace FROM.
+OLD_VERSION="$(read_json_version "$PLUGIN_ROOT/plugin.json")"
+
 if [ $# -ge 1 ]; then
     NEW_VERSION="$1"
-    # Update plugin.json first (source of truth)
-    sed -i "s/\"version\": \"[^\"]*\"/\"version\": \"$NEW_VERSION\"/" "$PLUGIN_ROOT/plugin.json"
-    echo "Updated plugin.json to v$NEW_VERSION"
 else
-    NEW_VERSION=$(grep '"version"' "$PLUGIN_ROOT/plugin.json" | head -1 | sed 's/.*"version"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/')
+    NEW_VERSION="$OLD_VERSION"
     echo "Reading version from plugin.json: v$NEW_VERSION"
 fi
 
-echo ""
-echo "=== Syncing v$NEW_VERSION across all files ==="
+if ! printf '%s' "$NEW_VERSION" | grep -qE '^[0-9]+\.[0-9]+\.[0-9]+$'; then
+    echo "ERROR: '$NEW_VERSION' is not a semver x.y.z version." >&2
+    exit 1
+fi
 
-# Files that may reference the version
-FILES_TO_CHECK=(
-    "README.md"
-    "COMMAND-REFERENCE.md"
-    "DOMINION-FLOW-OVERVIEW.md"
-    "QUICK-START.md"
-    "ARCHITECTURE-DIAGRAM.md"
+echo ""
+echo "=== Syncing v$OLD_VERSION -> v$NEW_VERSION ==="
+
+# ── JSON manifests: replace the value of the first "version" key ──────────────
+JSON_FILES=(
+    "plugin.json"
+    ".claude-plugin/plugin.json"
+    "version.json"
 )
 
 UPDATED=0
-for file in "${FILES_TO_CHECK[@]}"; do
+for file in "${JSON_FILES[@]}"; do
     FILEPATH="$PLUGIN_ROOT/$file"
-    [ ! -f "$FILEPATH" ] && continue
+    [ ! -f "$FILEPATH" ] && { echo "  [SKIP] $file (not present)"; continue; }
 
-    # Look for version patterns like "v9.0", "v10.0.0", "Version: X.Y.Z"
-    if grep -qE "v[0-9]+\.[0-9]+(\.[0-9]+)?" "$FILEPATH" 2>/dev/null; then
-        # Replace common version patterns
-        sed -i "s/v[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?/v$NEW_VERSION/g" "$FILEPATH"
-        echo "  [UPDATED] $file"
-        UPDATED=$((UPDATED + 1))
-    else
-        echo "  [SKIP] $file (no version references found)"
-    fi
+    # 0,/re/ limits the substitution to the FIRST match, so a "version" key
+    # nested elsewhere in the manifest is left alone.
+    sed -i "0,/\"version\"[[:space:]]*:[[:space:]]*\"[^\"]*\"/s//\"version\": \"$NEW_VERSION\"/" "$FILEPATH"
+    echo "  [UPDATED] $file"
+    UPDATED=$((UPDATED + 1))
 done
 
-# Also update SKILLS-INDEX.md if it exists
-if [ -f "$PLUGIN_ROOT/skills-library/SKILLS-INDEX.md" ]; then
-    sed -i "s/v[0-9]\+\.[0-9]\+\(\.[0-9]\+\)\?/v$NEW_VERSION/g" "$PLUGIN_ROOT/skills-library/SKILLS-INDEX.md"
-    echo "  [UPDATED] skills-library/SKILLS-INDEX.md"
-    UPDATED=$((UPDATED + 1))
+# ── Docs: replace the OLD version string only ────────────────────────────────
+if [ "$OLD_VERSION" = "$NEW_VERSION" ]; then
+    echo "  [SKIP] docs (version unchanged)"
+else
+    DOC_FILES=(
+        "README.md"
+        "COMMAND-REFERENCE.md"
+        "DOMINION-FLOW-OVERVIEW.md"
+        "QUICK-START.md"
+        "ARCHITECTURE-DIAGRAM.md"
+        "skills-library/SKILLS-INDEX.md"
+    )
+
+    # Escape dots so 12.9.0 cannot also match 12x9y0.
+    OLD_ESC="$(printf '%s' "$OLD_VERSION" | sed 's/\./\\./g')"
+
+    for file in "${DOC_FILES[@]}"; do
+        FILEPATH="$PLUGIN_ROOT/$file"
+        [ ! -f "$FILEPATH" ] && continue
+
+        if grep -q "v$OLD_VERSION" "$FILEPATH" 2>/dev/null; then
+            sed -i "s/v$OLD_ESC/v$NEW_VERSION/g" "$FILEPATH"
+            echo "  [UPDATED] $file"
+            UPDATED=$((UPDATED + 1))
+        else
+            echo "  [SKIP] $file (no v$OLD_VERSION reference)"
+        fi
+    done
 fi
 
 echo ""
@@ -62,4 +91,5 @@ echo "  Version: v$NEW_VERSION"
 echo "  Files updated: $UPDATED"
 echo ""
 echo "Source of truth: plugin.json"
+echo "Note: package.json is the npm version and tracks its own line — not synced here."
 echo "Run 'git diff' to review changes before committing."
