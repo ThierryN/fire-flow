@@ -1,10 +1,10 @@
-# E2E Test: /fire-contribute - Skills Contribution
+# E2E Test: /fire-add-new-skill - Skills Contribution
 
 ## Test Name
 `skills-contribute`
 
 ## Description
-Validates that `/fire-contribute` allows users to add new skills to the skills library with proper formatting, categorization, and metadata. Tests the skill creation workflow and validation.
+Validates that `/fire-add-new-skill` allows users to add new skills to the skills library with proper formatting, categorization, and metadata. Tests the skill creation workflow and validation.
 
 ---
 
@@ -37,7 +37,7 @@ mkdir -p "$SKILLS_LIB/automation"
 ### Test Case 1: Interactive Skill Creation
 ```bash
 # In Claude Code session:
-/fire-contribute
+/fire-add-new-skill
 
 # Follow prompts:
 #   - Skill name: "GitHub Actions CI/CD"
@@ -50,7 +50,7 @@ mkdir -p "$SKILLS_LIB/automation"
 ### Test Case 2: Quick Skill Creation (with arguments)
 ```bash
 # In Claude Code session:
-/fire-contribute --name "Docker Multi-Stage Builds" --category "deployment-security"
+/fire-add-new-skill --name "Docker Multi-Stage Builds" --category "deployment-security"
 
 # Should create skill and prompt for remaining details
 ```
@@ -58,7 +58,7 @@ mkdir -p "$SKILLS_LIB/automation"
 ### Test Case 3: Skill from Current Context
 ```bash
 # After completing a task that could become a skill:
-/fire-contribute --from-context
+/fire-add-new-skill --from-context
 
 # Should analyze recent work and offer to create skill
 ```

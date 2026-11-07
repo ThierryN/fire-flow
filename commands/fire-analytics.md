@@ -367,11 +367,11 @@ Learning Insights:
 │                                                                             │
 │  1. GraphQL patterns (no skills exist)                                     │
 │     └─ Detected: GraphQL queries in codebase                               │
-│     └─ Action: /fire-contribute to add GraphQL skills                    │
+│     └─ Action: /fire-add-new-skill to add GraphQL skills                    │
 │                                                                             │
 │  2. WebSocket handling (no skills exist)                                   │
 │     └─ Detected: Real-time features planned                                │
-│     └─ Action: /fire-contribute or search external sources               │
+│     └─ Action: /fire-add-new-skill or search external sources               │
 │                                                                             │
 │  3. Bible/Theological domain (no skills exist)                             │
 │     └─ Detected: Domain-specific patterns in codebase                      │
@@ -397,7 +397,7 @@ Learning Insights:
 │      Run: /fire-search "testing" to explore available skills             │
 │                                                                             │
 │  [2] MEDIUM: Create GraphQL skills from current patterns                   │
-│      Run: /fire-contribute after completing GraphQL work                 │
+│      Run: /fire-add-new-skill after completing GraphQL work                 │
 │                                                                             │
 │  [3] LOW: Consider performance skills for optimization phase               │
 │      Run: /fire-search "performance caching" when ready                  │
@@ -492,7 +492,7 @@ pagination,api-patterns,3,70,95
 - `/fire-dashboard` - Visual project status
 - `/fire-discover` - AI pattern discovery
 - `/fire-search` - Search skills library
-- `/fire-contribute` - Add new skills
+- `/fire-add-new-skill` - Add new skills
 
 ---
 

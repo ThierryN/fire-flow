@@ -132,14 +132,14 @@ SDFT Check:
 
 1. **Scan any NEW or MODIFIED skills** since the last handoff date:
    ```
-   Check: ~/.claude/plugins/*/skills-library/**/*.md
+   Check: ~/.claude/plugins/cache/*/*/*/skills-library/**/*.md
    Filter: modified after {handoff_date}
    Mode: quick (Layers 1-5 only)
    ```
 
 2. **Scan any NEW or MODIFIED plugin files:**
    ```
-   Check: ~/.claude/plugins/*/commands/*.md, hooks/*.json, hooks/*.sh
+   Check: ~/.claude/plugins/cache/*/*/*/commands/*.md, hooks/*.json, hooks/*.sh
    Filter: modified after {handoff_date}
    Mode: quick
    ```

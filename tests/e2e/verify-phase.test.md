@@ -23,7 +23,8 @@ TEST_DIR=$(mktemp -d)
 cd "$TEST_DIR"
 
 # 2. Copy test project fixture
-cp -r ~/.claude/plugins/dominion-flow/tests/fixtures/test-project/.planning .
+PLUGIN_DIR=$(ls -dt ~/.claude/plugins/cache/*/dominion-flow/*/ 2>/dev/null | head -1); PLUGIN_DIR="${PLUGIN_DIR%/}"
+cp -r $PLUGIN_DIR/tests/fixtures/test-project/.planning .
 
 # 3. Create a completed plan with verification steps
 mkdir -p .planning/phases/01-test-phase

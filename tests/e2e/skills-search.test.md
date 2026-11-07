@@ -10,7 +10,7 @@ Validates that `/fire-search` finds relevant skills from the skills library base
 
 ## Prerequisites
 - Dominion Flow plugin installed
-- Skills library populated at `~/.claude/plugins/dominion-flow/skills-library/`
+- Skills library populated at `$PLUGIN_DIR/skills-library/`
 - Multiple skill files with varied content
 
 ---
@@ -19,7 +19,8 @@ Validates that `/fire-search` finds relevant skills from the skills library base
 
 ```bash
 # 1. Ensure skills library exists and has content
-SKILLS_LIB="$HOME/.claude/plugins/dominion-flow/skills-library"
+PLUGIN_DIR=$(ls -dt ~/.claude/plugins/cache/*/dominion-flow/*/ 2>/dev/null | head -1); PLUGIN_DIR="${PLUGIN_DIR%/}"
+SKILLS_LIB="$PLUGIN_DIR/skills-library"
 
 # 2. Verify skills library structure
 ls "$SKILLS_LIB"
@@ -176,7 +177,7 @@ echo "Verify relevant skills ranked higher"
 
 # Example expected format:
 # 1. Prisma ORM Setup and Configuration
-#    Path: ~/.claude/plugins/dominion-flow/skills-library/database-solutions/prisma-setup.md
+#    Path: $PLUGIN_DIR/skills-library/database-solutions/prisma-setup.md
 #    Match: keyword "database" in Keywords section
 echo "Verify result format includes path and match reason"
 ```

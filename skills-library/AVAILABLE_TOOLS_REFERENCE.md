@@ -65,7 +65,7 @@
 
 ## Dominion Flow System
 
-**Location:** `~/.claude/plugins/dominion-flow/`
+**Location:** the installed plugin directory (marketplace installs: `~/.claude/plugins/cache/<marketplace>/dominion-flow/<version>/`)
 **Version:** 3.2.0
 
 ### Core Commands

@@ -100,7 +100,7 @@ What kind of skill is this?
 ```
 
 Based on selection, load the corresponding template from:
-`~/.claude/plugins/dominion-flow/templates/skill-{type}.md`
+`${CLAUDE_PLUGIN_ROOT}/templates/skill-{type}.md`
 
 If type 6 (general), use the standard template from `/fire-add-new-skill`.
 </step>

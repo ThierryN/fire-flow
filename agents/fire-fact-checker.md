@@ -97,7 +97,7 @@ Search for evidence that CONTRADICTS the claim:
 
 ```bash
 # Search skills library for conflicting patterns
-grep -rl "{counter_keywords}" ~/.claude/plugins/dominion-flow/skills-library/ | head -10
+grep -rl "{counter_keywords}" "${CLAUDE_PLUGIN_ROOT}/skills-library/" | head -10
 ```
 
 Then WebSearch with adversarial queries:

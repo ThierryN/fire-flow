@@ -417,7 +417,7 @@ dominion-flow/
 ### Adding New Skills
 
 1. Search existing skills first
-2. Use `/fire-contribute` workflow
+2. Use `/fire-add-new-skill` workflow
 3. Follow skill template structure
 4. Submit to skills library
 

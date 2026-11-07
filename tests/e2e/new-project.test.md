@@ -9,7 +9,7 @@ Validates that `/fire-1a-new` creates the correct directory structure, initializ
 ---
 
 ## Prerequisites
-- Dominion Flow plugin installed at `~/.claude/plugins/dominion-flow/`
+- Dominion Flow plugin installed at `$PLUGIN_DIR`
 - Claude Code CLI available
 - Write permissions to temp directory
 

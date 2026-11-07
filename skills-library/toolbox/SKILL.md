@@ -19,7 +19,7 @@ user-invocable: false
 
 ## Dominion Flow System
 
-**Location:** `~/.claude/plugins/dominion-flow/` | **Version:** 3.2.0
+**Location:** the installed plugin directory (marketplace installs: `~/.claude/plugins/cache/<marketplace>/dominion-flow/<version>/`) | **Version:** 3.2.0
 
 | Command | Purpose |
 |---------|---------|

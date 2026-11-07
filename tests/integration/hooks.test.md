@@ -20,7 +20,8 @@ Validates that the Dominion Flow SessionStart hook fires correctly when Claude C
 
 ```bash
 # 1. Define paths
-DOMINION FLOW_ROOT="$HOME/.claude/plugins/dominion-flow"
+PLUGIN_DIR=$(ls -dt ~/.claude/plugins/cache/*/dominion-flow/*/ 2>/dev/null | head -1); PLUGIN_DIR="${PLUGIN_DIR%/}"
+DOMINION FLOW_ROOT="$PLUGIN_DIR"
 HOOKS_DIR="$DOMINION FLOW_ROOT/hooks"
 HANDOFF_DIR="$HOME/.claude/warrior-handoffs"
 
@@ -52,7 +53,7 @@ cat > "$HOOKS_DIR/session-start.sh" << 'EOF'
 # Injects context about handoffs and project state
 
 HANDOFF_DIR="$HOME/.claude/warrior-handoffs"
-DOMINION FLOW_ROOT="$HOME/.claude/plugins/dominion-flow"
+DOMINION FLOW_ROOT="$PLUGIN_DIR"
 
 echo ""
 echo "=== Dominion Flow Context ==="

@@ -63,8 +63,8 @@ optional_flags:
 **Target resolution:**
 - File path provided: scan that file
 - `--mcp-tools`: enumerate all MCP tool descriptions from loaded servers
-- `--all-skills`: scan `~/.claude/plugins/*/skills-library/**/*.md`
-- `--all-plugins`: scan `~/.claude/plugins/*/` (manifests, commands, hooks, skills)
+- `--all-skills`: scan `~/.claude/plugins/cache/*/*/*/skills-library/**/*.md`
+- `--all-plugins`: scan `~/.claude/plugins/cache/*/*/*/` (manifests, commands, hooks, skills)
 - `--rag-docs [path]`: scan all files in directory before vector DB ingestion
 - No target: prompt user to select
 

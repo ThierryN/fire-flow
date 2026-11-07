@@ -55,7 +55,7 @@ Run after `/fire-add-new-skill`, `/fire-research`, or any bulk skill creation to
 ### Step 1: Determine Scope
 
 ```
-SKILLS_ROOT = ~/.claude/plugins/dominion-flow/skills-library/
+SKILLS_ROOT = ${CLAUDE_PLUGIN_ROOT}/skills-library/
 
 IF scope == "all" or not provided:
   target_files = glob("{SKILLS_ROOT}/**/*.md") excluding SKILLS-INDEX.md

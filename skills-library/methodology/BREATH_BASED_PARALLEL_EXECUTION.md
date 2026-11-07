@@ -530,7 +530,7 @@ await executeWave(3, wave3Plans);
 ## Resources
 
 ### Dominion Flow Documentation
-- Dominion Flow Plugin: `~/.claude/plugins/dominion-flow/`
+- Dominion Flow Plugin: the installed plugin directory (marketplace installs: `~/.claude/plugins/cache/<marketplace>/dominion-flow/<version>/`)
 - Execution Command: `/fire-3-execute N`
 - Agent Definitions: `@agents/fire-executor.md`
 

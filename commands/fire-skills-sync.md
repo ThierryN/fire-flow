@@ -465,6 +465,6 @@ Set up automatic sync on session end:
 ## Related Commands
 
 - `/fire-search` - Search skills in current library
-- `/fire-contribute` - Add new skill
+- `/fire-add-new-skill` - Add new skill
 - `/fire-skills-history` - View version history
 - `/fire-skills-diff` - Compare skill versions

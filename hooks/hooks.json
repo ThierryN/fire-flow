@@ -1,16 +1,26 @@
 {
-  "hooks": [
-    {
-      "event": "SessionStart",
-      "triggers": ["startup", "resume", "clear", "compact"],
-      "type": "command",
-      "command": ["bash", "${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh"]
-    },
-    {
-      "event": "SessionEnd",
-      "triggers": ["logout", "prompt_input_exit", "other"],
-      "type": "command",
-      "command": ["bash", "${CLAUDE_PLUGIN_ROOT}/hooks/run-session-end.sh"]
-    }
-  ]
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear|compact",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/run-hook.sh\""
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "logout|prompt_input_exit|other",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/run-session-end.sh\""
+          }
+        ]
+      }
+    ]
+  }
 }

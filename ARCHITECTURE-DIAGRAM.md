@@ -232,7 +232,7 @@ Visual representations of the Dominion Flow system architecture.
 | fire-5-handoff   |          +------------------+
 | fire-6-resume    |                   |
 | fire-search      |                   | Uses
-| fire-contribute  |                   v
+|fire-add-new-skill|                   v
 | fire-skills-*    |          +------------------+
 | fire-dashboard   |          |    REFERENCES    |
 | fire-analytics   |          +------------------+
@@ -435,7 +435,7 @@ skills-library/
 Total: 478+ skills across 15 categories
 Versioned: Git history for rollback
 Searchable: /fire-search command
-Contributable: /fire-contribute command
+Contributable: /fire-add-new-skill command
 ```
 
 ---

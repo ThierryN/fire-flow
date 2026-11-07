@@ -73,7 +73,7 @@ Read the research context provided by the spawning command:
 
 ```bash
 # Search for relevant existing patterns
-grep -rl "{focus_keywords}" ~/.claude/plugins/dominion-flow/skills-library/ | head -20
+grep -rl "{focus_keywords}" "${CLAUDE_PLUGIN_ROOT}/skills-library/" | head -20
 ```
 
 For each matching skill, extract:

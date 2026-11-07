@@ -218,7 +218,7 @@ SECURITY BASELINE SCAN
 
 **What to scan:**
 1. All `.md` files in the project's skills library (if it has one)
-2. All plugin commands and hooks in `~/.claude/plugins/*/`
+2. All plugin commands and hooks in `~/.claude/plugins/cache/*/*/*/`
 3. Any `.claude/` config files in the project root
 4. MCP tool descriptions currently loaded
 

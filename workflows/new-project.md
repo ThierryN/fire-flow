@@ -484,7 +484,7 @@ The Dominion Flow plugin includes SessionStart hooks that:
 **Verify hook configuration:**
 ```bash
 # Check hooks.json exists in plugin
-ls ~/.claude/plugins/dominion-flow/hooks/hooks.json
+ls ~/.claude/plugins/cache/*/dominion-flow/*/hooks/hooks.json
 ```
 
 ---

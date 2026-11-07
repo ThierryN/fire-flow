@@ -474,7 +474,7 @@ Patterns worth capturing often have:
 
 ### Create Skill [C]
 
-Launches `/fire-contribute` with pre-filled data:
+Launches `/fire-add-new-skill` with pre-filled data:
 
 ```
 ◆ Creating skill: api-patterns/retry-exponential-backoff
@@ -486,7 +486,7 @@ Pre-filled from discovery:
 ├─ Solution: Exponential backoff with configurable attempts
 └─ Examples: [extracted from codebase]
 
-Launching /fire-contribute...
+Launching /fire-add-new-skill...
 ```
 
 ### Update Skill [U]
@@ -595,7 +595,7 @@ Pattern discovery runs:
 - [ ] Pattern detection finds genuine recurring patterns
 - [ ] Confidence scores reflect actual pattern frequency
 - [ ] Interactive prompts work correctly
-- [ ] Create action launches /fire-contribute with correct data
+- [ ] Create action launches /fire-add-new-skill with correct data
 - [ ] Update action shows meaningful diff
 - [ ] Defer action properly updates backlog
 - [ ] Weekly summary aggregates data correctly
@@ -606,7 +606,7 @@ Pattern discovery runs:
 
 ## Related Commands
 
-- `/fire-contribute` - Create new skills
+- `/fire-add-new-skill` - Create new skills
 - `/fire-analytics` - View skills usage statistics
 - `/fire-search` - Search existing skills
 - `/fire-4-verify` - Triggers discovery after phase completion

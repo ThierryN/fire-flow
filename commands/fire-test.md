@@ -44,7 +44,7 @@ End-to-end tests verify each command works in isolation:
 | 5 | `/fire-5-handoff` | Creates unified fire-handoff.md with 7-step format |
 | 6 | `/fire-6-resume` | Restores full context from handoff file |
 | 7 | `/fire-search` | Finds relevant skills from library by query |
-| 8 | `/fire-contribute` | Adds new skill to library with proper structure |
+| 8 | `/fire-add-new-skill` | Adds new skill to library with proper structure |
 
 ### Integration Tests (3 tests)
 
@@ -143,7 +143,7 @@ Step 7: Return Status
 | [x] | /fire-5-handoff creates unified format | 0.4s | |
 | [x] | /fire-6-resume restores context | 0.3s | |
 | [x] | /fire-search finds relevant skills | 0.2s | |
-| [x] | /fire-contribute adds new skills | 0.5s | |
+| [x] | /fire-add-new-skill adds new skills | 0.5s | |
 
 ---
 
@@ -181,7 +181,7 @@ Fix: [recommended action]
 **Test Environment:**
 - OS: [Windows/macOS/Linux]
 - Shell: [PowerShell/Bash/Zsh]
-- Plugin Path: ~/.claude/plugins/dominion-flow/
+- Plugin Path: ${CLAUDE_PLUGIN_ROOT}
 - Temp Directory: [path]
 ```
 
@@ -238,7 +238,7 @@ tests/fixtures/
 | fire-5-handoff | Creates fire-handoff.md with all 7 WARRIOR sections (W-A-R-R-I-O-R) |
 | fire-6-resume | Loads handoff, displays status, routes to correct next action |
 | fire-search | Returns matching skills with relevance ranking |
-| fire-contribute | Creates skill file with proper frontmatter and structure |
+| fire-add-new-skill | Creates skill file with proper frontmatter and structure |
 
 ### Integration Test Criteria:
 
@@ -403,7 +403,7 @@ tests/fixtures/
 **Fail:** No results or irrelevant matches
 ```
 
-### Test 8: fire-contribute
+### Test 8: fire-add-new-skill
 
 ```markdown
 **Setup:**
@@ -411,7 +411,7 @@ tests/fixtures/
 - No existing skill with test name
 
 **Execute:**
-- Run /fire-contribute with test skill data
+- Run /fire-add-new-skill with test skill data
 
 **Verify:**
 - Skill file created in correct category folder
@@ -429,7 +429,7 @@ tests/fixtures/
 
 | Error | Cause | Fix |
 |-------|-------|-----|
-| "Plugin not found" | dominion-flow not installed | Install plugin to ~/.claude/plugins/dominion-flow/ |
+| "Plugin not found" | dominion-flow not installed | Install the plugin with `/plugin` |
 | "Skills library empty" | Skills not copied | Copy skills from WARRIOR to skills-library/ |
 | "Hook not firing" | hooks.json misconfigured | Check hooks/hooks.json syntax |
 | "Permission denied" | File permissions | Check write permissions on test directory |
@@ -445,7 +445,7 @@ tests/fixtures/
 ## Running Tests
 
 ### Prerequisites:
-1. Dominion Flow plugin installed at ~/.claude/plugins/dominion-flow/
+1. Dominion Flow plugin installed (check with `/plugin`)
 2. Skills library populated (or will use fixtures)
 3. Write access to temp directory
 4. Write access to ~/.claude/warrior-handoffs/

@@ -17,7 +17,7 @@ tests/
 │   ├── handoff.test.md          # /fire-5-handoff
 │   ├── resume.test.md           # /fire-6-resume
 │   ├── skills-search.test.md    # /fire-search
-│   └── skills-contribute.test.md # /fire-contribute
+│   └── skills-contribute.test.md # /fire-add-new-skill
 ├── integration/                 # Integration tests
 │   ├── full-workflow.test.md    # Complete workflow test
 │   ├── skills-sync.test.md      # Bidirectional skills sync
@@ -57,7 +57,7 @@ End-to-end tests that validate individual Dominion Flow commands work correctly 
 | `handoff.test.md` | `/fire-5-handoff` | Handoff creation, unified format, context capture |
 | `resume.test.md` | `/fire-6-resume` | Context restoration, handoff loading |
 | `skills-search.test.md` | `/fire-search` | Skills discovery, keyword matching |
-| `skills-contribute.test.md` | `/fire-contribute` | Skills creation, formatting, categorization |
+| `skills-contribute.test.md` | `/fire-add-new-skill` | Skills creation, formatting, categorization |
 
 ### Integration Tests (`tests/integration/`)
 
@@ -168,7 +168,8 @@ Each test file follows a consistent structure:
 
 ```bash
 # Copy fixture to temp directory
-cp -r ~/.claude/plugins/dominion-flow/tests/fixtures/test-project/.planning .
+PLUGIN_DIR=$(ls -dt ~/.claude/plugins/cache/*/dominion-flow/*/ 2>/dev/null | head -1); PLUGIN_DIR="${PLUGIN_DIR%/}"
+cp -r $PLUGIN_DIR/tests/fixtures/test-project/.planning .
 
 # Now you have a pre-configured project for testing
 ```
@@ -177,10 +178,10 @@ cp -r ~/.claude/plugins/dominion-flow/tests/fixtures/test-project/.planning .
 
 ```bash
 # Skills are at:
-~/.claude/plugins/dominion-flow/tests/fixtures/test-skills/
+$PLUGIN_DIR/tests/fixtures/test-skills/
 
 # Copy to skills library for testing
-cp -r fixtures/test-skills/* ~/.claude/plugins/dominion-flow/skills-library/
+cp -r fixtures/test-skills/* $PLUGIN_DIR/skills-library/
 ```
 
 ### Using `expected-outputs/`
@@ -237,7 +238,8 @@ diff .planning/CONSCIENCE.md fixtures/expected-outputs/expected-conscience.md
 - **OS:** Windows 10/11 (tests use Windows paths)
 - **Shell:** PowerShell or Git Bash
 - **Claude Code:** Installed and configured
-- **Dominion Flow Plugin:** Installed at `~/.claude/plugins/dominion-flow/`
+- **Dominion Flow Plugin:** Installed at `$PLUGIN_DIR`
+  (`$PLUGIN_DIR` = the installed plugin directory. Marketplace installs live at `~/.claude/plugins/cache/<marketplace>/dominion-flow/<version>/`; each test resolves it with `ls -dt ~/.claude/plugins/cache/*/dominion-flow/*/ | head -1`.)
 - **Permissions:** Write access to temp directories and plugin directory
 
 ---
@@ -290,4 +292,4 @@ When adding or modifying tests:
 ## Maintainer
 
 Dominion Flow Test Suite maintained as part of the Dominion Flow plugin.
-Location: `~/.claude/plugins/dominion-flow/tests/`
+Location: `$PLUGIN_DIR/tests/`

@@ -77,7 +77,7 @@ To enable updates, add repository URL to plugin.json:
 ### Step 1: Validate Environment
 
 ```bash
-PLUGIN_DIR="$HOME/.claude/plugins/dominion-flow"
+PLUGIN_DIR="${CLAUDE_PLUGIN_ROOT}"
 VERSION_FILE="$PLUGIN_DIR/version.json"
 PLUGIN_JSON="$PLUGIN_DIR/.claude-plugin/plugin.json"
 ```
@@ -87,7 +87,8 @@ Verify plugin directory exists and is a git repository:
 ```bash
 cd "$PLUGIN_DIR"
 if [ ! -d ".git" ]; then
-  echo "Error: Not a git repository"
+  echo "This install is not a git checkout (marketplace installs live in ~/.claude/plugins/cache/)."
+  echo "Update it with: claude plugin update dominion-flow"
   exit 1
 fi
 ```

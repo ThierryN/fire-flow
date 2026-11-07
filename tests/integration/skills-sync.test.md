@@ -261,7 +261,7 @@ echo "Cleanup complete"
 ```
 1. Pull from WARRIOR (get latest global skills)
 2. Review new skills
-3. Contribute local skills with /fire-contribute
+3. Contribute local skills with /fire-add-new-skill
 4. Push to WARRIOR (share with global)
 ```
 

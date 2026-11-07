@@ -76,7 +76,9 @@ cp ~/.claude/plugins/{plugin-name}/commands/{command}.md ~/.claude/commands/
 /fire-debug ❌
 
 # Copy to global
-cp ~/.claude/plugins/dominion-flow/commands/fire-debug.md ~/.claude/commands/
+# Marketplace installs: ~/.claude/plugins/cache/<marketplace>/dominion-flow/<version>/
+PLUGIN_DIR=$(ls -dt ~/.claude/plugins/cache/*/dominion-flow/*/ 2>/dev/null | head -1); PLUGIN_DIR="${PLUGIN_DIR%/}"
+cp "$PLUGIN_DIR"/commands/fire-debug.md ~/.claude/commands/
 
 # After restart: Works without namespace
 /fire-debug ✅
@@ -119,7 +121,7 @@ dir "C:\Users\$env:USERNAME\.claude\commands" | findstr "{prefix}"
 
 **Plugin structure:**
 ```
-~/.claude/plugins/dominion-flow/
+~/.claude/plugins/cache/<marketplace>/dominion-flow/<version>/
 ├── commands/
 │   ├── power-0-orient.md      # ❌ Requires /dominion-flow: prefix
 │   ├── power-debug.md          # ❌ Requires /dominion-flow: prefix
@@ -150,7 +152,7 @@ dir "C:\Users\$env:USERNAME\.claude\commands" | findstr "{prefix}"
 ├── power-1-new.md      # (existing, was already global)
 └── power-dashboard.md  # (existing, was already global)
 
-~/.claude/plugins/dominion-flow/
+~/.claude/plugins/cache/<marketplace>/dominion-flow/<version>/
 └── commands/
     ├── power-0-orient.md   # Still here (source of truth)
     ├── power-debug.md       # Still here
@@ -377,7 +379,9 @@ After copying commands, verify:
 
 **Solution:** Copied 7 commands from plugin to global:
 ```bash
-cp ~/.claude/plugins/dominion-flow/commands/fire-{0-orient,1a-discuss,debug,complete-milestone,map-codebase,new-milestone,todos}.md ~/.claude/commands/
+# Marketplace installs: ~/.claude/plugins/cache/<marketplace>/dominion-flow/<version>/
+PLUGIN_DIR=$(ls -dt ~/.claude/plugins/cache/*/dominion-flow/*/ 2>/dev/null | head -1); PLUGIN_DIR="${PLUGIN_DIR%/}"
+cp "$PLUGIN_DIR"/commands/fire-{0-orient,1a-discuss,debug,complete-milestone,map-codebase,new-milestone,todos}.md ~/.claude/commands/
 ```
 
 **Result:** All commands now work without namespace prefix after VS Code restart.

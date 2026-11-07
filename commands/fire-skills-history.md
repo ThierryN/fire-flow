@@ -385,4 +385,4 @@ Saved to: `.planning/skill-history-{category}-{skill-name}.md`
 - `/fire-skills-diff` - Compare two versions
 - `/fire-skills-rollback` - Revert to previous version
 - `/fire-search --detail` - View current skill content
-- `/fire-contribute` - Add new skill
+- `/fire-add-new-skill` - Add new skill

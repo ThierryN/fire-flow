@@ -11,7 +11,7 @@ Validates that `/fire-2-plan` generates valid execution plans that integrate rel
 ## Prerequisites
 - Dominion Flow plugin installed
 - Existing project with `.planning/` structure
-- Skills library available at `~/.claude/plugins/dominion-flow/skills-library/`
+- Skills library available at `$PLUGIN_DIR/skills-library/`
 
 ---
 
@@ -23,7 +23,8 @@ TEST_DIR=$(mktemp -d)
 cd "$TEST_DIR"
 
 # 2. Copy test project fixture
-cp -r ~/.claude/plugins/dominion-flow/tests/fixtures/test-project/.planning .
+PLUGIN_DIR=$(ls -dt ~/.claude/plugins/cache/*/dominion-flow/*/ 2>/dev/null | head -1); PLUGIN_DIR="${PLUGIN_DIR%/}"
+cp -r $PLUGIN_DIR/tests/fixtures/test-project/.planning .
 
 # 3. Create a phase directory for testing
 mkdir -p .planning/phases/02-database-setup

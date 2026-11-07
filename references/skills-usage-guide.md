@@ -188,12 +188,12 @@ The following patterns would benefit from skills documentation:
 
 ## Contributing New Skills
 
-### Using /fire-contribute
+### Using /fire-add-new-skill
 
 When you've implemented a pattern worth documenting:
 
 ```
-/fire-contribute "Redis Rate Limiting Pattern"
+/fire-add-new-skill --name "redis-rate-limiting"
 ```
 
 **Contribution Flow:**
@@ -419,7 +419,7 @@ Key Points:
 | `/fire-search <query>` | Find relevant skills |
 | `/fire-skill <path>` | Read full skill document |
 | `/fire-skill-quick <path> <section>` | Read specific section |
-| `/fire-contribute <title>` | Start new skill contribution |
+| `/fire-add-new-skill --name <name>` | Start new skill contribution |
 | `/fire-sync check` | Check for library updates |
 | `/fire-sync pull` | Download library updates |
 | `/fire-sync push <path>` | Submit skill contribution |

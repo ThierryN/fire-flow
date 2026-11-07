@@ -1,10 +1,11 @@
 {
-  "version": "13.1.1",
+  "version": "13.1.2",
   "commit": "local",
   "branch": "main",
-  "updatedAt": "2026-08-13T00:00:00Z",
+  "updatedAt": "2026-11-06T00:00:00Z",
   "installMethod": "local",
   "changelog": {
+    "13.1.2": "Fixes from a customer's report. Replaced the dead /fire-contribute command with /fire-add-new-skill. Bundled library, agent and template paths no longer assume ~/.claude/plugins/dominion-flow/ (wrong for marketplace installs, which live in ~/.claude/plugins/cache/<marketplace>/dominion-flow/<version>/); command and agent bodies use ${CLAUDE_PLUGIN_ROOT}. /fire-update now points marketplace installs to `claude plugin update dominion-flow`. Manifest fixed for claude plugin validate (author object; removed agents, commands, hooks and capabilities keys). hooks/hooks.json rewritten to the Claude Code hooks schema so SessionStart and SessionEnd actually load.",
     "13.1.1": "Version markers synced across package.json, plugin.json, .claude-plugin/plugin.json and version.json. Fixed scripts/sync-version.sh, which replaced every version-shaped string in the docs and would overwrite the release history in DOMINION-FLOW-OVERVIEW.md.",
     "12.9.0": "Multi-agent orchestration research upgrade. Observation masking, decision log, monitor agent bridge, dead task detection, voting verdicts, hierarchical review, task queue persistence, scope-isolated tool allowlists, breadcrumb aggregation, semaphore bounding.",
     "12.6.0": "Unified /fire-skill CLI, 6 skill templates, import/validate/stats scripts"

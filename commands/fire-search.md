@@ -73,7 +73,8 @@ Type: [keyword | category | tag | problem]
 ### Search Skills Library
 
 Search across all skill files in:
-- `~/.claude/plugins/dominion-flow/skills-library/`
+- `${CLAUDE_PLUGIN_ROOT}/skills-library/` (bundled)
+- `~/.claude/plugins/dominion-flow/skills-library/` (saved with /fire-add-new-skill)
 
 Categories to search (15 total):
 1. `database-solutions/` - Database patterns, queries, optimization
@@ -323,7 +324,7 @@ The fire-executor will:
 
 ## Related Commands
 
-- `/fire-contribute` - Add a new skill to the library
+- `/fire-add-new-skill` - Add a new skill to the library
 - `/fire-skills-sync` - Sync with global skills library
 - `/fire-skills-history` - View skill version history
 - `/fire-analytics` - See skills usage analytics

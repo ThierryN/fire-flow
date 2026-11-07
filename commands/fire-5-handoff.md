@@ -205,7 +205,7 @@ next_action: "{what to do next}"
 ### Important Paths:
 - **Project Root:** {path}
 - **Planning Docs:** {path}/.planning/
-- **Skills Library:** ~/.claude/plugins/dominion-flow/skills-library/
+- **Skills Library:** ${CLAUDE_PLUGIN_ROOT}/skills-library/
 
 ---
 
