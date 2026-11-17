@@ -14,7 +14,7 @@ Dominion Flow gives Claude a complete, structured way to take your project from 
 
 **[Star this repo](https://github.com/ThierryN/fire-flow)** so others can find it — and when you're ready for more, the **Pro version lives at [calibratefactory.com](https://calibratefactory.com)**.
 
-🚀 **Dominion Flow v2 is coming soon** — the next generation, available on [calibratefactory.com](https://calibratefactory.com).
+🚀 **Dominion Flow v2 is live!** — Purchase now at **[CalibrateFactory.com](https://calibratefactory.com)**.
 
 </div>
 
@@ -395,7 +395,7 @@ This is where students and followers ask questions, share projects, and stay up 
 **Want more power? Go Pro:**
 
 - 🚀 **[calibratefactory.com](https://calibratefactory.com)** — the home of the paid editions, with more capability than the free orchestrator
-- 🔮 **Dominion Flow v2 is coming soon** — the next-generation paid release, available exclusively at **[calibratefactory.com](https://calibratefactory.com)**
+- ⚡ **Dominion Flow v2 is live!** — Purchase now at **[CalibrateFactory.com](https://calibratefactory.com)**
 
 This is a living project. Your stars, shares, and support keep it growing. 🙏
 
